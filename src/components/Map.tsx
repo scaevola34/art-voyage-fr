@@ -1,17 +1,10 @@
-import React, { useEffect, useRef, useState, memo, FC } from 'react';
-import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useState, useEffect, useRef, memo } from 'react';
+import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location, LocationType } from '@/data/locations';
 import Supercluster from 'supercluster';
 
-// Fix for default marker icon issue in React-Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN_HERE';
 
 interface MapProps {
   locations: Location[];
@@ -31,22 +24,18 @@ const getCategoryColor = (type: LocationType): string => {
   }
 };
 
-// Component to handle marker updates
-const MarkerLayer: FC<{ locations: Location[]; onLocationSelect: (location: Location) => void }> = ({ locations, onLocationSelect }) => {
-  const map = useMap();
-  const [zoom, setZoom] = useState(map.getZoom());
-  const markersRef = useRef<L.Marker[]>([]);
-  const superclusterRef = useRef<Supercluster | null>(null);
-
-  // Track zoom changes
-  useMapEvents({
-    zoomend: () => {
-      setZoom(map.getZoom());
-    },
-    moveend: () => {
-      setZoom(map.getZoom()); // Trigger re-render on move
-    },
+const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, onLocationSelect, centerOnLocation }) => {
+  const [mapboxToken, setMapboxToken] = useState(MAPBOX_TOKEN);
+  const [viewState, setViewState] = useState({
+    longitude: 2.3522,
+    latitude: 46.6031,
+    zoom: 6
   });
+  const [clusters, setClusters] = useState<any[]>([]);
+  const superclusterRef = useRef<Supercluster | null>(null);
+  const mapRef = useRef<any>(null);
+
+  console.log('Map render - mapboxToken:', mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE' ? 'NOT_SET' : 'SET', 'locations:', locations.length);
 
   // Initialize Supercluster
   useEffect(() => {
@@ -67,17 +56,20 @@ const MarkerLayer: FC<{ locations: Location[]; onLocationSelect: (location: Loca
     }));
 
     superclusterRef.current.load(points);
+    updateClusters();
   }, [locations]);
 
-  // Update markers based on zoom and bounds
+  // Update clusters when view changes
   useEffect(() => {
-    if (!superclusterRef.current || !locations.length) return;
+    updateClusters();
+  }, [viewState, locations]);
 
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
+  const updateClusters = () => {
+    if (!superclusterRef.current || !mapRef.current) return;
 
+    const map = mapRef.current.getMap();
     const bounds = map.getBounds();
+    
     const bbox: [number, number, number, number] = [
       bounds.getWest(),
       bounds.getSouth(),
@@ -85,134 +77,185 @@ const MarkerLayer: FC<{ locations: Location[]; onLocationSelect: (location: Loca
       bounds.getNorth(),
     ];
 
-    const clusters = superclusterRef.current.getClusters(bbox, Math.floor(zoom));
+    const zoom = Math.floor(viewState.zoom);
+    const newClusters = superclusterRef.current.getClusters(bbox, zoom);
+    setClusters(newClusters);
+  };
 
-    clusters.forEach(cluster => {
-      const [lng, lat] = cluster.geometry.coordinates;
-      const { cluster: isCluster, point_count: pointCount } = cluster.properties as any;
-
-      if (isCluster) {
-        // Create cluster marker
-        const size = 30 + (pointCount / locations.length) * 20;
-        const icon = L.divIcon({
-          html: `
-            <div style="
-              width: ${size}px;
-              height: ${size}px;
-              border-radius: 50%;
-              background-color: #00ff88;
-              border: 3px solid rgba(255, 255, 255, 0.3);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              color: #0a0a0a;
-              font-weight: 700;
-              font-size: 14px;
-              box-shadow: 0 0 20px #00ff8860;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-              cursor: pointer;
-            " 
-            onmouseenter="this.style.transform='scale(1.2)'; this.style.boxShadow='0 0 30px #00ff88';"
-            onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 0 20px #00ff8860';"
-            >
-              ${pointCount}
-            </div>
-          `,
-          className: 'custom-cluster-icon',
-          iconSize: [size, size],
-        });
-
-        const marker = L.marker([lat, lng], { icon })
-          .addTo(map)
-          .on('click', () => {
-            const expansionZoom = Math.min(
-              superclusterRef.current!.getClusterExpansionZoom(cluster.id as number),
-              20
-            );
-            map.flyTo([lat, lng], expansionZoom, { duration: 0.5 });
-          });
-
-        markersRef.current.push(marker);
-      } else {
-        // Create individual marker
-        const location = cluster.properties as Location;
-        const color = getCategoryColor(location.type);
-        const icon = L.divIcon({
-          html: `
-            <div style="
-              width: 28px;
-              height: 28px;
-              border-radius: 50%;
-              background-color: ${color};
-              border: 2px solid rgba(255, 255, 255, 0.2);
-              box-shadow: 0 0 15px ${color}60;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-              cursor: pointer;
-            "
-            onmouseenter="this.style.transform='scale(1.3) translateY(-3px)'; this.style.boxShadow='0 0 25px ${color}'; this.style.borderColor='rgba(255, 255, 255, 0.6)';"
-            onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='0 0 15px ${color}60'; this.style.borderColor='rgba(255, 255, 255, 0.2)';"
-            ></div>
-          `,
-          className: 'custom-marker-icon',
-          iconSize: [28, 28],
-        });
-
-        const marker = L.marker([lat, lng], { icon })
-          .addTo(map)
-          .on('click', () => {
-            onLocationSelect(location);
-            map.flyTo([lat, lng], 14, { duration: 1 });
-          });
-
-        markersRef.current.push(marker);
-      }
-    });
-
-    return () => {
-      markersRef.current.forEach(marker => marker.remove());
-      markersRef.current = [];
-    };
-  }, [locations, zoom, map, onLocationSelect]);
-
-  return null;
-}
-
-// Component to handle flying to selected location
-const FlyToLocation: FC<{ location: Location | null }> = ({ location }) => {
-  const map = useMap();
-
+  // Fly to selected or centered location
   useEffect(() => {
-    if (!location) return;
-    map.flyTo([location.coordinates.lat, location.coordinates.lng], 14, {
-      duration: 1.5,
+    const targetLocation = centerOnLocation || selectedLocation;
+    if (!targetLocation || !mapRef.current) return;
+
+    setViewState({
+      longitude: targetLocation.coordinates.lng,
+      latitude: targetLocation.coordinates.lat,
+      zoom: 14,
     });
-  }, [location, map]);
+  }, [selectedLocation, centerOnLocation]);
 
-  return null;
-}
+  const handleClusterClick = (cluster: any) => {
+    if (!superclusterRef.current || !mapRef.current) return;
 
-const Map: FC<MapProps> = memo(({ locations, selectedLocation, onLocationSelect, centerOnLocation }) => {
-  console.log('Map render - locations:', locations.length);
+    const expansionZoom = Math.min(
+      superclusterRef.current.getClusterExpansionZoom(cluster.id as number),
+      20
+    );
+
+    setViewState({
+      ...viewState,
+      longitude: cluster.geometry.coordinates[0],
+      latitude: cluster.geometry.coordinates[1],
+      zoom: expansionZoom,
+    });
+  };
+
+  const handleMarkerClick = (location: Location) => {
+    onLocationSelect(location);
+    setViewState({
+      ...viewState,
+      longitude: location.coordinates.lng,
+      latitude: location.coordinates.lat,
+      zoom: 14,
+    });
+  };
+
+  if (mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE') {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background p-4">
+        <div className="max-w-md w-full p-8 bg-card/95 backdrop-blur-xl rounded-xl border border-border shadow-2xl animate-fade-in">
+          <h3 className="text-xl font-semibold mb-4 text-foreground">Configuration Mapbox</h3>
+          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+            Entrez votre token Mapbox pour afficher la carte. Vous pouvez obtenir un token gratuit sur{' '}
+            <a
+              href="https://mapbox.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-medium"
+            >
+              mapbox.com
+            </a>
+          </p>
+          <input
+            type="text"
+            placeholder="pk.eyJ1IjoieW91cnVzZXJuYW1lIi..."
+            className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            onChange={(e) => setMapboxToken(e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <MapContainer
-      center={[46.603354, 2.3522]} // Center of France
-      zoom={6}
-      className="w-full h-full"
-      zoomControl={true}
-      style={{ height: '100%', width: '100%' }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-      />
+    <div style={{ width: '100%', height: '100vh' }}>
+      <Map
+        ref={mapRef}
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapboxAccessToken={mapboxToken}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <NavigationControl position="top-right" />
+        <GeolocateControl
+          position="top-right"
+          trackUserLocation={true}
+          showUserHeading={true}
+        />
 
-      <MarkerLayer locations={locations} onLocationSelect={onLocationSelect} />
-      <FlyToLocation location={centerOnLocation || selectedLocation} />
-    </MapContainer>
+        {clusters.map((cluster) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const { cluster: isCluster, point_count: pointCount } = cluster.properties as any;
+
+          if (isCluster) {
+            const size = 30 + (pointCount / locations.length) * 20;
+            
+            return (
+              <Marker
+                key={`cluster-${cluster.id}`}
+                longitude={longitude}
+                latitude={latitude}
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  handleClusterClick(cluster);
+                }}
+              >
+                <div
+                  style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    borderRadius: '50%',
+                    backgroundColor: '#00ff88',
+                    border: '3px solid rgba(255, 255, 255, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#0a0a0a',
+                    fontWeight: '700',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 0 20px #00ff8860',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.2)';
+                    e.currentTarget.style.boxShadow = '0 0 30px #00ff88';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 0 20px #00ff8860';
+                  }}
+                >
+                  {pointCount}
+                </div>
+              </Marker>
+            );
+          }
+
+          const location = cluster.properties as Location;
+          const color = getCategoryColor(location.type);
+
+          return (
+            <Marker
+              key={location.id}
+              longitude={longitude}
+              latitude={latitude}
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                handleMarkerClick(location);
+              }}
+            >
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  backgroundColor: color,
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: `0 0 15px ${color}60`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.3) translateY(-3px)';
+                  e.currentTarget.style.boxShadow = `0 0 25px ${color}`;
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = `0 0 15px ${color}60`;
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }}
+              />
+            </Marker>
+          );
+        })}
+      </Map>
+    </div>
   );
 });
 
-Map.displayName = 'Map';
+MapComponent.displayName = 'Map';
 
-export default Map;
+export default MapComponent;
