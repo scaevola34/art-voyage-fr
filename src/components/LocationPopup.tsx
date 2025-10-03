@@ -15,10 +15,11 @@ const typeConfig = {
 
 export default function LocationPopup({ location, onClose }: LocationPopupProps) {
   const { icon: Icon, label, color } = typeConfig[location.type];
+  const glowClass = `shadow-glow-${location.type}`;
 
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md animate-scale-in">
-      <div className="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+      <div className={`bg-card/90 backdrop-blur-xl border border-border rounded-xl ${glowClass} overflow-hidden`}>
         {location.image && (
           <div className="h-48 overflow-hidden">
             <img
@@ -32,22 +33,24 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
-                className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center"
+                className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center animate-bounce-subtle"
                 style={{ backgroundColor: `hsl(var(--${color}))` }}
               >
                 <Icon className="h-6 w-6 text-background" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-foreground">{location.name}</h3>
-                <p className="text-sm text-primary font-medium">{label}</p>
+                <h3 className="text-xl font-semibold text-foreground">{location.name}</h3>
+                <p className="text-sm font-medium" style={{ color: `hsl(var(--${color}))` }}>
+                  {label}
+                </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors rounded-lg p-1 hover:bg-muted"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -62,21 +65,21 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
             </button>
           </div>
 
-          <p className="text-muted-foreground mb-4">{location.description}</p>
+          <p className="text-sm text-muted-foreground mb-4">{location.description}</p>
 
-          <div className="space-y-2 mb-4">
+          <div className="space-y-3 mb-4">
             <div className="flex items-start gap-2 text-sm">
               <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
               <div className="text-foreground">
-                <div>{location.address}</div>
-                <div>
+                <div className="font-medium">{location.address}</div>
+                <div className="text-muted-foreground text-xs">
                   {location.city}, {location.region}
                 </div>
               </div>
             </div>
             
             {location.openingHours && (
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-sm bg-muted/30 rounded-lg p-2">
                 <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <span className="text-foreground">{location.openingHours}</span>
               </div>
@@ -89,7 +92,8 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
                   href={`https://instagram.com/${location.instagram.replace('@', '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="hover:underline font-medium"
+                  style={{ color: `hsl(var(--${color}))` }}
                 >
                   {location.instagram}
                 </a>
@@ -100,8 +104,12 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
           {location.website && (
             <Button
               asChild
-              className="w-full"
+              className="w-full rounded-xl font-medium transition-all duration-300 hover:scale-[1.02]"
               variant="default"
+              style={{ 
+                backgroundColor: `hsl(var(--${color}))`,
+                color: 'hsl(var(--background))'
+              }}
             >
               <a
                 href={location.website}

@@ -56,7 +56,9 @@ export default {
         'gradient-card': 'var(--gradient-card)',
       },
       boxShadow: {
-        'glow': 'var(--shadow-glow)',
+        'glow-gallery': 'var(--shadow-glow-gallery)',
+        'glow-association': 'var(--shadow-glow-association)',
+        'glow-festival': 'var(--shadow-glow-festival)',
         'card': 'var(--shadow-card)',
       },
       transitionProperty: {
@@ -104,12 +106,30 @@ export default {
             opacity: "1"
           }
         },
+        "slide-in": {
+          "0%": {
+            transform: "translateX(-100%)"
+          },
+          "100%": {
+            transform: "translateX(0)"
+          }
+        },
+        "bounce-subtle": {
+          "0%, 100%": {
+            transform: "translateY(0)"
+          },
+          "50%": {
+            transform: "translateY(-5px)"
+          }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        "slide-in": "slide-in 0.3s ease-out",
+        "bounce-subtle": "bounce-subtle 0.6s ease-in-out",
       },
     },
   },

@@ -15,11 +15,11 @@ interface MapProps {
 const getCategoryColor = (type: LocationType): string => {
   switch (type) {
     case 'gallery':
-      return '#B794F4'; // purple
+      return '#00ff88'; // neon green
     case 'association':
-      return '#4FC3F7'; // blue
+      return '#ff6b6b'; // red
     case 'festival':
-      return '#FF9A3C'; // orange
+      return '#ffd93d'; // yellow
   }
 };
 
@@ -69,7 +69,6 @@ export default function Map({ locations, selectedLocation, onLocationSelect }: M
     };
   }, [mapboxToken]);
 
-  // Update markers when locations change
   useEffect(() => {
     if (!map.current || mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE') return;
 
@@ -81,23 +80,28 @@ export default function Map({ locations, selectedLocation, onLocationSelect }: M
     locations.forEach(location => {
       const el = document.createElement('div');
       el.className = 'map-marker';
-      el.style.width = '32px';
-      el.style.height = '32px';
+      el.style.width = '28px';
+      el.style.height = '28px';
       el.style.borderRadius = '50%';
       el.style.backgroundColor = getCategoryColor(location.type);
-      el.style.border = '3px solid rgba(255, 255, 255, 0.3)';
+      el.style.border = '2px solid rgba(255, 255, 255, 0.2)';
       el.style.cursor = 'pointer';
       el.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      el.style.boxShadow = `0 0 20px ${getCategoryColor(location.type)}40`;
+      
+      // Add glow based on type
+      const glowColor = getCategoryColor(location.type);
+      el.style.boxShadow = `0 0 15px ${glowColor}60`;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.2)';
-        el.style.boxShadow = `0 0 30px ${getCategoryColor(location.type)}80`;
+        el.style.transform = 'scale(1.3) translateY(-3px)';
+        el.style.boxShadow = `0 0 25px ${glowColor}`;
+        el.style.borderColor = 'rgba(255, 255, 255, 0.6)';
       });
 
       el.addEventListener('mouseleave', () => {
         el.style.transform = 'scale(1)';
-        el.style.boxShadow = `0 0 20px ${getCategoryColor(location.type)}40`;
+        el.style.boxShadow = `0 0 15px ${glowColor}60`;
+        el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
       });
 
       el.addEventListener('click', () => {
@@ -126,16 +130,16 @@ export default function Map({ locations, selectedLocation, onLocationSelect }: M
 
   if (mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE') {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-card">
-        <div className="max-w-md p-8 bg-muted rounded-lg shadow-card animate-fade-in">
-          <h3 className="text-xl font-bold mb-4 text-foreground">Configuration Mapbox</h3>
-          <p className="text-muted-foreground mb-4">
+      <div className="w-full h-full flex items-center justify-center bg-background">
+        <div className="max-w-md p-8 bg-card/80 backdrop-blur-xl rounded-xl border border-border shadow-card animate-fade-in">
+          <h3 className="text-xl font-semibold mb-4 text-foreground">Configuration Mapbox</h3>
+          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
             Entrez votre token Mapbox pour afficher la carte. Vous pouvez obtenir un token gratuit sur{' '}
             <a
               href="https://mapbox.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline font-medium"
             >
               mapbox.com
             </a>
@@ -143,7 +147,7 @@ export default function Map({ locations, selectedLocation, onLocationSelect }: M
           <input
             type="text"
             placeholder="pk.eyJ1IjoieW91cnVzZXJuYW1lIi..."
-            className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
             onChange={(e) => setMapboxToken(e.target.value)}
           />
         </div>

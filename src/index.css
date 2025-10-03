@@ -8,48 +8,50 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 12%;
-    --foreground: 210 20% 98%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
 
-    --card: 220 18% 16%;
-    --card-foreground: 210 20% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 20% 14%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 280 70% 65%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 150 100% 50%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 200 80% 55%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 0 100% 71%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 25%;
-    --muted-foreground: 210 15% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63%;
 
-    --accent: 30 95% 60%;
-    --accent-foreground: 220 20% 12%;
+    --accent: 45 100% 62%;
+    --accent-foreground: 0 0% 4%;
 
-    --destructive: 0 70% 60%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 22%;
-    --input: 220 15% 22%;
-    --ring: 280 70% 65%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 150 100% 50%;
 
     --radius: 0.75rem;
 
     /* Category colors */
-    --gallery: 280 70% 65%;
-    --association: 200 80% 55%;
-    --festival: 30 95% 60%;
+    --gallery: 150 100% 50%;
+    --association: 0 100% 71%;
+    --festival: 45 100% 62%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(280 70% 65% / 0.2), hsl(200 80% 55% / 0.2));
-    --gradient-card: linear-gradient(180deg, hsl(220 18% 16%), hsl(220 18% 14%));
+    --gradient-hero: linear-gradient(135deg, hsl(150 100% 50% / 0.1), hsl(0 0% 4%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 10% / 0.8), hsl(0 0% 8% / 0.8));
 
     /* Shadows */
-    --shadow-glow: 0 0 30px hsl(280 70% 65% / 0.3);
-    --shadow-card: 0 4px 20px hsl(220 20% 8% / 0.4);
+    --shadow-glow-gallery: 0 0 30px hsl(150 100% 50% / 0.4);
+    --shadow-glow-association: 0 0 30px hsl(0 100% 71% / 0.4);
+    --shadow-glow-festival: 0 0 30px hsl(45 100% 62% / 0.4);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.6);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,5 +65,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(0 0% 8%);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(0 0% 20%);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(0 0% 30%);
   }
 }

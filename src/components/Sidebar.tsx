@@ -44,14 +44,14 @@ export default function Sidebar({
   return (
     <>
       <aside
-        className={`fixed left-0 top-0 h-full bg-card border-r border-border z-40 transition-all duration-300 ${
+        className={`fixed left-0 top-0 h-full bg-card/80 backdrop-blur-xl border-r border-border z-40 transition-all duration-300 animate-slide-in ${
           isCollapsed ? '-translate-x-full' : 'translate-x-0'
         } w-80 md:w-96`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-border bg-gradient-hero">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Street Art France</h1>
+          <div className="p-6 border-b border-border">
+            <h1 className="text-2xl font-semibold text-foreground mb-2">Street Art France</h1>
             <p className="text-sm text-muted-foreground">
               Galeries, associations et festivals d'art urbain
             </p>
@@ -66,7 +66,7 @@ export default function Sidebar({
                 placeholder="Rechercher par nom ou ville..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-10 bg-background border-border"
+                className="pl-10 bg-background/50 border-border rounded-xl focus:ring-primary"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function Sidebar({
             <div className="flex flex-wrap gap-2">
               <Badge
                 variant={selectedType === 'all' ? 'default' : 'outline'}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
+                className="cursor-pointer hover:opacity-80 transition-all duration-300 rounded-lg px-3 py-1"
                 onClick={() => handleTypeFilter('all')}
               >
                 Tous
@@ -91,7 +91,7 @@ export default function Sidebar({
                   <Badge
                     key={type}
                     variant={selectedType === type ? 'default' : 'outline'}
-                    className="cursor-pointer hover:opacity-80 transition-opacity"
+                    className="cursor-pointer hover:opacity-80 transition-all duration-300 rounded-lg px-3 py-1"
                     onClick={() => handleTypeFilter(type)}
                   >
                     <Icon className="h-3 w-3 mr-1" />
@@ -104,36 +104,39 @@ export default function Sidebar({
 
           {/* Locations List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            <p className="text-sm text-muted-foreground mb-3">
+            <p className="text-xs text-muted-foreground mb-3 font-medium">
               {filteredLocations.length} lieu{filteredLocations.length > 1 ? 'x' : ''} trouvé
               {filteredLocations.length > 1 ? 's' : ''}
             </p>
             {filteredLocations.map(location => {
               const { icon: Icon, color } = typeConfig[location.type];
               const isSelected = selectedLocation?.id === location.id;
+              const glowClass = `shadow-glow-${location.type}`;
 
               return (
                 <div
                   key={location.id}
                   onClick={() => onLocationSelect(location)}
-                  className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-glow animate-fade-in ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fade-in ${
                     isSelected
-                      ? 'bg-muted border-primary shadow-glow'
-                      : 'bg-card border-border hover:border-primary/50'
+                      ? `bg-muted/50 border-${color} ${glowClass}`
+                      : 'bg-card/50 backdrop-blur-sm border-border hover:border-muted-foreground/30'
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <div
-                      className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center`}
+                      className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isSelected ? 'animate-bounce-subtle' : ''
+                      }`}
                       style={{ backgroundColor: `hsl(var(--${color}))` }}
                     >
                       <Icon className="h-5 w-5 text-background" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground mb-1 truncate">
+                      <h3 className="font-semibold text-foreground mb-1 truncate text-sm">
                         {location.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
                         {location.description}
                       </p>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -154,8 +157,8 @@ export default function Sidebar({
       {/* Toggle Button */}
       <Button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className={`fixed top-4 z-50 transition-all duration-300 ${
-          isCollapsed ? 'left-4' : 'left-[21rem] md:left-[25rem]'
+        className={`fixed top-6 z-50 transition-all duration-300 shadow-lg rounded-xl ${
+          isCollapsed ? 'left-6' : 'left-[21rem] md:left-[25rem]'
         }`}
         size="icon"
         variant="secondary"
