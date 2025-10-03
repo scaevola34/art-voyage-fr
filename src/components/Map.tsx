@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location, LocationType } from '@/data/locations';
 import Supercluster from 'supercluster';
 
-const MAPBOX_TOKEN = 'YOUR_MAPBOX_TOKEN_HERE';
+const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2NhZXZvbGEzNCIsImEiOiJjbWdiM3h0Y2kwdWNjMmpzN3ppN281aXdvIn0.ptfb3pU7Fb7CWtJqojeGrw';
 
 interface MapProps {
   locations: Location[];
@@ -25,7 +25,6 @@ const getCategoryColor = (type: LocationType): string => {
 };
 
 const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, onLocationSelect, centerOnLocation }) => {
-  const [mapboxToken, setMapboxToken] = useState(MAPBOX_TOKEN);
   const [viewState, setViewState] = useState({
     longitude: 2.3522,
     latitude: 46.6031,
@@ -35,7 +34,7 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
   const superclusterRef = useRef<Supercluster | null>(null);
   const mapRef = useRef<any>(null);
 
-  console.log('Map render - mapboxToken:', mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE' ? 'NOT_SET' : 'SET', 'locations:', locations.length);
+  console.log('Map render - locations:', locations.length);
 
   // Initialize Supercluster
   useEffect(() => {
@@ -120,33 +119,6 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
     });
   };
 
-  if (mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE') {
-    return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background p-4">
-        <div className="max-w-md w-full p-8 bg-card/95 backdrop-blur-xl rounded-xl border border-border shadow-2xl animate-fade-in">
-          <h3 className="text-xl font-semibold mb-4 text-foreground">Configuration Mapbox</h3>
-          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-            Entrez votre token Mapbox pour afficher la carte. Vous pouvez obtenir un token gratuit sur{' '}
-            <a
-              href="https://mapbox.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium"
-            >
-              mapbox.com
-            </a>
-          </p>
-          <input
-            type="text"
-            placeholder="pk.eyJ1IjoieW91cnVzZXJuYW1lIi..."
-            className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-            onChange={(e) => setMapboxToken(e.target.value)}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={{ width: '100%', height: '100vh' }}>
       <Map
@@ -154,7 +126,7 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/dark-v11"
-        mapboxAccessToken={mapboxToken}
+        mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
       >
         <NavigationControl position="top-right" />
