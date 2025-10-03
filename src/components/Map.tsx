@@ -4,7 +4,9 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location, LocationType } from '@/data/locations';
 import Supercluster from 'supercluster';
 
-const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2NhZXZvbGEzNCIsImEiOiJjbWdiM3h0Y2kwdWNjMmpzN3ppN281aXdvIn0.ptfb3pU7Fb7CWtJqojeGrw';
+const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2NhZXZvbGEzNCIsImEiOiJjbWdiM3h0Y2kwdWNjMmpzN3ppN291aXdvIn0.ptfb3pU7Fb7CWtJqojeGrw';
+
+console.log('Mapbox Token Loaded:', MAPBOX_TOKEN ? 'YES' : 'NO', MAPBOX_TOKEN.substring(0, 20) + '...');
 
 interface MapProps {
   locations: Location[];
