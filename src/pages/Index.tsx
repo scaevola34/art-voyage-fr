@@ -6,6 +6,7 @@ import { locations as allLocations, Location, LocationType } from '@/data/locati
 
 export default function Index() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
   const [filteredLocations, setFilteredLocations] = useState(allLocations);
 
   const handleFilterChange = (filters: { type: LocationType | 'all'; region: string }) => {
@@ -15,11 +16,18 @@ export default function Index() {
       filtered = filtered.filter(loc => loc.type === filters.type);
     }
 
-    if (filters.region) {
+    if (filters.region && filters.region !== 'all') {
       filtered = filtered.filter(loc => loc.region === filters.region);
     }
 
     setFilteredLocations(filtered);
+  };
+
+  const handleLocationSelect = (location: Location) => {
+    setSelectedLocation(location);
+    setCenteredLocation(location);
+    // Reset centered location after animation
+    setTimeout(() => setCenteredLocation(null), 2000);
   };
 
   return (
@@ -27,7 +35,7 @@ export default function Index() {
       <Sidebar
         locations={filteredLocations}
         selectedLocation={selectedLocation}
-        onLocationSelect={setSelectedLocation}
+        onLocationSelect={handleLocationSelect}
         onFilterChange={handleFilterChange}
       />
 
@@ -35,7 +43,8 @@ export default function Index() {
         <Map
           locations={filteredLocations}
           selectedLocation={selectedLocation}
-          onLocationSelect={setSelectedLocation}
+          onLocationSelect={handleLocationSelect}
+          centerOnLocation={centeredLocation}
         />
       </main>
 
