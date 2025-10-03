@@ -141,25 +141,11 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
           <p><strong>Erreur de carte:</strong> {mapError}</p>
         </div>
       )}
-      {!isMapLoaded && !mapError && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 999,
-          color: '#00ff88',
-          fontSize: '18px',
-          fontWeight: '600'
-        }}>
-          Carte en cours de chargement...
-        </div>
-      )}
       <Map
         ref={mapRef}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         onLoad={() => {
