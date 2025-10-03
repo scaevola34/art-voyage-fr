@@ -85,15 +85,25 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
     setClusters(newClusters);
   };
 
-  // Fly to selected or centered location
+  // Fly to selected or centered location with proper offset
   useEffect(() => {
     const targetLocation = centerOnLocation || selectedLocation;
     if (!targetLocation || !mapRef.current) return;
 
-    setViewState({
-      longitude: targetLocation.coordinates.lng,
-      latitude: targetLocation.coordinates.lat,
+    const map = mapRef.current.getMap();
+    const isMobile = window.innerWidth < 768;
+
+    // Calculate offset to account for sidebar/drawer
+    const padding = isMobile 
+      ? { bottom: 300, top: 100, left: 20, right: 20 } // Mobile: account for bottom drawer
+      : { left: 420, right: 20, top: 100, bottom: 100 }; // Desktop: account for sidebar
+
+    map.flyTo({
+      center: [targetLocation.coordinates.lng, targetLocation.coordinates.lat],
       zoom: 14,
+      duration: 1000,
+      padding,
+      essential: true
     });
   }, [selectedLocation, centerOnLocation]);
 
@@ -115,11 +125,22 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
 
   const handleMarkerClick = (location: Location) => {
     onLocationSelect(location);
-    setViewState({
-      ...viewState,
-      longitude: location.coordinates.lng,
-      latitude: location.coordinates.lat,
+    
+    if (!mapRef.current) return;
+    const map = mapRef.current.getMap();
+    const isMobile = window.innerWidth < 768;
+
+    // Calculate offset to account for sidebar/drawer
+    const padding = isMobile 
+      ? { bottom: 300, top: 100, left: 20, right: 20 } // Mobile: account for bottom drawer
+      : { left: 420, right: 20, top: 100, bottom: 100 }; // Desktop: account for sidebar
+
+    map.flyTo({
+      center: [location.coordinates.lng, location.coordinates.lat],
       zoom: 14,
+      duration: 1000,
+      padding,
+      essential: true
     });
   };
 
