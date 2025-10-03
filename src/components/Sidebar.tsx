@@ -34,11 +34,13 @@ export default function Sidebar({
   onLocationSelect,
   onFilterChange,
 }: SidebarProps) {
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<LocationType | 'all'>('all');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const isMobile = useIsMobile();
+
+  console.log('Sidebar render - isMobile:', isMobile, 'isOpen:', isOpen, 'locations:', locations.length);
 
   const { suggestions, isOpen: showSuggestions, setIsOpen: setShowSuggestions } = useAutocomplete(
     locations,

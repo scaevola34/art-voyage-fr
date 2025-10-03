@@ -33,6 +33,8 @@ export default function Map({ locations, selectedLocation, onLocationSelect, cen
   const [zoom, setZoom] = useState(5);
   const supercluster = useRef<Supercluster | null>(null);
 
+  console.log('Map render - mapboxToken:', mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE' ? 'NOT_SET' : 'SET', 'locations:', locations.length);
+
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
@@ -227,8 +229,8 @@ export default function Map({ locations, selectedLocation, onLocationSelect, cen
 
   if (mapboxToken === 'YOUR_MAPBOX_TOKEN_HERE') {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-background">
-        <div className="max-w-md p-8 bg-card/80 backdrop-blur-xl rounded-xl border border-border shadow-card animate-fade-in">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background p-4">
+        <div className="max-w-md w-full p-8 bg-card/95 backdrop-blur-xl rounded-xl border border-border shadow-2xl animate-fade-in">
           <h3 className="text-xl font-semibold mb-4 text-foreground">Configuration Mapbox</h3>
           <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
             Entrez votre token Mapbox pour afficher la carte. Vous pouvez obtenir un token gratuit sur{' '}
