@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, memo } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
+import React, { useEffect, useRef, useState, memo, FC } from 'react';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Location, LocationType } from '@/data/locations';
@@ -32,7 +32,7 @@ const getCategoryColor = (type: LocationType): string => {
 };
 
 // Component to handle marker updates
-function MarkerLayer({ locations, onLocationSelect }: { locations: Location[]; onLocationSelect: (location: Location) => void }) {
+const MarkerLayer: FC<{ locations: Location[]; onLocationSelect: (location: Location) => void }> = ({ locations, onLocationSelect }) => {
   const map = useMap();
   const [zoom, setZoom] = useState(map.getZoom());
   const markersRef = useRef<L.Marker[]>([]);
@@ -178,7 +178,7 @@ function MarkerLayer({ locations, onLocationSelect }: { locations: Location[]; o
 }
 
 // Component to handle flying to selected location
-function FlyToLocation({ location }: { location: Location | null }) {
+const FlyToLocation: FC<{ location: Location | null }> = ({ location }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -191,7 +191,7 @@ function FlyToLocation({ location }: { location: Location | null }) {
   return null;
 }
 
-const Map = memo(function Map({ locations, selectedLocation, onLocationSelect, centerOnLocation }: MapProps) {
+const Map: FC<MapProps> = memo(({ locations, selectedLocation, onLocationSelect, centerOnLocation }) => {
   console.log('Map render - locations:', locations.length);
 
   return (
@@ -212,5 +212,7 @@ const Map = memo(function Map({ locations, selectedLocation, onLocationSelect, c
     </MapContainer>
   );
 });
+
+Map.displayName = 'Map';
 
 export default Map;
