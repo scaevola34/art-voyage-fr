@@ -1,7 +1,9 @@
 import { Location } from '@/data/locations';
-import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Navigation } from 'lucide-react';
+import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Navigation, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { memo } from 'react';
 
 interface LocationPopupProps {
   location: Location;
@@ -14,7 +16,8 @@ const typeConfig = {
   festival: { label: 'Festival', icon: Calendar, color: 'festival' },
 };
 
-export default function LocationPopup({ location, onClose }: LocationPopupProps) {
+const LocationPopup = memo(function LocationPopup({ location, onClose }: LocationPopupProps) {
+  const { toast } = useToast();
   const { icon: Icon, label, color } = typeConfig[location.type];
   const glowClass = `shadow-glow-${location.type}`;
 
@@ -23,8 +26,44 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
     return `https://www.google.com/maps/dir/?api=1&destination=${address}`;
   };
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/map?location=${location.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: location.name,
+          text: `Découvrez ${location.name} sur Street Art France`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        // User cancelled or error occurred
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: "Lien copié !",
+          description: "Le lien a été copié dans votre presse-papier",
+        });
+      } catch (err) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de copier le lien",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg animate-scale-in">
+    <div 
+      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg animate-scale-in"
+      role="dialog"
+      aria-labelledby="location-title"
+      aria-modal="true"
+    >
       <div className={`bg-card/95 backdrop-blur-xl border border-border rounded-2xl ${glowClass} overflow-hidden`}>
         {/* Header with Image or Gradient */}
         <div className="relative h-32 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
@@ -50,6 +89,7 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-foreground hover:text-primary transition-colors rounded-full p-2 bg-card/80 backdrop-blur-sm hover:bg-card"
+            aria-label="Fermer la popup"
           >
             <svg
               className="w-5 h-5"
@@ -85,7 +125,9 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
         <div className="p-6 space-y-4">
           {/* Title */}
           <div>
-            <h3 className="text-2xl font-semibold text-foreground mb-2">{location.name}</h3>
+            <h3 id="location-title" className="text-2xl font-semibold text-foreground mb-2">
+              {location.name}
+            </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {location.description}
             </p>
@@ -141,26 +183,36 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2"
+                aria-label={`Obtenir l'itinéraire vers ${location.name}`}
               >
                 <Navigation className="h-4 w-4" />
                 Itinéraire
               </a>
             </Button>
 
+            <Button
+              onClick={handleShare}
+              variant="outline"
+              className="rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] border-border hover:border-primary"
+              aria-label="Partager ce lieu"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
+
             {location.website && (
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] border-border hover:border-primary"
+                className="rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] border-border hover:border-primary"
               >
                 <a
                   href={location.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2"
+                  aria-label={`Visiter le site web de ${location.name}`}
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Site web
                 </a>
               </Button>
             )}
@@ -169,4 +221,6 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
       </div>
     </div>
   );
-}
+});
+
+export default LocationPopup;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location, LocationType } from '@/data/locations';
@@ -25,7 +25,7 @@ const getCategoryColor = (type: LocationType): string => {
   }
 };
 
-export default function Map({ locations, selectedLocation, onLocationSelect, centerOnLocation }: MapProps) {
+const Map = memo(function Map({ locations, selectedLocation, onLocationSelect, centerOnLocation }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<{ [key: string]: mapboxgl.Marker }>({});
@@ -254,5 +254,7 @@ export default function Map({ locations, selectedLocation, onLocationSelect, cen
     );
   }
 
-  return <div ref={mapContainer} className="w-full h-full" />;
-}
+  return <div ref={mapContainer} className="w-full h-full" aria-label="Carte interactive des lieux de street art" />;
+});
+
+export default Map;

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Location, LocationType } from '@/data/locations';
-import { Search, MapPin, ChevronLeft, Filter, Globe, Users, Calendar, X, Menu } from 'lucide-react';
+import { Search, MapPin, ChevronLeft, Filter, Globe, Users, Calendar, X, Menu, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,8 @@ import {
 import { frenchRegions } from '@/data/regions';
 import { useAutocomplete } from '@/hooks/useAutocomplete';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { exportLocationsToPDF } from '@/lib/pdfExport';
+import { useToast } from '@/hooks/use-toast';
 
 interface SidebarProps {
   locations: Location[];
@@ -28,12 +30,13 @@ const typeConfig = {
   festival: { label: 'Festivals', icon: Calendar, color: 'festival' },
 };
 
-export default function Sidebar({
+const Sidebar = memo(function Sidebar({
   locations,
   selectedLocation,
   onLocationSelect,
   onFilterChange,
 }: SidebarProps) {
+  const { toast } = useToast();
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -72,6 +75,17 @@ export default function Sidebar({
     setSelectedRegion('all');
     setSearchTerm('');
     onFilterChange({ type: 'all', region: 'all' });
+  };
+
+  const handleExportPDF = () => {
+    exportLocationsToPDF(filteredLocations, {
+      type: selectedType,
+      region: selectedRegion,
+    });
+    toast({
+      title: "Export réussi",
+      description: "La liste a été exportée en PDF",
+    });
   };
 
   const getCategoryCount = (type: LocationType | 'all') => {
@@ -169,16 +183,28 @@ export default function Sidebar({
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium text-foreground">Filtres</span>
           </div>
-          {(selectedType !== 'all' || selectedRegion !== 'all' || searchTerm) && (
+          <div className="flex gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleResetFilters}
+              onClick={handleExportPDF}
               className="h-auto py-1 px-2 text-xs hover:text-primary"
+              aria-label="Exporter en PDF"
             >
-              Réinitialiser
+              <Download className="h-3 w-3 mr-1" />
+              PDF
             </Button>
-          )}
+            {(selectedType !== 'all' || selectedRegion !== 'all' || searchTerm) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetFilters}
+                className="h-auto py-1 px-2 text-xs hover:text-primary"
+              >
+                Réinitialiser
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Type Filters */}
@@ -189,6 +215,15 @@ export default function Sidebar({
               variant={selectedType === 'all' ? 'default' : 'outline'}
               className="cursor-pointer hover:opacity-80 transition-all duration-300 rounded-lg px-3 py-1.5"
               onClick={() => handleTypeFilter('all')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleTypeFilter('all');
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-pressed={selectedType === 'all'}
             >
               Tous ({getCategoryCount('all')})
             </Badge>
@@ -200,6 +235,15 @@ export default function Sidebar({
                   variant={selectedType === type ? 'default' : 'outline'}
                   className="cursor-pointer hover:opacity-80 transition-all duration-300 rounded-lg px-3 py-1.5"
                   onClick={() => handleTypeFilter(type)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleTypeFilter(type);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedType === type}
                   style={
                     selectedType === type
                       ? {
@@ -222,7 +266,7 @@ export default function Sidebar({
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">Région</label>
           <Select value={selectedRegion} onValueChange={handleRegionFilter}>
-            <SelectTrigger className="bg-background/50 border-border rounded-xl">
+            <SelectTrigger className="bg-background/50 border-border rounded-xl" aria-label="Filtrer par région">
               <SelectValue placeholder="Toutes les régions" />
             </SelectTrigger>
             <SelectContent className="bg-card/95 backdrop-blur-xl border-border z-50">
@@ -252,6 +296,15 @@ export default function Sidebar({
             <div
               key={location.id}
               onClick={() => onLocationSelect(location)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onLocationSelect(location);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label={`Sélectionner ${location.name} à ${location.city}`}
               className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fade-in ${
                 isSelected
                   ? `bg-muted/50 border-${color} ${glowClass}`
@@ -346,4 +399,6 @@ export default function Sidebar({
       </Button>
     </>
   );
-}
+});
+
+export default Sidebar;
