@@ -124,7 +124,7 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+    <div style={{ width: '100%', height: 'calc(100vh - 64px)', position: 'relative' }}>
       {mapError && (
         <div style={{
           position: 'absolute',

@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const isMapPage = location.pathname === '/map';
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -18,15 +20,29 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between" aria-label="Navigation principale">
-        <Link 
-          to="/" 
-          className="text-xl font-bold text-primary hover:text-primary/80 transition-colors"
-          aria-label="Retour à l'accueil"
-        >
-          Street Art France
-        </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border h-16">
+      <nav className="container mx-auto px-4 h-full flex items-center justify-between" aria-label="Navigation principale">
+        <div className="flex items-center gap-4">
+          {isMapPage && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="text-muted-foreground hover:text-foreground"
+              aria-label="Retour à la page précédente"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour
+            </Button>
+          )}
+          <Link 
+            to="/" 
+            className="text-xl font-bold text-primary hover:text-primary/80 transition-colors"
+            aria-label="Retour à l'accueil"
+          >
+            Street Art France
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center gap-6">

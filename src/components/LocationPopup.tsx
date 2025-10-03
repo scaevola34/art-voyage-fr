@@ -1,5 +1,5 @@
 import { Location } from '@/data/locations';
-import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Navigation, Share2 } from 'lucide-react';
+import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -20,11 +20,6 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
   const { toast } = useToast();
   const { icon: Icon, label, color } = typeConfig[location.type];
   const glowClass = `shadow-glow-${location.type}`;
-
-  const getDirectionsUrl = () => {
-    const address = encodeURIComponent(`${location.address}, ${location.city}`);
-    return `https://www.google.com/maps/dir/?api=1&destination=${address}`;
-  };
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/map?location=${location.id}`;
@@ -170,25 +165,50 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
-            <Button
-              asChild
-              className="flex-1 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                backgroundColor: `hsl(var(--${color}))`,
-                color: '#0a0a0a',
-              }}
-            >
-              <a
-                href={getDirectionsUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2"
-                aria-label={`Obtenir l'itinéraire vers ${location.name}`}
+            {location.website && (
+              <Button
+                asChild
+                className="flex-1 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `hsl(var(--${color}))`,
+                  color: '#0a0a0a',
+                }}
               >
-                <Navigation className="h-4 w-4" />
-                Itinéraire
-              </a>
-            </Button>
+                <a
+                  href={location.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                  aria-label={`Visiter le site web de ${location.name}`}
+                >
+                  <Globe className="h-4 w-4" />
+                  Site web
+                </a>
+              </Button>
+            )}
+
+            {location.instagram && (
+              <Button
+                asChild
+                className={location.website ? "rounded-xl font-medium transition-all duration-300 hover:scale-[1.02]" : "flex-1 rounded-xl font-medium transition-all duration-300 hover:scale-[1.02]"}
+                variant={location.website ? "outline" : "default"}
+                style={!location.website ? {
+                  backgroundColor: `hsl(var(--${color}))`,
+                  color: '#0a0a0a',
+                } : undefined}
+              >
+                <a
+                  href={`https://instagram.com/${location.instagram.replace('@', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                  aria-label={`Voir le profil Instagram de ${location.name}`}
+                >
+                  <Instagram className="h-4 w-4" />
+                  {!location.website && 'Instagram'}
+                </a>
+              </Button>
+            )}
 
             <Button
               onClick={handleShare}
@@ -198,24 +218,6 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
             >
               <Share2 className="h-4 w-4" />
             </Button>
-
-            {location.website && (
-              <Button
-                asChild
-                variant="outline"
-                className="rounded-xl font-medium transition-all duration-300 hover:scale-[1.02] border-border hover:border-primary"
-              >
-                <a
-                  href={location.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2"
-                  aria-label={`Visiter le site web de ${location.name}`}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              </Button>
-            )}
           </div>
         </div>
       </div>
