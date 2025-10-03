@@ -196,42 +196,16 @@ const Map = memo(function Map({ locations, selectedLocation, onLocationSelect, c
 
   return (
     <MapContainer
-      center={[46.6031, 2.3522]} // Center of France
+      center={[46.603354, 2.3522]} // Center of France
       zoom={6}
       className="w-full h-full"
-      zoomControl={false}
-      style={{ background: '#1a1a1a' }}
+      zoomControl={true}
+      style={{ height: '100%', width: '100%' }}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
       />
-      
-      {/* Add zoom control to top-right */}
-      <div className="leaflet-top leaflet-right">
-        <div className="leaflet-control leaflet-bar">
-          <a
-            className="leaflet-control-zoom-in"
-            href="#"
-            title="Zoom in"
-            role="button"
-            aria-label="Zoom in"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-          >+</a>
-          <a
-            className="leaflet-control-zoom-out"
-            href="#"
-            title="Zoom out"
-            role="button"
-            aria-label="Zoom out"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-          >-</a>
-        </div>
-      </div>
 
       <MarkerLayer locations={locations} onLocationSelect={onLocationSelect} />
       <FlyToLocation location={centerOnLocation || selectedLocation} />
