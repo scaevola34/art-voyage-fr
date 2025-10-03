@@ -15,6 +15,8 @@ const MapPage = memo(() => {
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
   const [filteredLocations, setFilteredLocations] = useState(allLocations);
 
+  console.log('[MapPage] Render:', { total: allLocations.length, filtered: filteredLocations.length });
+
   // Handle URL sharing - load location from URL params
   useEffect(() => {
     const locationId = searchParams.get('location');
@@ -69,7 +71,7 @@ const MapPage = memo(() => {
         <main className="h-full w-full" role="main" aria-label="Carte interactive">
           <Suspense fallback={
             <div className="h-full w-full flex items-center justify-center">
-              <Skeleton className="h-full w-full" />
+              <div className="text-sm text-muted-foreground">Loading...</div>
             </div>
           }>
             <Map

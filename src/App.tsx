@@ -3,12 +3,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { Skeleton } from "./components/ui/skeleton";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const MapPage = lazy(() => import("./pages/MapPage"));
 const About = lazy(() => import("./pages/About"));
@@ -19,6 +20,12 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   const isMapPage = location.pathname === '/map';
+  useEffect(() => {
+    console.log('[App] Mounted at route:', location.pathname);
+  }, []);
+  useEffect(() => {
+    console.log('[App] Route changed:', location.pathname);
+  }, [location.pathname]);
 
   return (
     <>
@@ -48,7 +55,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
