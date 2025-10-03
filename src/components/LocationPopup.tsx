@@ -54,7 +54,7 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
 
   return (
     <div 
-      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-lg animate-fade-in"
+      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] w-[90%] max-w-lg animate-fade-in"
       role="dialog"
       aria-labelledby="location-title"
       aria-modal="true"

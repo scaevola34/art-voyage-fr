@@ -60,15 +60,20 @@ const MapPage = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen w-full overflow-hidden bg-background pt-16">
+      <div className="h-screen w-full overflow-hidden bg-background">
         <Sidebar
-          locations={filteredLocations}
+          locations={allLocations}
           selectedLocation={selectedLocation}
           onLocationSelect={handleLocationSelect}
           onFilterChange={handleFilterChange}
         />
 
-        <main className="h-full w-full" role="main" aria-label="Carte interactive">
+        <main 
+          className="h-[calc(100vh-64px)] w-full md:ml-[400px]" 
+          role="main" 
+          aria-label="Carte interactive"
+          style={{ marginTop: '64px' }}
+        >
           <Suspense fallback={
             <div className="h-full w-full flex items-center justify-center">
               <div className="text-sm text-muted-foreground">Loading...</div>
