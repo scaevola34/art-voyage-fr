@@ -31,6 +31,8 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
     zoom: 6
   });
   const [clusters, setClusters] = useState<any[]>([]);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const superclusterRef = useRef<Supercluster | null>(null);
   const mapRef = useRef<any>(null);
 
@@ -120,14 +122,53 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh' }}>
+    <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+      {mapError && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000,
+          background: 'rgba(0, 0, 0, 0.9)',
+          padding: '20px',
+          borderRadius: '8px',
+          color: '#ff6b6b',
+          maxWidth: '400px'
+        }}>
+          <p><strong>Erreur de carte:</strong> {mapError}</p>
+        </div>
+      )}
+      {!isMapLoaded && !mapError && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 999,
+          color: '#00ff88',
+          fontSize: '18px',
+          fontWeight: '600'
+        }}>
+          Carte en cours de chargement...
+        </div>
+      )}
       <Map
         ref={mapRef}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/mapbox/streets-v12"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
+        onLoad={() => {
+          console.log('Map loaded successfully');
+          setIsMapLoaded(true);
+          setMapError(null);
+        }}
+        onError={(e) => {
+          console.error('Map error:', e);
+          setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
+        }}
       >
         <NavigationControl position="top-right" />
         <GeolocateControl
