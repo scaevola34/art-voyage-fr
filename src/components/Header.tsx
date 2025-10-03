@@ -20,7 +20,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border h-16">
+    <header className="fixed top-0 left-0 right-0 z-[100] bg-card/80 backdrop-blur-xl border-b border-border h-16">
       <nav className="container mx-auto px-4 h-full flex items-center justify-between" aria-label="Navigation principale">
         <div className="flex items-center gap-4">
           {isMapPage && (

@@ -16,6 +16,7 @@ export interface Location {
   website?: string;
   instagram?: string;
   openingHours?: string;
+  email?: string;
 }
 
 export const locations: Location[] = [

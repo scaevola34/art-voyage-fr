@@ -1,5 +1,5 @@
 import { Location } from '@/data/locations';
-import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Share2 } from 'lucide-react';
+import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Share2, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -123,17 +123,43 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
             <h2 id="location-title" className="text-2xl font-bold text-white mb-3">
               {location.name}
             </h2>
-            <p className="text-sm text-gray-300 leading-relaxed line-clamp-3">
+            <p className="text-sm text-gray-300 leading-relaxed">
               {location.description}
             </p>
           </div>
 
+          {/* Separator */}
+          <div className="border-t border-gray-700" />
+
           {/* Location Details */}
-          <div className="space-y-2">
-            <div className="text-xs text-gray-400 font-medium uppercase tracking-wide">
-              {location.city} • {location.region}
+          <div className="space-y-2.5">
+            <div className="flex items-start gap-2 text-sm text-[#a0a0a0]">
+              <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <div>
+                <div className="font-medium text-gray-300">{location.address}</div>
+                <div className="text-xs">{location.city} • {location.region}</div>
+              </div>
             </div>
+
+            {location.email && (
+              <div className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+                <Mail className="h-4 w-4 flex-shrink-0" />
+                <a href={`mailto:${location.email}`} className="hover:text-gray-300 transition-colors">
+                  {location.email}
+                </a>
+              </div>
+            )}
+
+            {location.openingHours && (
+              <div className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+                <Clock className="h-4 w-4 flex-shrink-0" />
+                <span>{location.openingHours}</span>
+              </div>
+            )}
           </div>
+
+          {/* Separator */}
+          <div className="border-t border-gray-700" />
 
 
           {/* Action Buttons */}
@@ -166,11 +192,21 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
                 className={`rounded-xl font-semibold transition-all duration-300 hover:scale-105 ${!location.website ? 'flex-1' : ''}`}
                 variant={location.website ? "outline" : "default"}
                 style={!location.website ? {
-                  backgroundColor: `hsl(var(--${color}))`,
-                  color: '#0a0a0a',
+                  backgroundColor: '#E1306C',
+                  color: '#ffffff',
                 } : {
-                  borderColor: `hsl(var(--${color}))`,
-                  color: `hsl(var(--${color}))`,
+                  borderColor: '#E1306C',
+                  color: '#E1306C',
+                }}
+                onMouseEnter={(e) => {
+                  if (!location.website) {
+                    e.currentTarget.style.backgroundColor = '#C13584';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!location.website) {
+                    e.currentTarget.style.backgroundColor = '#E1306C';
+                  }
                 }}
               >
                 <a

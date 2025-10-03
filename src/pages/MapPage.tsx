@@ -60,7 +60,7 @@ const MapPage = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen w-full overflow-hidden bg-background">
+      <div className="h-screen w-full overflow-hidden bg-background pt-16">
         <Sidebar
           locations={filteredLocations}
           selectedLocation={selectedLocation}
