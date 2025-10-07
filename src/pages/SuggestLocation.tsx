@@ -1,33 +1,33 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { useState, memo } from 'react';
-import { Send, MapPin } from 'lucide-react';
-import { frenchRegions } from '@/data/regions';
-import emailjs from '@emailjs/browser';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { useState, memo } from "react";
+import { Send, MapPin } from "lucide-react";
+import { frenchRegions } from "@/data/regions";
+import emailjs from "@emailjs/browser";
 
 const SuggestLocation = memo(() => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    type: '',
-    city: '',
-    region: '',
-    address: '',
-    description: '',
-    website: '',
-    email: '',
-    instagram: '',
-    openingHours: '',
-    latitude: '',
-    longitude: '',
-    submitterName: '',
-    submitterEmail: '',
+    name: "",
+    type: "",
+    city: "",
+    region: "",
+    address: "",
+    description: "",
+    website: "",
+    email: "",
+    instagram: "",
+    openingHours: "",
+    latitude: "",
+    longitude: "",
+    submitterName: "",
+    submitterEmail: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,46 +37,46 @@ const SuggestLocation = memo(() => {
     try {
       // Generate unique ID for location
       const randomId = Math.random().toString(36).substring(2, 6);
-      const locationId = `${formData.name.toLowerCase().replace(/\s+/g, '-')}-${formData.city.toLowerCase()}-${randomId}`;
-      
+      const locationId = `${formData.name.toLowerCase().replace(/\s+/g, "-")}-${formData.city.toLowerCase()}-${randomId}`;
+
       // Prepare JSON object
       const locationJson = {
         id: locationId,
         type: formData.type,
         name: formData.name,
-        description: formData.description || '',
-        address: formData.address || '',
+        description: formData.description || "",
+        address: formData.address || "",
         city: formData.city,
         region: formData.region,
         coordinates: {
           lat: parseFloat(formData.latitude),
-          lng: parseFloat(formData.longitude)
+          lng: parseFloat(formData.longitude),
         },
-        image: '',
-        website: formData.website || '',
-        instagram: formData.instagram || '',
-        email: formData.email || '',
-        openingHours: formData.openingHours || ''
+        image: "",
+        website: formData.website || "",
+        instagram: formData.instagram || "",
+        email: formData.email || "",
+        openingHours: formData.openingHours || "",
       };
 
       // Prepare email template parameters
       const emailParams = {
-        to_email: 'bibstreet@outlook.fr',
+        to_email: "bibstreet@outlook.fr",
         subject: `🎨 Nouvelle suggestion: ${formData.name}`,
         name: formData.name,
-        type: formData.type === 'gallery' ? 'Galerie' : formData.type === 'association' ? 'Association' : 'Festival',
+        type: formData.type === "gallery" ? "Galerie" : formData.type === "association" ? "Association" : "Festival",
         city: formData.city,
         region: formData.region,
-        address: formData.address || 'Non renseignée',
+        address: formData.address || "Non renseignée",
         gps: `${formData.latitude}, ${formData.longitude}`,
-        description: formData.description || 'Non renseignée',
-        openingHours: formData.openingHours || 'Non renseignées',
-        website: formData.website || 'Non renseigné',
-        email: formData.email || 'Non renseigné',
-        instagram: formData.instagram ? `@${formData.instagram}` : 'Non renseigné',
-        submitterName: formData.submitterName || 'Anonyme',
-        submitterEmail: formData.submitterEmail || 'Non renseigné',
-        json_data: JSON.stringify(locationJson, null, 2)
+        description: formData.description || "Non renseignée",
+        openingHours: formData.openingHours || "Non renseignées",
+        website: formData.website || "Non renseigné",
+        email: formData.email || "Non renseigné",
+        instagram: formData.instagram ? `@${formData.instagram}` : "Non renseigné",
+        submitterName: formData.submitterName || "Anonyme",
+        submitterEmail: formData.submitterEmail || "Non renseigné",
+        json_data: JSON.stringify(locationJson, null, 2),
       };
 
       // EMAILJS CONFIGURATION NEEDED:
@@ -84,39 +84,39 @@ const SuggestLocation = memo(() => {
       // 2. Create email service (Gmail, Outlook, etc.)
       // 3. Create email template with variables: {{to_email}}, {{subject}}, {{name}}, etc.
       // 4. Replace 'YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', 'YOUR_PUBLIC_KEY' below
-      
-    console.log('Sending email with params:', emailParams);
 
-// EmailJS configured
-await emailjs.send(
-  'service_npdgzoi',      // Remplacez par VOTRE Service ID
-  'template_sd9jw3i',     // Remplacez par VOTRE Template ID
-  emailParams,
-  'QGpLB2pL3OXuCBBvC'            // Remplacez par VOTRE Public Key
-);
+      console.log("Sending email with params:", emailParams);
+
+      // EmailJS configured
+      await emailjs.send(
+        "service_npdgzoi", // Remplacez par VOTRE Service ID
+        "template_sd9jw3i", // Remplacez par VOTRE Template ID
+        emailParams,
+        "QGpLB2pL3OXuCBBvC", // Remplacez par VOTRE Public Key
+      );
       toast({
         title: "Merci !",
         description: "Votre suggestion a été envoyée. Nous l'examinerons sous 48h.",
       });
 
       setFormData({
-        name: '',
-        type: '',
-        city: '',
-        region: '',
-        address: '',
-        description: '',
-        website: '',
-        email: '',
-        instagram: '',
-        openingHours: '',
-        latitude: '',
-        longitude: '',
-        submitterName: '',
-        submitterEmail: '',
+        name: "",
+        type: "",
+        city: "",
+        region: "",
+        address: "",
+        description: "",
+        website: "",
+        email: "",
+        instagram: "",
+        openingHours: "",
+        latitude: "",
+        longitude: "",
+        submitterName: "",
+        submitterEmail: "",
       });
     } catch (error) {
-      console.error('Error sending suggestion:', error);
+      console.error("Error sending suggestion:", error);
       toast({
         title: "Erreur d'envoi",
         description: "Réessayez ou contactez bibstreet@outlook.fr",
@@ -128,7 +128,7 @@ await emailjs.send(
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -158,7 +158,7 @@ await emailjs.send(
                   id="name"
                   placeholder="Ex: Galerie Artiste"
                   value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
+                  onChange={(e) => handleChange("name", e.target.value)}
                   required
                   aria-required="true"
                 />
@@ -166,7 +166,7 @@ await emailjs.send(
 
               <div className="space-y-2">
                 <Label htmlFor="type">Type de lieu *</Label>
-                <Select value={formData.type} onValueChange={(value) => handleChange('type', value)} required>
+                <Select value={formData.type} onValueChange={(value) => handleChange("type", value)} required>
                   <SelectTrigger id="type" aria-required="true">
                     <SelectValue placeholder="Sélectionnez un type" />
                   </SelectTrigger>
@@ -185,7 +185,7 @@ await emailjs.send(
                     id="city"
                     placeholder="Ex: Paris"
                     value={formData.city}
-                    onChange={(e) => handleChange('city', e.target.value)}
+                    onChange={(e) => handleChange("city", e.target.value)}
                     required
                     aria-required="true"
                   />
@@ -193,7 +193,7 @@ await emailjs.send(
 
                 <div className="space-y-2">
                   <Label htmlFor="region">Région *</Label>
-                  <Select value={formData.region} onValueChange={(value) => handleChange('region', value)} required>
+                  <Select value={formData.region} onValueChange={(value) => handleChange("region", value)} required>
                     <SelectTrigger id="region" aria-required="true">
                       <SelectValue placeholder="Sélectionnez une région" />
                     </SelectTrigger>
@@ -214,7 +214,7 @@ await emailjs.send(
                   id="address"
                   placeholder="Ex: 12 rue de la République"
                   value={formData.address}
-                  onChange={(e) => handleChange('address', e.target.value)}
+                  onChange={(e) => handleChange("address", e.target.value)}
                 />
               </div>
 
@@ -224,7 +224,7 @@ await emailjs.send(
                   id="description"
                   placeholder="Décrivez ce lieu, son activité, ses événements..."
                   value={formData.description}
-                  onChange={(e) => handleChange('description', e.target.value)}
+                  onChange={(e) => handleChange("description", e.target.value)}
                   rows={4}
                 />
               </div>
@@ -237,7 +237,7 @@ await emailjs.send(
                     type="url"
                     placeholder="https://example.com"
                     value={formData.website}
-                    onChange={(e) => handleChange('website', e.target.value)}
+                    onChange={(e) => handleChange("website", e.target.value)}
                   />
                 </div>
 
@@ -248,7 +248,7 @@ await emailjs.send(
                     type="email"
                     placeholder="contact@example.com"
                     value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
+                    onChange={(e) => handleChange("email", e.target.value)}
                   />
                 </div>
               </div>
@@ -260,7 +260,7 @@ await emailjs.send(
                     id="instagram"
                     placeholder="nomducompte"
                     value={formData.instagram}
-                    onChange={(e) => handleChange('instagram', e.target.value)}
+                    onChange={(e) => handleChange("instagram", e.target.value)}
                   />
                   <p className="text-xs text-muted-foreground">Sans le @</p>
                 </div>
@@ -271,7 +271,7 @@ await emailjs.send(
                     id="openingHours"
                     placeholder="Ex: Mar-Sam 14h-19h"
                     value={formData.openingHours}
-                    onChange={(e) => handleChange('openingHours', e.target.value)}
+                    onChange={(e) => handleChange("openingHours", e.target.value)}
                   />
                 </div>
               </div>
@@ -285,8 +285,8 @@ await emailjs.send(
                   <p className="text-sm text-foreground flex items-start gap-2">
                     <span className="text-lg">📍</span>
                     <span>
-                      Allez sur Google Maps, faites <strong>clic droit</strong> sur le lieu → 
-                      "<strong>Copier les coordonnées</strong>" → Collez ici
+                      Allez sur Google Maps, faites <strong>clic droit</strong> sur le lieu → "
+                      <strong>Copier les coordonnées</strong>" → Collez ici
                     </span>
                   </p>
                 </div>
@@ -301,7 +301,7 @@ await emailjs.send(
                       max="90"
                       placeholder="Ex: 48.8566"
                       value={formData.latitude}
-                      onChange={(e) => handleChange('latitude', e.target.value)}
+                      onChange={(e) => handleChange("latitude", e.target.value)}
                       required
                       aria-required="true"
                     />
@@ -316,7 +316,7 @@ await emailjs.send(
                       max="180"
                       placeholder="Ex: 2.3522"
                       value={formData.longitude}
-                      onChange={(e) => handleChange('longitude', e.target.value)}
+                      onChange={(e) => handleChange("longitude", e.target.value)}
                       required
                       aria-required="true"
                     />
@@ -336,7 +336,7 @@ await emailjs.send(
                       id="submitterName"
                       placeholder="Jean Dupont"
                       value={formData.submitterName}
-                      onChange={(e) => handleChange('submitterName', e.target.value)}
+                      onChange={(e) => handleChange("submitterName", e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -346,18 +346,13 @@ await emailjs.send(
                       type="email"
                       placeholder="votre@email.com"
                       value={formData.submitterEmail}
-                      onChange={(e) => handleChange('submitterEmail', e.target.value)}
+                      onChange={(e) => handleChange("submitterEmail", e.target.value)}
                     />
                   </div>
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting} aria-busy={isSubmitting}>
                 {isSubmitting ? (
                   "Envoi en cours..."
                 ) : (
@@ -374,6 +369,6 @@ await emailjs.send(
   );
 });
 
-SuggestLocation.displayName = 'SuggestLocation';
+SuggestLocation.displayName = "SuggestLocation";
 
 export default SuggestLocation;
