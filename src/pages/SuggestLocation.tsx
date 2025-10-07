@@ -6,8 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useState, memo } from 'react';
-import { Send } from 'lucide-react';
+import { Send, MapPin } from 'lucide-react';
 import { frenchRegions } from '@/data/regions';
+import emailjs from '@emailjs/browser';
 
 const SuggestLocation = memo(() => {
   const { toast } = useToast();
@@ -21,31 +22,110 @@ const SuggestLocation = memo(() => {
     description: '',
     website: '',
     email: '',
+    instagram: '',
+    openingHours: '',
+    latitude: '',
+    longitude: '',
+    submitterName: '',
+    submitterEmail: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Generate unique ID for location
+      const randomId = Math.random().toString(36).substring(2, 6);
+      const locationId = `${formData.name.toLowerCase().replace(/\s+/g, '-')}-${formData.city.toLowerCase()}-${randomId}`;
+      
+      // Prepare JSON object
+      const locationJson = {
+        id: locationId,
+        type: formData.type,
+        name: formData.name,
+        description: formData.description || '',
+        address: formData.address || '',
+        city: formData.city,
+        region: formData.region,
+        coordinates: {
+          lat: parseFloat(formData.latitude),
+          lng: parseFloat(formData.longitude)
+        },
+        image: '',
+        website: formData.website || '',
+        instagram: formData.instagram || '',
+        email: formData.email || '',
+        openingHours: formData.openingHours || ''
+      };
 
-    toast({
-      title: "Suggestion envoyée !",
-      description: "Merci pour votre contribution. Nous examinerons votre suggestion rapidement.",
-    });
+      // Prepare email template parameters
+      const emailParams = {
+        to_email: 'bibstreet@outlook.fr',
+        subject: `🎨 Nouvelle suggestion: ${formData.name}`,
+        name: formData.name,
+        type: formData.type === 'gallery' ? 'Galerie' : formData.type === 'association' ? 'Association' : 'Festival',
+        city: formData.city,
+        region: formData.region,
+        address: formData.address || 'Non renseignée',
+        gps: `${formData.latitude}, ${formData.longitude}`,
+        description: formData.description || 'Non renseignée',
+        openingHours: formData.openingHours || 'Non renseignées',
+        website: formData.website || 'Non renseigné',
+        email: formData.email || 'Non renseigné',
+        instagram: formData.instagram ? `@${formData.instagram}` : 'Non renseigné',
+        submitterName: formData.submitterName || 'Anonyme',
+        submitterEmail: formData.submitterEmail || 'Non renseigné',
+        json_data: JSON.stringify(locationJson, null, 2)
+      };
 
-    setFormData({
-      name: '',
-      type: '',
-      city: '',
-      region: '',
-      address: '',
-      description: '',
-      website: '',
-      email: '',
-    });
-    setIsSubmitting(false);
+      // EMAILJS CONFIGURATION NEEDED:
+      // 1. Create account at https://www.emailjs.com/
+      // 2. Create email service (Gmail, Outlook, etc.)
+      // 3. Create email template with variables: {{to_email}}, {{subject}}, {{name}}, etc.
+      // 4. Replace 'YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', 'YOUR_PUBLIC_KEY' below
+      
+      console.log('Sending email with params:', emailParams);
+      
+      // Uncomment when EmailJS is configured:
+      // await emailjs.send(
+      //   'YOUR_SERVICE_ID',
+      //   'YOUR_TEMPLATE_ID',
+      //   emailParams,
+      //   'YOUR_PUBLIC_KEY'
+      // );
+
+      toast({
+        title: "Merci !",
+        description: "Votre suggestion a été envoyée. Nous l'examinerons sous 48h.",
+      });
+
+      setFormData({
+        name: '',
+        type: '',
+        city: '',
+        region: '',
+        address: '',
+        description: '',
+        website: '',
+        email: '',
+        instagram: '',
+        openingHours: '',
+        latitude: '',
+        longitude: '',
+        submitterName: '',
+        submitterEmail: '',
+      });
+    } catch (error) {
+      console.error('Error sending suggestion:', error);
+      toast({
+        title: "Erreur d'envoi",
+        description: "Réessayez ou contactez bibstreet@outlook.fr",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -171,6 +251,105 @@ const SuggestLocation = memo(() => {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                   />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="instagram">Instagram</Label>
+                  <Input
+                    id="instagram"
+                    placeholder="nomducompte"
+                    value={formData.instagram}
+                    onChange={(e) => handleChange('instagram', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">Sans le @</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="openingHours">Horaires</Label>
+                  <Input
+                    id="openingHours"
+                    placeholder="Ex: Mar-Sam 14h-19h"
+                    value={formData.openingHours}
+                    onChange={(e) => handleChange('openingHours', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-border">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <Label className="text-base font-semibold">Coordonnées GPS *</Label>
+                </div>
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                  <p className="text-sm text-foreground flex items-start gap-2">
+                    <span className="text-lg">📍</span>
+                    <span>
+                      Allez sur Google Maps, faites <strong>clic droit</strong> sur le lieu → 
+                      "<strong>Copier les coordonnées</strong>" → Collez ici
+                    </span>
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="latitude">Latitude *</Label>
+                    <Input
+                      id="latitude"
+                      type="number"
+                      step="any"
+                      min="-90"
+                      max="90"
+                      placeholder="Ex: 48.8566"
+                      value={formData.latitude}
+                      onChange={(e) => handleChange('latitude', e.target.value)}
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="longitude">Longitude *</Label>
+                    <Input
+                      id="longitude"
+                      type="number"
+                      step="any"
+                      min="-180"
+                      max="180"
+                      placeholder="Ex: 2.3522"
+                      value={formData.longitude}
+                      onChange={(e) => handleChange('longitude', e.target.value)}
+                      required
+                      aria-required="true"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-border">
+                <div>
+                  <Label className="text-base font-semibold">Vos coordonnées (optionnel)</Label>
+                  <p className="text-xs text-muted-foreground mt-1">Pour être informé de la validation</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="submitterName">Votre nom</Label>
+                    <Input
+                      id="submitterName"
+                      placeholder="Jean Dupont"
+                      value={formData.submitterName}
+                      onChange={(e) => handleChange('submitterName', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="submitterEmail">Votre email</Label>
+                    <Input
+                      id="submitterEmail"
+                      type="email"
+                      placeholder="votre@email.com"
+                      value={formData.submitterEmail}
+                      onChange={(e) => handleChange('submitterEmail', e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
