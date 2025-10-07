@@ -85,16 +85,15 @@ const SuggestLocation = memo(() => {
       // 3. Create email template with variables: {{to_email}}, {{subject}}, {{name}}, etc.
       // 4. Replace 'YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', 'YOUR_PUBLIC_KEY' below
       
-      console.log('Sending email with params:', emailParams);
-      
-      // Uncomment when EmailJS is configured:
-      // await emailjs.send(
-      //   'YOUR_SERVICE_ID',
-      //   'YOUR_TEMPLATE_ID',
-      //   emailParams,
-      //   'YOUR_PUBLIC_KEY'
-      // );
+    console.log('Sending email with params:', emailParams);
 
+// EmailJS configured
+await emailjs.send(
+  'service_npdgzoi',      // Remplacez par VOTRE Service ID
+  'template_sd9jw3i',     // Remplacez par VOTRE Template ID
+  emailParams,
+  'QGpLB2pL3OXuCBBvC'            // Remplacez par VOTRE Public Key
+);
       toast({
         title: "Merci !",
         description: "Votre suggestion a été envoyée. Nous l'examinerons sous 48h.",
