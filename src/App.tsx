@@ -14,6 +14,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 const MapPage = lazy(() => import("./pages/MapPage"));
 const About = lazy(() => import("./pages/About"));
 const SuggestLocation = lazy(() => import("./pages/SuggestLocation"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ function AppContent() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/suggest" element={<SuggestLocation />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
