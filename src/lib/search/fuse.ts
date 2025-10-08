@@ -1,4 +1,4 @@
-import Fuse, { IFuseOptions, FuseResult } from 'fuse.js';
+import Fuse, { IFuseOptions } from 'fuse.js';
 import { Location } from '@/data/locations';
 
 /**

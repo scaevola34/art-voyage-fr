@@ -1,4 +1,4 @@
-import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { LocationDrawer } from '@/components/map/LocationDrawer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
