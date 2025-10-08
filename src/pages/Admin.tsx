@@ -1019,7 +1019,7 @@ export default function Admin() {
                     <div>
                       <Label>Région *</Label>
                       <Select
-                        value={(quickAddForm as any).eventRegion || ''}
+                        value={(quickAddForm as any).eventRegion || 'Île-de-France'}
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventRegion: v } as any)}
                       >
                         <SelectTrigger>
@@ -1036,14 +1036,14 @@ export default function Admin() {
                     <div>
                       <Label>Lier à un lieu (optionnel)</Label>
                       <Select
-                        value={(quickAddForm as any).eventLocationId || ''}
-                        onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventLocationId: v } as any)}
+                        value={(quickAddForm as any).eventLocationId || 'none'}
+                        onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventLocationId: v === 'none' ? undefined : v } as any)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Aucun" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Aucun</SelectItem>
+                          <SelectItem value="none">Aucun</SelectItem>
                           {locations.map((loc) => (
                             <SelectItem key={loc.id} value={loc.id}>
                               {loc.name} - {loc.city}
@@ -1092,32 +1092,39 @@ export default function Admin() {
 
                     <div className="md:col-span-2 flex gap-2">
                       <Button
-                        onClick={() => {
+                        onClick={async () => {
                           const form = quickAddForm as any;
                           if (!form.eventTitle || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventRegion || !form.eventDescription) {
                             toast({ title: '❌ Erreur', description: 'Remplissez les champs requis (*)', variant: 'destructive' });
                             return;
                           }
 
-                          const newEvent: Event = {
-                            id: `event-${Date.now()}`,
-                            title: form.eventTitle,
-                            type: form.eventType || 'festival',
-                            startDate: form.eventStartDate,
-                            endDate: form.eventEndDate,
-                            city: form.eventCity,
-                            region: form.eventRegion,
-                            description: form.eventDescription,
-                            locationId: form.eventLocationId || undefined,
-                            price: form.eventPrice || undefined,
-                            website: form.eventWebsite || undefined,
-                            image: form.eventImage || undefined,
-                            featured: false,
-                          };
+                          try {
+                            const newEvent = await createEvent({
+                              title: form.eventTitle,
+                              type: form.eventType || 'festival',
+                              startDate: form.eventStartDate,
+                              endDate: form.eventEndDate,
+                              city: form.eventCity,
+                              region: form.eventRegion,
+                              description: form.eventDescription,
+                              locationId: form.eventLocationId,
+                              price: form.eventPrice,
+                              website: form.eventWebsite,
+                              image: form.eventImage,
+                              featured: false,
+                            });
 
-                          setEvents([...events, newEvent]);
-                          setQuickAddForm({});
-                          toast({ title: '✅ Ajouté', description: `${newEvent.title} ajouté avec succès` });
+                            setEvents([...events, newEvent]);
+                            setQuickAddForm({});
+                            toast({ title: '✅ Ajouté', description: `${newEvent.title} ajouté avec succès` });
+                          } catch (error: any) {
+                            toast({
+                              title: '❌ Erreur',
+                              description: error.message || 'Impossible d\'ajouter l\'événement',
+                              variant: 'destructive',
+                            });
+                          }
                         }}
                       >
                         <Plus className="mr-2 h-4 w-4" />
@@ -1189,15 +1196,31 @@ export default function Admin() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => {
-                                          // Duplicate event
-                                          const duplicated: Event = {
-                                            ...event,
-                                            id: `event-${Date.now()}`,
-                                            title: `${event.title} (copie)`,
-                                          };
-                                          setEvents([...events, duplicated]);
-                                          toast({ title: '✅ Dupliqué', description: 'Événement dupliqué' });
+                                        onClick={async () => {
+                                          try {
+                                            const duplicated = await createEvent({
+                                              title: `${event.title} (copie)`,
+                                              type: event.type,
+                                              startDate: event.startDate,
+                                              endDate: event.endDate,
+                                              city: event.city,
+                                              region: event.region,
+                                              description: event.description,
+                                              locationId: event.locationId,
+                                              price: event.price,
+                                              website: event.website,
+                                              image: event.image,
+                                              featured: event.featured,
+                                            });
+                                            setEvents([...events, duplicated]);
+                                            toast({ title: '✅ Dupliqué', description: 'Événement dupliqué' });
+                                          } catch (error: any) {
+                                            toast({
+                                              title: '❌ Erreur',
+                                              description: error.message || 'Impossible de dupliquer',
+                                              variant: 'destructive',
+                                            });
+                                          }
                                         }}
                                       >
                                         Dupliquer
@@ -1205,10 +1228,19 @@ export default function Admin() {
                                       <Button
                                         variant="destructive"
                                         size="sm"
-                                        onClick={() => {
+                                        onClick={async () => {
                                           if (confirm(`Supprimer "${event.title}" ?`)) {
-                                            setEvents(events.filter(e => e.id !== event.id));
-                                            toast({ title: '✅ Supprimé', description: 'Événement supprimé' });
+                                            try {
+                                              await deleteEvent(event.id);
+                                              setEvents(events.filter(e => e.id !== event.id));
+                                              toast({ title: '✅ Supprimé', description: 'Événement supprimé' });
+                                            } catch (error: any) {
+                                              toast({
+                                                title: '❌ Erreur',
+                                                description: error.message || 'Impossible de supprimer',
+                                                variant: 'destructive',
+                                              });
+                                            }
                                           }
                                         }}
                                       >
