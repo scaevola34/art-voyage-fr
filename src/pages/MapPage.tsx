@@ -1,4 +1,4 @@
-import { useState, memo, Suspense, lazy, useEffect, useCallback } from 'react';
+import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo, useRef } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { LocationDrawer } from '@/components/map/LocationDrawer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -9,19 +9,58 @@ import {
   updateURLState,
   debouncedUpdateURLState,
 } from '@/lib/map/urlState';
+import { createLocationSearchIndex, searchLocations } from '@/lib/search/fuse';
+import type { FilterState } from '@/components/filters/FiltersPanel';
 
 const Map = lazy(() => import('@/components/Map'));
 
 const MapPage = memo(() => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
   const [filteredLocations, setFilteredLocations] = useState(allLocations);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<FilterState>({
+    types: [],
+    region: 'all',
+  });
   const [viewState, setViewState] = useState({
     latitude: 46.6031,
     longitude: 2.3522,
     zoom: 6,
   });
+
+  // Create Fuse search index (memoized)
+  const fuseIndex = useMemo(() => createLocationSearchIndex(allLocations), []);
+
+  // Apply search + filters
+  useEffect(() => {
+    let result = allLocations;
+
+    // Apply search first
+    if (searchQuery && searchQuery.length >= 2) {
+      const searchResults = searchLocations(fuseIndex, searchQuery);
+      result = searchResults;
+    }
+
+    // Then apply filters
+    if (filters.types.length > 0) {
+      result = result.filter((loc) => filters.types.includes(loc.type));
+    }
+
+    if (filters.region && filters.region !== 'all') {
+      result = result.filter((loc) => loc.region === filters.region);
+    }
+
+    setFilteredLocations(result);
+
+    // Update URL with search + filters
+    updateURLState({
+      search: searchQuery,
+      types: filters.types,
+      region: filters.region,
+    });
+  }, [searchQuery, filters, fuseIndex]);
 
   // Initialize state from URL on mount
   useEffect(() => {
@@ -47,32 +86,25 @@ const MapPage = memo(() => {
     }
 
     // Set filters from URL
-    if (urlState.type || urlState.region) {
-      handleFilterChange({
-        type: urlState.type || 'all',
+    if (urlState.types || urlState.region) {
+      setFilters({
+        types: urlState.types || [],
         region: urlState.region || 'all',
       });
     }
+
+    // Set search from URL
+    if (urlState.search) {
+      setSearchQuery(urlState.search);
+    }
   }, []); // Only run on mount
 
-  const handleFilterChange = useCallback((filters: { type: LocationType | 'all'; region: string }) => {
-    let filtered = allLocations;
+  const handleFilterChange = useCallback((newFilters: FilterState) => {
+    setFilters(newFilters);
+  }, []);
 
-    if (filters.type !== 'all') {
-      filtered = filtered.filter((loc) => loc.type === filters.type);
-    }
-
-    if (filters.region && filters.region !== 'all') {
-      filtered = filtered.filter((loc) => loc.region === filters.region);
-    }
-
-    setFilteredLocations(filtered);
-
-    // Update URL with filters
-    updateURLState({
-      type: filters.type,
-      region: filters.region,
-    });
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
   }, []);
 
   const handleLocationSelect = useCallback((location: Location) => {
@@ -117,10 +149,15 @@ const MapPage = memo(() => {
     <ErrorBoundary>
       <div className="h-screen w-full overflow-hidden bg-background">
         <Sidebar
-          locations={allLocations}
+          locations={filteredLocations}
           selectedLocation={selectedLocation}
           onLocationSelect={handleLocationSelect}
           onFilterChange={handleFilterChange}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          filters={filters}
+          filteredCount={filteredLocations.length}
+          totalCount={allLocations.length}
         />
 
         <main

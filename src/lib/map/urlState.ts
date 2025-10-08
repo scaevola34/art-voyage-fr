@@ -7,7 +7,7 @@ export interface MapViewState {
 }
 
 export interface MapFilters {
-  type: LocationType | 'all';
+  types: LocationType[];
   region: string;
   search: string;
 }
@@ -20,7 +20,7 @@ const DEFAULT_STATE: MapURLState = {
   latitude: 46.6031,
   longitude: 2.3522,
   zoom: 6,
-  type: 'all',
+  types: [],
   region: 'all',
   search: '',
 };
@@ -54,9 +54,14 @@ export function parseMapURLState(searchParams: URLSearchParams): Partial<MapURLS
   }
 
   // Parse filters
-  const type = searchParams.get('type');
-  if (type === 'gallery' || type === 'association' || type === 'festival' || type === 'all') {
-    state.type = type;
+  const typesParam = searchParams.get('types');
+  if (typesParam) {
+    const types = typesParam.split(',').filter((t): t is LocationType => 
+      t === 'gallery' || t === 'association' || t === 'festival'
+    );
+    if (types.length > 0) {
+      state.types = types;
+    }
   }
 
   const region = searchParams.get('region');
@@ -96,8 +101,8 @@ export function serializeMapURLState(state: Partial<MapURLState>): string {
   }
 
   // Add filters (only if not default)
-  if (state.type && state.type !== 'all') {
-    params.set('type', state.type);
+  if (state.types && state.types.length > 0) {
+    params.set('types', state.types.join(','));
   }
   if (state.region && state.region !== 'all') {
     params.set('region', state.region);
