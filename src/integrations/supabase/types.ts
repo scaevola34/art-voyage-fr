@@ -14,7 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          city: string
+          created_at: string
+          description: string
+          end_date: string
+          featured: boolean | null
+          id: string
+          image: string | null
+          location_id: string | null
+          price: string | null
+          region: string
+          start_date: string
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          description: string
+          end_date: string
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          location_id?: string | null
+          price?: string | null
+          region: string
+          start_date: string
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          description?: string
+          end_date?: string
+          featured?: boolean | null
+          id?: string
+          image?: string | null
+          location_id?: string | null
+          price?: string | null
+          region?: string
+          start_date?: string
+          title?: string
+          type?: Database["public"]["Enums"]["event_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locations: {
+        Row: {
+          address: string
+          city: string
+          coordinates: Json
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          image: string | null
+          instagram: string | null
+          name: string
+          opening_hours: string | null
+          region: string
+          type: Database["public"]["Enums"]["location_type"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string
+          city: string
+          coordinates: Json
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          image?: string | null
+          instagram?: string | null
+          name: string
+          opening_hours?: string | null
+          region: string
+          type: Database["public"]["Enums"]["location_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          coordinates?: Json
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          image?: string | null
+          instagram?: string | null
+          name?: string
+          opening_hours?: string | null
+          region?: string
+          type?: Database["public"]["Enums"]["location_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +138,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      event_type: "festival" | "vernissage" | "atelier" | "autre"
+      location_type: "gallery" | "association" | "festival"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +266,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      event_type: ["festival", "vernissage", "atelier", "autre"],
+      location_type: ["gallery", "association", "festival"],
+    },
   },
 } as const
