@@ -1,25 +1,20 @@
 import { Location } from '@/data/locations';
-import { MapPin, ExternalLink, Globe, Users, Calendar, Instagram, Clock, Share2, Mail } from 'lucide-react';
+import { MapPin, Instagram, Clock, Share2, Mail, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { memo } from 'react';
+import { typeConfig } from '@/lib/constants';
 
 interface LocationPopupProps {
   location: Location;
   onClose: () => void;
 }
 
-const typeConfig = {
-  gallery: { label: 'Galerie', icon: Globe, color: 'gallery' },
-  association: { label: 'Association', icon: Users, color: 'association' },
-  festival: { label: 'Festival', icon: Calendar, color: 'festival' },
-};
-
 const LocationPopup = memo(function LocationPopup({ location, onClose }: LocationPopupProps) {
   const { toast } = useToast();
-  const { icon: Icon, label, color } = typeConfig[location.type];
-  const glowClass = `shadow-glow-${location.type}`;
+  const config = typeConfig[location.type];
+  const { icon: Icon, label, cssVar } = config;
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/map?location=${location.id}`;
@@ -75,7 +70,7 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(135deg, hsl(var(--${color}) / 0.3), #1a1a1a)`,
+                background: `linear-gradient(135deg, hsl(var(--${cssVar}) / 0.3), #1a1a1a)`,
               }}
             />
           )}
@@ -106,7 +101,7 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
             <Badge
               className="rounded-lg px-3 py-1 font-medium"
               style={{
-                backgroundColor: `hsl(var(--${color}))`,
+                backgroundColor: `hsl(var(--${cssVar}))`,
                 color: '#0a0a0a',
               }}
             >
@@ -169,7 +164,7 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
                 asChild
                 className="flex-1 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
                 style={{
-                  backgroundColor: `hsl(var(--${color}))`,
+                  backgroundColor: `hsl(var(--${cssVar}))`,
                   color: '#0a0a0a',
                 }}
               >

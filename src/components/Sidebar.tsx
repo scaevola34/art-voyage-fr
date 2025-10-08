@@ -1,9 +1,10 @@
 import { useState, memo, useMemo } from 'react';
 import { Location, LocationType } from '@/data/locations';
-import { Search, MapPin, Globe, Users, Calendar, X } from 'lucide-react';
+import { Search, MapPin, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useDebounce } from '@/hooks/useDebounce';
+import { typeConfig } from '@/lib/constants';
 
 interface SidebarProps {
   locations: Location[];
@@ -12,13 +13,7 @@ interface SidebarProps {
   onFilterChange: (filters: { type: LocationType | 'all'; region: string }) => void;
 }
 
-const typeConfig = {
-  gallery: { label: 'Galeries', icon: Globe, color: '#00ff88', bgColor: 'bg-[#00ff88]' },
-  association: { label: 'Associations', icon: Users, color: '#ff6b6b', bgColor: 'bg-[#ff6b6b]' },
-  festival: { label: 'Festivals', icon: Calendar, color: '#ffd93d', bgColor: 'bg-[#ffd93d]' },
-};
-
-const LocationCard = memo(({ 
+const LocationCard = memo(({
   location, 
   isActive, 
   onClick 

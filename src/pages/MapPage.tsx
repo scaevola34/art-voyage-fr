@@ -15,8 +15,6 @@ const MapPage = memo(() => {
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
   const [filteredLocations, setFilteredLocations] = useState(allLocations);
 
-  console.log('[MapPage] Render:', { total: allLocations.length, filtered: filteredLocations.length });
-
   // Handle URL sharing - load location from URL params
   useEffect(() => {
     const locationId = searchParams.get('location');

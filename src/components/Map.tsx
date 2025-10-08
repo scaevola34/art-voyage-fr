@@ -3,10 +3,7 @@ import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location, LocationType } from '@/data/locations';
 import Supercluster from 'supercluster';
-
-const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2NhZXZvbGEzNCIsImEiOiJjbWdiM3h0Y2kwdWNjMmpzN3ppN291aXdvIn0.ptfb3pU7Fb7CWtJqojeGrw';
-
-console.log('Mapbox Token Loaded:', MAPBOX_TOKEN ? 'YES' : 'NO', MAPBOX_TOKEN.substring(0, 20) + '...');
+import { MAPBOX_TOKEN, getCategoryColor } from '@/lib/constants';
 
 interface MapProps {
   locations: Location[];
@@ -14,17 +11,6 @@ interface MapProps {
   onLocationSelect: (location: Location) => void;
   centerOnLocation?: Location | null;
 }
-
-const getCategoryColor = (type: LocationType): string => {
-  switch (type) {
-    case 'gallery':
-      return '#00ff88'; // neon green
-    case 'association':
-      return '#ff6b6b'; // red
-    case 'festival':
-      return '#ffd93d'; // yellow
-  }
-};
 
 const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, onLocationSelect, centerOnLocation }) => {
   const [viewState, setViewState] = useState({
@@ -37,8 +23,6 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const superclusterRef = useRef<Supercluster | null>(null);
   const mapRef = useRef<any>(null);
-
-  console.log('Map render - locations:', locations.length);
 
   // Initialize Supercluster
   useEffect(() => {
@@ -170,12 +154,10 @@ const MapComponent: React.FC<MapProps> = memo(({ locations, selectedLocation, on
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
         onLoad={() => {
-          console.log('Map loaded successfully');
           setIsMapLoaded(true);
           setMapError(null);
         }}
         onError={(e) => {
-          console.error('Map error:', e);
           setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
         }}
       >

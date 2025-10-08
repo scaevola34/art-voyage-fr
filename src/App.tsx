@@ -22,12 +22,6 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   const isMapPage = location.pathname === '/map';
-  useEffect(() => {
-    console.log('[App] Mounted at route:', location.pathname);
-  }, []);
-  useEffect(() => {
-    console.log('[App] Route changed:', location.pathname);
-  }, [location.pathname]);
 
   return (
     <>

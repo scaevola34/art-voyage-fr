@@ -85,8 +85,6 @@ const SuggestLocation = memo(() => {
       // 3. Create email template with variables: {{to_email}}, {{subject}}, {{name}}, etc.
       // 4. Replace 'YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', 'YOUR_PUBLIC_KEY' below
 
-      console.log("Sending email with params:", emailParams);
-
       // EmailJS configured
       await emailjs.send(
         "service_npdgzoi", // Remplacez par VOTRE Service ID
