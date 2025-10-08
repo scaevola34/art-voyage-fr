@@ -2,7 +2,7 @@ import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo } from 
 import Sidebar from '@/components/Sidebar';
 import { LocationDrawer } from '@/components/map/LocationDrawer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { locations as allLocations, Location, LocationType } from '@/data/locations';
+import { locations as fallbackLocations, Location, LocationType } from '@/data/locations';
 import { useSearchParams } from 'react-router-dom';
 import {
   parseMapURLState,
@@ -11,14 +11,16 @@ import {
 } from '@/lib/map/urlState';
 import { createLocationSearchIndex, searchLocations } from '@/lib/search/fuse';
 import type { FilterState } from '@/components/filters/FiltersPanel';
+import { getLocations } from '@/lib/supabase/queries';
 
 const Map = lazy(() => import('@/components/Map'));
 
 const MapPage = memo(() => {
   const [searchParams] = useSearchParams();
+  const [allLocations, setAllLocations] = useState<Location[]>(fallbackLocations);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
-  const [filteredLocations, setFilteredLocations] = useState(allLocations);
+  const [filteredLocations, setFilteredLocations] = useState<Location[]>(fallbackLocations);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     types: [],
@@ -30,8 +32,24 @@ const MapPage = memo(() => {
     zoom: 6,
   });
 
+  // Load locations from Supabase on mount
+  useEffect(() => {
+    const loadLocations = async () => {
+      try {
+        const dbLocations = await getLocations();
+        if (dbLocations && dbLocations.length > 0) {
+          setAllLocations(dbLocations);
+        }
+      } catch (error) {
+        console.error('Failed to load locations from database, using local data:', error);
+        // Keep using fallbackLocations
+      }
+    };
+    loadLocations();
+  }, []);
+
   // Create Fuse search index (memoized)
-  const fuseIndex = useMemo(() => createLocationSearchIndex(allLocations), []);
+  const fuseIndex = useMemo(() => createLocationSearchIndex(allLocations), [allLocations]);
 
   // Apply search + filters
   useEffect(() => {
@@ -60,7 +78,7 @@ const MapPage = memo(() => {
       types: filters.types,
       region: filters.region,
     });
-  }, [searchQuery, filters, fuseIndex]);
+  }, [searchQuery, filters, fuseIndex, allLocations]);
 
   // Initialize state from URL on mount
   useEffect(() => {
@@ -97,7 +115,7 @@ const MapPage = memo(() => {
     if (urlState.search) {
       setSearchQuery(urlState.search);
     }
-  }, []); // Only run on mount
+  }, [allLocations]); // Run when allLocations loads
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);

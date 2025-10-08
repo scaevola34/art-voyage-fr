@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { locations as initialLocations, Location, LocationType } from '@/data/locations';
-import { events as initialEvents, Event, EventType } from '@/data/events';
+import { Location, LocationType } from '@/data/locations';
+import { Event, EventType } from '@/data/events';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle } from 'lucide-react';
+import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { frenchRegions } from '@/data/regions';
+import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
 
 const ADMIN_PASSWORD = 'streetart2025';
 
@@ -22,8 +23,9 @@ export default function Admin() {
     return sessionStorage.getItem('admin_authenticated') === 'true';
   });
   const [password, setPassword] = useState('');
-  const [locations, setLocations] = useState<Location[]>(initialLocations);
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   // List tab states
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,6 +67,35 @@ export default function Admin() {
     setPassword('');
     toast({ title: 'Déconnecté', description: 'À bientôt!' });
   };
+
+  // Load data from Supabase
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const [locationsData, eventsData] = await Promise.all([
+        getLocations(),
+        getEvents()
+      ]);
+      setLocations(locationsData);
+      setEvents(eventsData);
+    } catch (error: any) {
+      console.error('Failed to load data:', error);
+      toast({
+        title: '❌ Erreur de chargement',
+        description: error.message || 'Impossible de charger les données',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load data on auth
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   // Filtered and sorted locations
   const filteredLocations = useMemo(() => {
@@ -108,46 +139,45 @@ export default function Admin() {
   };
 
   // Quick Add
-  const handleQuickAdd = (continueAdding: boolean) => {
+  const handleQuickAdd = async (continueAdding: boolean) => {
     if (!quickAddForm.name || !quickAddForm.type || !quickAddForm.city || !quickAddForm.region || 
         !quickAddForm.coordinates?.lat || !quickAddForm.coordinates?.lng) {
       toast({ title: '❌ Erreur', description: 'Veuillez remplir tous les champs requis', variant: 'destructive' });
       return;
     }
 
-    const newLocation: Location = {
-      id: generateId(quickAddForm.name!, quickAddForm.city!),
-      name: quickAddForm.name!,
-      type: quickAddForm.type as LocationType,
-      description: quickAddForm.description || '',
-      address: quickAddForm.address || '',
-      city: quickAddForm.city!,
-      region: quickAddForm.region!,
-      coordinates: quickAddForm.coordinates,
-      website: quickAddForm.website,
-      instagram: quickAddForm.instagram,
-      email: quickAddForm.email,
-      openingHours: quickAddForm.openingHours,
-      image: quickAddForm.image
-    };
+    try {
+      const newLocation = await createLocation({
+        name: quickAddForm.name!,
+        type: quickAddForm.type as LocationType,
+        description: quickAddForm.description || '',
+        address: quickAddForm.address || '',
+        city: quickAddForm.city!,
+        region: quickAddForm.region!,
+        coordinates: quickAddForm.coordinates,
+        website: quickAddForm.website,
+        instagram: quickAddForm.instagram,
+        email: quickAddForm.email,
+        openingHours: quickAddForm.openingHours,
+        image: quickAddForm.image
+      });
 
-    setLocations([...locations, newLocation]);
-    
-    toast({
-      title: '✅ Lieu ajouté',
-      description: `${newLocation.name} a été ajouté avec succès`,
-      action: (
-        <Button variant="outline" size="sm" onClick={() => {
-          setLocations(locations.filter(l => l.id !== newLocation.id));
-          toast({ title: 'Annulé', description: 'Le lieu a été retiré' });
-        }}>
-          Annuler
-        </Button>
-      )
-    });
+      setLocations([...locations, newLocation]);
+      
+      toast({
+        title: '✅ Lieu ajouté',
+        description: `${newLocation.name} a été ajouté avec succès`,
+      });
 
-    if (continueAdding) {
-      setQuickAddForm({ type: 'gallery', region: 'Île-de-France' });
+      if (continueAdding) {
+        setQuickAddForm({ type: 'gallery', region: 'Île-de-France' });
+      }
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible d\'ajouter le lieu',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -157,34 +187,61 @@ export default function Admin() {
     setEditForm(location);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editForm.id) return;
     
-    setLocations(locations.map(loc => 
-      loc.id === editForm.id ? { ...loc, ...editForm } as Location : loc
-    ));
-    
-    toast({ title: '✅ Modifié', description: 'Le lieu a été mis à jour' });
-    setEditingLocation(null);
-    setEditForm({});
+    try {
+      const updated = await updateLocation(editForm.id, editForm);
+      setLocations(locations.map(loc => 
+        loc.id === updated.id ? updated : loc
+      ));
+      
+      toast({ title: '✅ Modifié', description: 'Le lieu a été mis à jour' });
+      setEditingLocation(null);
+      setEditForm({});
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de modifier le lieu',
+        variant: 'destructive',
+      });
+    }
   };
 
   // Delete location
-  const handleDelete = (id: string, name: string) => {
+  const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Supprimer "${name}" ?`)) return;
     
-    setLocations(locations.filter(loc => loc.id !== id));
-    toast({ title: '🗑️ Supprimé', description: `${name} a été supprimé` });
-    setEditingLocation(null);
+    try {
+      await deleteLocation(id);
+      setLocations(locations.filter(loc => loc.id !== id));
+      toast({ title: '🗑️ Supprimé', description: `${name} a été supprimé` });
+      setEditingLocation(null);
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de supprimer le lieu',
+        variant: 'destructive',
+      });
+    }
   };
 
   // Bulk delete
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (!confirm(`Supprimer ${selectedIds.length} lieux ?`)) return;
     
-    setLocations(locations.filter(loc => !selectedIds.includes(loc.id)));
-    toast({ title: '🗑️ Supprimés', description: `${selectedIds.length} lieux supprimés` });
-    setSelectedIds([]);
+    try {
+      await bulkDeleteLocations(selectedIds);
+      setLocations(locations.filter(loc => !selectedIds.includes(loc.id)));
+      toast({ title: '🗑️ Supprimés', description: `${selectedIds.length} lieux supprimés` });
+      setSelectedIds([]);
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de supprimer les lieux',
+        variant: 'destructive',
+      });
+    }
   };
 
   // Export JSON
@@ -369,13 +426,29 @@ export default function Admin() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-            <p className="text-muted-foreground mt-2">Gestion des lieux street art</p>
+            <p className="text-muted-foreground mt-2">Gestion des lieux street art - {locations.length} lieux</p>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={loadData} disabled={isLoading}>
+              <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              Actualiser
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Déconnexion
+            </Button>
+          </div>
         </div>
+
+        {/* Loading State */}
+        {isLoading && (
+          <Card className="mb-6">
+            <CardContent className="p-6 flex items-center justify-center">
+              <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+              <p>Chargement des données...</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Tabs */}
         <Tabs defaultValue="list" className="space-y-6">
