@@ -15,6 +15,7 @@ export default function Header() {
   const navLinks = [
     { path: '/', label: 'Accueil' },
     { path: '/map', label: 'Carte' },
+    { path: '/agenda', label: 'Agenda' },
     { path: '/about', label: 'À propos' },
     { path: '/suggest', label: 'Suggérer un lieu' },
   ];

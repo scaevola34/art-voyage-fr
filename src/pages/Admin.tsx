@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { locations as initialLocations, Location, LocationType } from '@/data/locations';
+import { events as initialEvents, Event, EventType } from '@/data/events';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ export default function Admin() {
   });
   const [password, setPassword] = useState('');
   const [locations, setLocations] = useState<Location[]>(initialLocations);
+  const [events, setEvents] = useState<Event[]>(initialEvents);
   
   // List tab states
   const [searchQuery, setSearchQuery] = useState('');
@@ -377,10 +379,11 @@ export default function Admin() {
 
         {/* Tabs */}
         <Tabs defaultValue="list" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto">
             <TabsTrigger value="list">📋 Liste</TabsTrigger>
             <TabsTrigger value="add">➕ Ajout rapide</TabsTrigger>
             <TabsTrigger value="import">📥 Import massif</TabsTrigger>
+            <TabsTrigger value="events">📅 Événements</TabsTrigger>
             <TabsTrigger value="stats">📊 Statistiques</TabsTrigger>
           </TabsList>
 
@@ -851,6 +854,303 @@ export default function Admin() {
                     </Table>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* TAB: Événements */}
+          <TabsContent value="events" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <CardTitle>Gestion des événements ({events.length})</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const dataStr = JSON.stringify(events, null, 2);
+                        const blob = new Blob([dataStr], { type: 'application/json' });
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `events-backup-${new Date().toISOString().split('T')[0]}.json`;
+                        link.click();
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Exporter
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Quick Add Event Form */}
+                <div className="border rounded-lg p-4 bg-muted/30">
+                  <h3 className="font-semibold mb-4">➕ Ajouter un événement</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Titre *</Label>
+                      <Input
+                        placeholder="Nom de l'événement"
+                        value={(quickAddForm as any).eventTitle || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventTitle: e.target.value } as any)}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label>Type *</Label>
+                      <Select
+                        value={(quickAddForm as any).eventType || 'festival'}
+                        onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventType: v } as any)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="festival">Festival</SelectItem>
+                          <SelectItem value="vernissage">Vernissage</SelectItem>
+                          <SelectItem value="atelier">Atelier</SelectItem>
+                          <SelectItem value="autre">Autre</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Date début *</Label>
+                      <Input
+                        type="date"
+                        value={(quickAddForm as any).eventStartDate || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventStartDate: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Date fin *</Label>
+                      <Input
+                        type="date"
+                        value={(quickAddForm as any).eventEndDate || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventEndDate: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Ville *</Label>
+                      <Input
+                        placeholder="Ville"
+                        value={(quickAddForm as any).eventCity || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventCity: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Région *</Label>
+                      <Select
+                        value={(quickAddForm as any).eventRegion || ''}
+                        onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventRegion: v } as any)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {frenchRegions.map((region) => (
+                            <SelectItem key={region} value={region}>{region}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Lier à un lieu (optionnel)</Label>
+                      <Select
+                        value={(quickAddForm as any).eventLocationId || ''}
+                        onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventLocationId: v } as any)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Aucun" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Aucun</SelectItem>
+                          {locations.map((loc) => (
+                            <SelectItem key={loc.id} value={loc.id}>
+                              {loc.name} - {loc.city}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Tarif</Label>
+                      <Input
+                        placeholder="Ex: Gratuit, 10€"
+                        value={(quickAddForm as any).eventPrice || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventPrice: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <Label>Description *</Label>
+                      <Textarea
+                        placeholder="Description de l'événement"
+                        value={(quickAddForm as any).eventDescription || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventDescription: e.target.value } as any)}
+                        rows={3}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Site web</Label>
+                      <Input
+                        placeholder="https://"
+                        value={(quickAddForm as any).eventWebsite || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventWebsite: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Image URL</Label>
+                      <Input
+                        placeholder="https://"
+                        value={(quickAddForm as any).eventImage || ''}
+                        onChange={(e) => setQuickAddForm({ ...quickAddForm, eventImage: e.target.value } as any)}
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 flex gap-2">
+                      <Button
+                        onClick={() => {
+                          const form = quickAddForm as any;
+                          if (!form.eventTitle || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventRegion || !form.eventDescription) {
+                            toast({ title: '❌ Erreur', description: 'Remplissez les champs requis (*)', variant: 'destructive' });
+                            return;
+                          }
+
+                          const newEvent: Event = {
+                            id: `event-${Date.now()}`,
+                            title: form.eventTitle,
+                            type: form.eventType || 'festival',
+                            startDate: form.eventStartDate,
+                            endDate: form.eventEndDate,
+                            city: form.eventCity,
+                            region: form.eventRegion,
+                            description: form.eventDescription,
+                            locationId: form.eventLocationId || undefined,
+                            price: form.eventPrice || undefined,
+                            website: form.eventWebsite || undefined,
+                            image: form.eventImage || undefined,
+                            featured: false,
+                          };
+
+                          setEvents([...events, newEvent]);
+                          setQuickAddForm({});
+                          toast({ title: '✅ Ajouté', description: `${newEvent.title} ajouté avec succès` });
+                        }}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Ajouter l'événement
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Events List */}
+                <div>
+                  <h3 className="font-semibold mb-3">📋 Liste des événements</h3>
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Titre</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Dates</TableHead>
+                          <TableHead>Ville</TableHead>
+                          <TableHead>Lieu lié</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {events.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                              Aucun événement
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          events
+                            .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+                            .map((event) => {
+                              const linkedLocation = event.locationId ? locations.find(l => l.id === event.locationId) : null;
+                              return (
+                                <TableRow key={event.id}>
+                                  <TableCell className="font-medium">
+                                    {event.title}
+                                    {event.featured && <span className="ml-2">⭐</span>}
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className={`px-2 py-1 rounded text-xs ${
+                                      event.type === 'festival' ? 'bg-festival/20 text-festival' :
+                                      event.type === 'vernissage' ? 'bg-accent/20 text-accent' :
+                                      event.type === 'atelier' ? 'bg-gallery/20 text-gallery' :
+                                      'bg-secondary/20'
+                                    }`}>
+                                      {event.type}
+                                    </span>
+                                  </TableCell>
+                                  <TableCell className="text-sm">
+                                    {event.startDate === event.endDate
+                                      ? new Date(event.startDate).toLocaleDateString('fr-FR')
+                                      : `${new Date(event.startDate).toLocaleDateString('fr-FR')} - ${new Date(event.endDate).toLocaleDateString('fr-FR')}`
+                                    }
+                                  </TableCell>
+                                  <TableCell>{event.city}</TableCell>
+                                  <TableCell className="text-sm">
+                                    {linkedLocation ? (
+                                      <span className="text-primary">{linkedLocation.name}</span>
+                                    ) : (
+                                      <span className="text-muted-foreground">-</span>
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          // Duplicate event
+                                          const duplicated: Event = {
+                                            ...event,
+                                            id: `event-${Date.now()}`,
+                                            title: `${event.title} (copie)`,
+                                          };
+                                          setEvents([...events, duplicated]);
+                                          toast({ title: '✅ Dupliqué', description: 'Événement dupliqué' });
+                                        }}
+                                      >
+                                        Dupliquer
+                                      </Button>
+                                      <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => {
+                                          if (confirm(`Supprimer "${event.title}" ?`)) {
+                                            setEvents(events.filter(e => e.id !== event.id));
+                                            toast({ title: '✅ Supprimé', description: 'Événement supprimé' });
+                                          }
+                                        }}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

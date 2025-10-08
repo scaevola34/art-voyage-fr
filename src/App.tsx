@@ -15,6 +15,7 @@ const MapPage = lazy(() => import("./pages/MapPage"));
 const About = lazy(() => import("./pages/About"));
 const SuggestLocation = lazy(() => import("./pages/SuggestLocation"));
 const Admin = lazy(() => import("./pages/Admin"));
+const EventsCalendar = lazy(() => import("./pages/EventsCalendar"));
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/agenda" element={<EventsCalendar />} />
           <Route path="/about" element={<About />} />
           <Route path="/suggest" element={<SuggestLocation />} />
           <Route path="/admin" element={<Admin />} />

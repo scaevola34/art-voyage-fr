@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Users, Calendar, ArrowRight } from 'lucide-react';
 import { locations } from '@/data/locations';
 import { memo } from 'react';
+import UpcomingEvents from '@/components/UpcomingEvents';
 
 const Home = memo(() => {
   const stats = {
@@ -82,6 +83,9 @@ const Home = memo(() => {
           </div>
         </div>
       </section>
+
+      {/* Upcoming Events Section */}
+      <UpcomingEvents />
 
       {/* CTA Section */}
       <section className="py-20 px-4" aria-labelledby="cta-title">
