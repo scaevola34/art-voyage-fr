@@ -1,44 +1,42 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Download, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Download, Share2, ChevronLeft, ChevronRight, DownloadCloud } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { events, Event, EventType } from '@/data/events';
+import { events, EventType as DataEventType } from '@/data/events';
+import { Event, EventType, getEventTypeName, getEventTypeColor, validateEvents } from '@/domain/events';
 import { locations } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
-import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast } from 'date-fns';
+import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { downloadEventICS, downloadMultipleEventsICS } from '@/lib/ics/export';
+import { useToast } from '@/hooks/use-toast';
 
 const EventsCalendar = () => {
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('list');
+  const { toast } = useToast();
+  const [viewMode, setViewMode] = useState<'calendar' | 'list' | 'week'>('list');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showPastEvents, setShowPastEvents] = useState(false);
 
-  const getEventTypeColor = (type: EventType) => {
-    switch (type) {
-      case 'festival': return 'bg-festival text-festival-foreground';
-      case 'vernissage': return 'bg-accent text-accent-foreground';
-      case 'atelier': return 'bg-gallery text-gallery-foreground';
-      case 'autre': return 'bg-secondary text-secondary-foreground';
+  // Validate events on mount
+  const validatedEvents = useMemo(() => {
+    try {
+      return validateEvents(events);
+    } catch (error) {
+      console.error('Event validation error:', error);
+      return events; // Fallback to unvalidated
     }
-  };
+  }, []);
 
-  const getEventTypeName = (type: EventType) => {
-    switch (type) {
-      case 'festival': return 'Festival';
-      case 'vernissage': return 'Vernissage';
-      case 'atelier': return 'Atelier';
-      case 'autre': return 'Autre';
-    }
-  };
 
   const getDateBadge = (dateStr: string) => {
     const date = parseISO(dateStr);
@@ -50,7 +48,7 @@ const EventsCalendar = () => {
   };
 
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
+    return validatedEvents.filter(event => {
       const matchesType = selectedType === 'all' || event.type === selectedType;
       const matchesRegion = selectedRegion === 'all' || event.region === selectedRegion;
       const isPastEvent = isPast(parseISO(event.endDate));
@@ -58,13 +56,19 @@ const EventsCalendar = () => {
       
       return matchesType && matchesRegion && matchesPastFilter;
     }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-  }, [selectedType, selectedRegion, showPastEvents]);
+  }, [validatedEvents, selectedType, selectedRegion, showPastEvents]);
 
   const monthDays = useMemo(() => {
     const start = startOfMonth(currentMonth);
     const end = endOfMonth(currentMonth);
     return eachDayOfInterval({ start, end });
   }, [currentMonth]);
+
+  const weekDays = useMemo(() => {
+    const start = startOfWeek(currentWeek, { locale: fr });
+    const end = endOfWeek(currentWeek, { locale: fr });
+    return eachDayOfInterval({ start, end });
+  }, [currentWeek]);
 
   const eventsOnDate = (date: Date) => {
     return filteredEvents.filter(event => {
@@ -79,24 +83,21 @@ const EventsCalendar = () => {
     return locations.find(l => l.id === locationId);
   };
 
-  const downloadICS = (event: Event) => {
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${event.title}
-DTSTART:${event.startDate.replace(/-/g, '')}
-DTEND:${event.endDate.replace(/-/g, '')}
-DESCRIPTION:${event.description}
-LOCATION:${event.city}, ${event.region}
-END:VEVENT
-END:VCALENDAR`;
-    
-    const blob = new Blob([icsContent], { type: 'text/calendar' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${event.title.replace(/\s+/g, '-')}.ics`;
-    link.click();
+  const handleDownloadAllEvents = () => {
+    try {
+      downloadMultipleEventsICS(filteredEvents, 'agenda-street-art');
+      toast({
+        title: "Calendrier exporté",
+        description: `${filteredEvents.length} événement(s) exporté(s) au format ICS`,
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "Erreur d'export",
+        description: "Impossible d'exporter le calendrier",
+        variant: "destructive",
+      });
+    }
   };
 
   const shareEvent = async (event: Event) => {
@@ -164,7 +165,7 @@ END:VCALENDAR`;
                 </Select>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   variant={showPastEvents ? "default" : "outline"}
                   size="sm"
@@ -172,16 +173,30 @@ END:VCALENDAR`;
                 >
                   {showPastEvents ? 'À venir' : 'Archive'}
                 </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownloadAllEvents}
+                  disabled={filteredEvents.length === 0}
+                >
+                  <DownloadCloud className="h-4 w-4 mr-2" />
+                  Exporter ({filteredEvents.length})
+                </Button>
                 
-                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list')}>
+                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')}>
                   <TabsList>
                     <TabsTrigger value="list">
                       <List className="h-4 w-4 mr-2" />
                       Liste
                     </TabsTrigger>
+                    <TabsTrigger value="week">
+                      <CalendarIcon className="h-4 w-4 mr-2" />
+                      Semaine
+                    </TabsTrigger>
                     <TabsTrigger value="calendar">
                       <CalendarIcon className="h-4 w-4 mr-2" />
-                      Calendrier
+                      Mois
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -190,7 +205,75 @@ END:VCALENDAR`;
           </CardContent>
         </Card>
 
-        {/* Calendar View */}
+        {/* Week View */}
+        {viewMode === 'week' && (
+          <Card className="mb-6">
+            <CardContent className="p-6">
+              {/* Week Navigation */}
+              <div className="flex items-center justify-between mb-6">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentWeek(addDays(currentWeek, -7))}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <h3 className="text-xl font-semibold">
+                  Semaine du {format(startOfWeek(currentWeek, { locale: fr }), 'd MMM', { locale: fr })} au {format(endOfWeek(currentWeek, { locale: fr }), 'd MMM yyyy', { locale: fr })}
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentWeek(addDays(currentWeek, 7))}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Week Grid */}
+              <div className="grid grid-cols-7 gap-3">
+                {weekDays.map(day => {
+                  const dayEvents = eventsOnDate(day);
+                  const isCurrentDay = isToday(day);
+                  
+                  return (
+                    <div key={day.toString()} className="space-y-2">
+                      <div className={`text-center pb-2 border-b ${isCurrentDay ? 'border-primary' : 'border-border'}`}>
+                        <div className="text-xs text-muted-foreground uppercase">
+                          {format(day, 'EEE', { locale: fr })}
+                        </div>
+                        <div className={`text-2xl font-semibold ${isCurrentDay ? 'text-primary' : ''}`}>
+                          {format(day, 'd')}
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {dayEvents.length === 0 ? (
+                          <div className="text-xs text-muted-foreground text-center py-4">
+                            Aucun événement
+                          </div>
+                        ) : (
+                          dayEvents.map(event => (
+                            <button
+                              key={event.id}
+                              onClick={() => setSelectedEvent(event)}
+                              className={`w-full text-left text-xs p-2 rounded transition-all hover:scale-105 ${getEventTypeColor(event.type)}`}
+                            >
+                              <div className="font-medium line-clamp-2">{event.title}</div>
+                              <div className="text-xs opacity-75 mt-1">{event.city}</div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Month View */}
         {viewMode === 'calendar' && (
           <Card className="mb-6">
             <CardContent className="p-6">
@@ -402,7 +485,22 @@ END:VCALENDAR`;
                     </Button>
                   )}
                   
-                  <Button variant="outline" onClick={() => downloadICS(selectedEvent)}>
+                  <Button variant="outline" onClick={() => {
+                    try {
+                      downloadEventICS(selectedEvent);
+                      toast({
+                        title: "Événement exporté",
+                        description: "L'événement a été ajouté à votre calendrier",
+                      });
+                    } catch (error) {
+                      console.error('Export error:', error);
+                      toast({
+                        title: "Erreur d'export",
+                        description: "Impossible d'exporter l'événement",
+                        variant: "destructive",
+                      });
+                    }
+                  }}>
                     <Download className="h-4 w-4 mr-2" />
                     Ajouter au calendrier
                   </Button>
