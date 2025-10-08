@@ -47,17 +47,37 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact & Legal */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">Contact & Légal</h3>
+            <ul className="space-y-2 mb-4">
+              <li>
+                <a 
+                  href="mailto:bibstreet@outlook.fr" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  bibstreet@outlook.fr
+                </a>
+              </li>
+              <li>
+                <Link 
+                  to="/mentions-legales" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Mentions légales
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/cgu" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  CGU
+                </Link>
+              </li>
+            </ul>
             <div className="flex gap-4">
-              <a
-                href="mailto:contact@streetartfrance.fr"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Envoyer un email"
-              >
-                <Mail className="h-5 w-5" />
-              </a>
               <a
                 href="https://github.com"
                 target="_blank"
