@@ -86,15 +86,16 @@ const MapComponent: React.FC<MapProps> = memo(
       const map = mapRef.current.getMap();
       const isMobile = window.innerWidth < 768;
 
-      const padding = isMobile
-        ? { bottom: 300, top: 100, left: 20, right: 20 }
-        : { left: 420, right: 20, top: 100, bottom: 100 };
+      // Compute pixel offset so marker appears centered in the VISIBLE area
+      // Desktop: account for 400px sidebar -> offset by ~200px to the right
+      // Mobile: account for bottom drawer -> offset upward by ~160px
+      const offset: [number, number] = isMobile ? [0, -160] : [200, 0];
 
       map.flyTo({
         center: [targetLocation.coordinates.lng, targetLocation.coordinates.lat],
         zoom: 14,
         duration: 1000,
-        padding,
+        offset,
         essential: true,
       });
     }, [selectedLocation, centerOnLocation]);
@@ -118,16 +119,14 @@ const MapComponent: React.FC<MapProps> = memo(
       if (!mapRef.current) return;
       const map = mapRef.current.getMap();
       const isMobile = window.innerWidth < 768;
-
-      const padding = isMobile
-        ? { bottom: 300, top: 100, left: 20, right: 20 }
-        : { left: 420, right: 20, top: 100, bottom: 100 };
+      // Use pixel offset so marker appears centered in visible area
+      const offset: [number, number] = isMobile ? [0, -160] : [200, 0];
 
       map.flyTo({
         center: [location.coordinates.lng, location.coordinates.lat],
         zoom: 14,
         duration: 1000,
-        padding,
+        offset,
         essential: true,
       });
     };
@@ -173,8 +172,8 @@ const MapComponent: React.FC<MapProps> = memo(
             setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
           }}
         >
-          <NavigationControl position="top-right" />
-          <GeolocateControl position="top-right" trackUserLocation={true} showUserHeading={true} />
+          <NavigationControl position="top-right" showZoom showCompass visualizePitch style={{ zIndex: 30 }} />
+          <GeolocateControl position="top-right" trackUserLocation showUserHeading style={{ zIndex: 30 }} />
 
           {clusters.map((cluster) => {
             const [longitude, latitude] = cluster.geometry.coordinates;

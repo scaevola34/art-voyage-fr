@@ -122,6 +122,11 @@ All colors MUST be HSL.
     margin: 0 0 10px 0 !important;
   }
 
+  /* Ensure controls are above map content */
+  .mapboxgl-ctrl {
+    z-index: 30 !important;
+  }
+
   /* User location dot */
   .mapboxgl-user-location-dot {
     @apply bg-primary;
