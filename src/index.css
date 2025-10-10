@@ -124,7 +124,7 @@ All colors MUST be HSL.
 
   /* Ensure controls are above map content */
   .mapboxgl-ctrl {
-    z-index: 30 !important;
+    z-index: 100 !important;
   }
 
   /* User location dot */

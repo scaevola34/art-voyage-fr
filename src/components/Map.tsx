@@ -86,16 +86,34 @@ const MapComponent: React.FC<MapProps> = memo(
       const map = mapRef.current.getMap();
       const isMobile = window.innerWidth < 768;
 
-      // Compute pixel offset so marker appears centered in the VISIBLE area
-      // Desktop: account for 400px sidebar -> offset by ~200px to the right
-      // Mobile: account for bottom drawer -> offset upward by ~160px
-      const offset: [number, number] = isMobile ? [0, -160] : [200, 0];
+      // Calculate adjusted center so the marker appears centered in the VISIBLE area
+      const container = map.getContainer();
+      const { width, height } = container.getBoundingClientRect();
+      const sidebarWidth = isMobile ? 0 : 400; // px
+      const drawerHeight = isMobile ? 160 : 0; // px
+
+      // Desired on-screen position for the marker (middle of the visible area)
+      const desiredX = isMobile ? width / 2 : sidebarWidth + (width - sidebarWidth) / 2;
+      const desiredY = isMobile ? (height - drawerHeight) / 2 : height / 2;
+
+      const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
+      const deltaX = desiredX - projected.x;
+      const deltaY = desiredY - projected.y;
+
+      const currentCenter = map.getCenter();
+      const centerPx = map.project(currentCenter);
+      const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+      const newCenter = map.unproject(newCenterPx);
+
+      console.log('[Map] center on location', {
+        zoom: map.getZoom(), isMobile, width, height, sidebarWidth, drawerHeight, desiredX, desiredY, projected,
+        deltaX, deltaY, newCenter
+      });
 
       map.flyTo({
-        center: [targetLocation.coordinates.lng, targetLocation.coordinates.lat],
+        center: [newCenter.lng, newCenter.lat],
         zoom: 14,
         duration: 1000,
-        offset,
         essential: true,
       });
     }, [selectedLocation, centerOnLocation]);
@@ -114,20 +132,43 @@ const MapComponent: React.FC<MapProps> = memo(
     };
 
     const handleMarkerClick = (location: Location) => {
-      onLocationSelect(location);
-
       if (!mapRef.current) return;
       const map = mapRef.current.getMap();
       const isMobile = window.innerWidth < 768;
-      // Use pixel offset so marker appears centered in visible area
-      const offset: [number, number] = isMobile ? [0, -160] : [200, 0];
+
+      // Calculate adjusted center so the marker appears centered in the VISIBLE area
+      const container = map.getContainer();
+      const { width, height } = container.getBoundingClientRect();
+      const sidebarWidth = isMobile ? 0 : 400; // px
+      const drawerHeight = isMobile ? 160 : 0; // px
+
+      const desiredX = isMobile ? width / 2 : sidebarWidth + (width - sidebarWidth) / 2;
+      const desiredY = isMobile ? (height - drawerHeight) / 2 : height / 2;
+
+      const projected = map.project([location.coordinates.lng, location.coordinates.lat]);
+      const deltaX = desiredX - projected.x;
+      const deltaY = desiredY - projected.y;
+
+      const currentCenter = map.getCenter();
+      const centerPx = map.project(currentCenter);
+      const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+      const newCenter = map.unproject(newCenterPx);
+
+      console.log('[Map] marker click center adjust', {
+        zoom: map.getZoom(), isMobile, width, height, sidebarWidth, drawerHeight, desiredX, desiredY, projected,
+        deltaX, deltaY, newCenter
+      });
 
       map.flyTo({
-        center: [location.coordinates.lng, location.coordinates.lat],
+        center: [newCenter.lng, newCenter.lat],
         zoom: 14,
         duration: 1000,
-        offset,
         essential: true,
+      });
+
+      // Open popup/details after animation completes
+      map.once('moveend', () => {
+        onLocationSelect(location);
       });
     };
 
@@ -167,13 +208,17 @@ const MapComponent: React.FC<MapProps> = memo(
           style={{ width: '100%', height: '100%' }}
           onLoad={() => {
             setMapError(null);
+            console.log('[Map] onLoad: map initialized');
+            const zoomInBtn = document.querySelector('.mapboxgl-ctrl-zoom-in');
+            console.log('[Map] zoom control present:', !!zoomInBtn);
           }}
-          onError={() => {
+          onError={(e: any) => {
+            console.error('[Map] onError', e);
             setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
           }}
         >
-          <NavigationControl position="top-right" showZoom showCompass visualizePitch style={{ zIndex: 30 }} />
-          <GeolocateControl position="top-right" trackUserLocation showUserHeading style={{ zIndex: 30 }} />
+          <NavigationControl position="top-right" showZoom showCompass visualizePitch style={{ zIndex: 100 }} />
+          <GeolocateControl position="top-right" trackUserLocation showUserHeading style={{ zIndex: 100 }} />
 
           {clusters.map((cluster) => {
             const [longitude, latitude] = cluster.geometry.coordinates;
