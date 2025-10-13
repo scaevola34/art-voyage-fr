@@ -53,25 +53,8 @@ const Home = memo(() => {
       <section className="py-20 px-4 bg-background" aria-labelledby="stats-title">
         <div className="container mx-auto">
           <h2 id="stats-title" className="sr-only">Statistiques</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            <Card className="bg-card/50 backdrop-blur border-border hover:border-primary/50 transition-all duration-300 animate-scale-in">
-              <CardContent className="p-6 text-center">
-                <MapPin className="h-8 w-8 mx-auto mb-3 text-primary" aria-hidden="true" />
-                {isLoading ? (
-                  <>
-                    <Skeleton className="h-10 w-20 mx-auto mb-1" />
-                    <Skeleton className="h-4 w-28 mx-auto" />
-                  </>
-                ) : (
-                  <>
-                    <div className="text-4xl font-bold text-foreground mb-1">{stats.total}</div>
-                    <div className="text-sm text-muted-foreground">Lieux référencés</div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/50 backdrop-blur border-border hover:border-gallery/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Card className="bg-card/50 backdrop-blur border-border hover:border-gallery/50 transition-all duration-300 animate-scale-in">
               <CardContent className="p-6 text-center">
                 <div className="h-8 w-8 mx-auto mb-3 rounded-full bg-gallery/20 flex items-center justify-center" aria-hidden="true">
                   <div className="h-4 w-4 rounded-full bg-gallery" />
@@ -90,7 +73,7 @@ const Home = memo(() => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 backdrop-blur border-border hover:border-association/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
+            <Card className="bg-card/50 backdrop-blur border-border hover:border-association/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 mx-auto mb-3 text-association" aria-hidden="true" />
                 {isLoading ? (
@@ -107,7 +90,7 @@ const Home = memo(() => {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 backdrop-blur border-border hover:border-festival/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+            <Card className="bg-card/50 backdrop-blur border-border hover:border-festival/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
               <CardContent className="p-6 text-center">
                 <Calendar className="h-8 w-8 mx-auto mb-3 text-festival" aria-hidden="true" />
                 {isLoading ? (
