@@ -78,7 +78,7 @@ export const LocationDrawer = memo(function LocationDrawer({
       try {
         await navigator.share({
           title: location.name,
-          text: `Découvrez ${location.name} sur Street Art France`,
+          text: `Découvrez ${location.name} sur Urbanomap`,
           url: shareUrl,
         });
       } catch (err) {

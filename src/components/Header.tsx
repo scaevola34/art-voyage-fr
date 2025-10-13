@@ -3,6 +3,7 @@ import { Menu, X, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { UrbanoMapLogo } from './UrbanoMapLogo';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,10 +39,13 @@ export default function Header() {
           )}
           <Link 
             to="/" 
-            className="text-xl font-bold text-primary hover:text-primary/80 transition-colors"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             aria-label="Retour à l'accueil"
           >
-            Street Art France
+            <UrbanoMapLogo size={36} />
+            <span className="text-xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              Urbanomap
+            </span>
           </Link>
         </div>
 

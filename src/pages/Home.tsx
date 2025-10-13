@@ -31,8 +31,11 @@ const Home = memo(() => {
         <div className="container mx-auto relative z-10">
           <div className="max-w-3xl mx-auto text-center animate-fade-in">
             <h1 id="hero-title" className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              Street Art France
+              Urbanomap
             </h1>
+            <p className="text-lg md:text-xl text-gallery font-medium mb-4 tracking-wide">
+              The living map of street culture
+            </p>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Découvrez les galeries, associations et festivals de street art à travers toute la France sur une carte interactive.
             </p>

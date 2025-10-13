@@ -25,8 +25,8 @@ const About = memo(() => {
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
               <p>
-                Street Art France a pour mission de recenser et de promouvoir les lieux dédiés au street art à travers toute la France. 
-                Notre plateforme interactive permet aux passionnés, artistes et curieux de découvrir facilement les galeries, 
+                Urbanomap a pour mission de recenser et de promouvoir les lieux dédiés au street art à travers toute la France. 
+                Notre plateforme interactive permet aux passionnés, artistes et curieux de découvrir facilement les galeries,
                 associations et festivals qui font vivre cette scène artistique dynamique.
               </p>
             </CardContent>

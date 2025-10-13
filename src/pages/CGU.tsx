@@ -11,8 +11,8 @@ export default function CGU() {
   return (
     <>
       <Helmet>
-        <title>Conditions Générales d'Utilisation - Street Art France</title>
-        <meta name="description" content="Conditions générales d'utilisation du site Street Art France. Droits, obligations et responsabilités des utilisateurs." />
+        <title>Conditions Générales d'Utilisation - Urbanomap</title>
+        <meta name="description" content="Conditions générales d'utilisation du site Urbanomap. Droits, obligations et responsabilités des utilisateurs." />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
 
@@ -23,7 +23,7 @@ export default function CGU() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">1. Objet</h2>
             <div className="text-muted-foreground space-y-2">
-              <p>Les présentes CGU régissent l'utilisation du site Street Art France.</p>
+              <p>Les présentes CGU régissent l'utilisation du site Urbanomap.</p>
               <p>L'accès au site implique l'acceptation de ces conditions.</p>
             </div>
           </section>
@@ -58,7 +58,7 @@ export default function CGU() {
               <p>Via le formulaire de suggestion :</p>
               <ul className="list-none space-y-1 ml-0">
                 <li>• Vous garantissez avoir le droit de communiquer les informations</li>
-                <li>• Vous accordez à Street Art France le droit d'utiliser ces informations</li>
+                <li>• Vous accordez à Urbanomap le droit d'utiliser ces informations</li>
                 <li>• Nous modérons les suggestions avant publication</li>
                 <li>• Nous nous réservons le droit de refuser toute suggestion</li>
               </ul>
@@ -68,7 +68,7 @@ export default function CGU() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">5. Responsabilité et Garanties</h2>
             <div className="text-muted-foreground space-y-3">
-              <p>Street Art France est un annuaire informatif gratuit.</p>
+              <p>Urbanomap est un annuaire informatif gratuit.</p>
               <p className="font-semibold text-foreground">LIMITATION DE RESPONSABILITÉ :</p>
               <ul className="list-none space-y-1 ml-0">
                 <li>• Les informations sont fournies "en l'état"</li>

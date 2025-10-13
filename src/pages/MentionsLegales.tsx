@@ -5,8 +5,8 @@ export default function MentionsLegales() {
   return (
     <>
       <Helmet>
-        <title>Mentions Légales - Street Art France</title>
-        <meta name="description" content="Mentions légales du site Street Art France. Informations sur l'éditeur, l'hébergement, et les données personnelles." />
+        <title>Mentions Légales - Urbanomap</title>
+        <meta name="description" content="Mentions légales du site Urbanomap. Informations sur l'éditeur, l'hébergement, et les données personnelles." />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
 
@@ -17,7 +17,7 @@ export default function MentionsLegales() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">Éditeur du Site</h2>
             <div className="text-muted-foreground space-y-2">
-              <p>Le site Street Art France est édité par :</p>
+              <p>Le site Urbanomap est édité par :</p>
               <ul className="list-none space-y-1 ml-0">
                 <li>• Nom : [Votre nom ou raison sociale]</li>
                 <li>• Adresse : [Votre adresse]</li>
@@ -68,7 +68,7 @@ export default function MentionsLegales() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-foreground mb-4">Responsabilité</h2>
             <div className="text-muted-foreground space-y-3">
-              <p>Street Art France est un site d'information à but non lucratif.</p>
+              <p>Urbanomap est un site d'information à but non lucratif.</p>
               <ul className="list-none space-y-1 ml-0">
                 <li>• Les informations sont fournies à titre indicatif</li>
                 <li>• Nous utilisons uniquement des données publiques</li>

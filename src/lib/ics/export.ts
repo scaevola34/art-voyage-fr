@@ -84,7 +84,7 @@ export const generateEventICS = (event: Event): string => {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Street Art France//Agenda//FR',
+    'PRODID:-//Urbanomap//Agenda//FR',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
@@ -125,7 +125,7 @@ export const generateMultipleEventsICS = (events: Event[]): string => {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Street Art France//Agenda//FR',
+    'PRODID:-//Urbanomap//Agenda//FR',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     `X-WR-CALNAME:Agenda Street Art`,
