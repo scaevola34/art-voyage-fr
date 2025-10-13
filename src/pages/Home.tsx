@@ -1,18 +1,25 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Users, Calendar, ArrowRight } from 'lucide-react';
-import { locations } from '@/data/locations';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getLocations } from '@/lib/supabase/queries';
 import UpcomingEvents from '@/components/UpcomingEvents';
 
 const Home = memo(() => {
-  const stats = {
+  const { data: locations = [], isLoading } = useQuery({
+    queryKey: ['locations'],
+    queryFn: () => getLocations(),
+  });
+
+  const stats = useMemo(() => ({
     galleries: locations.filter(l => l.type === 'gallery').length,
     associations: locations.filter(l => l.type === 'association').length,
     festivals: locations.filter(l => l.type === 'festival').length,
     total: locations.length,
-  };
+  }), [locations]);
 
   return (
     <div className="min-h-screen">
@@ -50,8 +57,17 @@ const Home = memo(() => {
             <Card className="bg-card/50 backdrop-blur border-border hover:border-primary/50 transition-all duration-300 animate-scale-in">
               <CardContent className="p-6 text-center">
                 <MapPin className="h-8 w-8 mx-auto mb-3 text-primary" aria-hidden="true" />
-                <div className="text-4xl font-bold text-foreground mb-1">{stats.total}</div>
-                <div className="text-sm text-muted-foreground">Lieux référencés</div>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-10 w-20 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-28 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.total}</div>
+                    <div className="text-sm text-muted-foreground">Lieux référencés</div>
+                  </>
+                )}
               </CardContent>
             </Card>
 
@@ -60,24 +76,51 @@ const Home = memo(() => {
                 <div className="h-8 w-8 mx-auto mb-3 rounded-full bg-gallery/20 flex items-center justify-center" aria-hidden="true">
                   <div className="h-4 w-4 rounded-full bg-gallery" />
                 </div>
-                <div className="text-4xl font-bold text-foreground mb-1">{stats.galleries}</div>
-                <div className="text-sm text-muted-foreground">Galeries</div>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-10 w-20 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-28 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.galleries}</div>
+                    <div className="text-sm text-muted-foreground">Galeries</div>
+                  </>
+                )}
               </CardContent>
             </Card>
 
             <Card className="bg-card/50 backdrop-blur border-border hover:border-association/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 mx-auto mb-3 text-association" aria-hidden="true" />
-                <div className="text-4xl font-bold text-foreground mb-1">{stats.associations}</div>
-                <div className="text-sm text-muted-foreground">Associations</div>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-10 w-20 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-28 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.associations}</div>
+                    <div className="text-sm text-muted-foreground">Associations</div>
+                  </>
+                )}
               </CardContent>
             </Card>
 
             <Card className="bg-card/50 backdrop-blur border-border hover:border-festival/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
               <CardContent className="p-6 text-center">
                 <Calendar className="h-8 w-8 mx-auto mb-3 text-festival" aria-hidden="true" />
-                <div className="text-4xl font-bold text-foreground mb-1">{stats.festivals}</div>
-                <div className="text-sm text-muted-foreground">Festivals</div>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-10 w-20 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-28 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.festivals}</div>
+                    <div className="text-sm text-muted-foreground">Festivals</div>
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>
