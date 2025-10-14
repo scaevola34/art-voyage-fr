@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Send } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,12 @@ import emailjs from "@emailjs/browser";
 const SuggestLocation = () => {
   const { toast } = useToast();
   const [status, setStatus] = useState<string>("");
+
+  // Initialize EmailJS once on component mount
+  useEffect(() => {
+    emailjs.init("QGpLB2pL3OXuCBBvC");
+    console.log("📧 EmailJS initialized with public key");
+  }, []);
 
   const {
     register,
