@@ -44,26 +44,32 @@ const SuggestLocation = () => {
     try {
       setStatus("");
       
+      const formData = {
+        name: data.name,
+        type: data.type,
+        city: data.city || '',
+        region: data.region || '',
+        address: data.address || '',
+        description: data.description || '',
+        openingHours: data.openingHours || '',
+        website: data.website || '',
+        email: data.email || '',
+        instagram: data.instagram || '',
+        submitterName: data.submitterName || '',
+        submitterEmail: data.submitterEmail || '',
+      };
+
+      console.log("📧 Form data being sent to EmailJS:", formData);
+      
       // Send via EmailJS
-      await emailjs.send(
+      const response = await emailjs.send(
         "service_npdgzoi",
         "template_vwuv5ji",
-        {
-          name: data.name,
-          type: data.type,
-          city: data.city || '',
-          region: data.region || '',
-          address: data.address || '',
-          description: data.description || '',
-          openingHours: data.openingHours || '',
-          website: data.website || '',
-          email: data.email || '',
-          instagram: data.instagram || '',
-          submitterName: data.submitterName || '',
-          submitterEmail: data.submitterEmail || '',
-        },
+        formData,
         "QGpLB2pL3OXuCBBvC"
       );
+
+      console.log("✅ EmailJS response:", response);
 
       setStatus("✅ Merci ! Votre suggestion a été envoyée à notre équipe.");
       toast({
@@ -73,12 +79,18 @@ const SuggestLocation = () => {
 
       // Reset form
       reset();
-    } catch (error) {
-      console.error("EmailJS error:", error);
+    } catch (error: any) {
+      console.error("❌ EmailJS error:", error);
+      console.error("Error details:", {
+        status: error?.status,
+        text: error?.text,
+        message: error?.message
+      });
+      
       setStatus("❌ Une erreur s'est produite. Veuillez réessayer.");
       toast({
-        title: "Erreur",
-        description: "Impossible d'envoyer votre suggestion. Réessayez.",
+        title: "Erreur d'envoi",
+        description: error?.text || "Impossible d'envoyer votre suggestion. Vérifiez la console pour plus de détails.",
         variant: "destructive",
       });
     }
