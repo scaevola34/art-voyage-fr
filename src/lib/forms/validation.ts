@@ -10,7 +10,7 @@ export const emailJsSuggestionSchema = z.object({
     .min(2, { message: "Le nom est requis" })
     .max(100, { message: "Le nom ne peut pas dépasser 100 caractères" }),
   
-  type: z.enum(['mural', 'gallery', 'event', 'other'] as const, {
+  type: z.enum(['association', 'gallery', 'event', 'other'] as const, {
     required_error: "Veuillez sélectionner un type",
   }),
   

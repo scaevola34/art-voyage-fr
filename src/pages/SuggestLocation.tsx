@@ -26,7 +26,7 @@ const SuggestLocation = () => {
     resolver: zodResolver(emailJsSuggestionSchema),
     defaultValues: {
       name: '',
-      type: undefined,
+      type: '' as any,
       city: '',
       region: '',
       address: '',
@@ -130,14 +130,14 @@ const SuggestLocation = () => {
                   name="type"
                   control={control}
                   render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
                       <SelectTrigger id="type" className="bg-background/50 border-border">
                         <SelectValue placeholder="Sélectionnez un type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="mural">Mural / Fresque</SelectItem>
+                        <SelectItem value="association">Association</SelectItem>
                         <SelectItem value="gallery">Galerie</SelectItem>
-                        <SelectItem value="event">Événement / Festival</SelectItem>
+                        <SelectItem value="event">Festival / Evenement</SelectItem>
                         <SelectItem value="other">Autre</SelectItem>
                       </SelectContent>
                     </Select>
@@ -169,11 +169,32 @@ const SuggestLocation = () => {
                   <Label htmlFor="region" className="text-foreground">
                     Région
                   </Label>
-                  <Input
-                    id="region"
-                    placeholder="Ex: Île-de-France..."
-                    className="bg-background/50 border-border"
-                    {...register('region')}
+                  <Controller
+                    name="region"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <SelectTrigger id="region" className="bg-background/50 border-border">
+                          <SelectValue placeholder="Sélectionnez une région" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Auvergne-Rhône-Alpes">Auvergne-Rhône-Alpes</SelectItem>
+                          <SelectItem value="Bourgogne-Franche-Comté">Bourgogne-Franche-Comté</SelectItem>
+                          <SelectItem value="Bretagne">Bretagne</SelectItem>
+                          <SelectItem value="Centre-Val de Loire">Centre-Val de Loire</SelectItem>
+                          <SelectItem value="Corse">Corse</SelectItem>
+                          <SelectItem value="Grand Est">Grand Est</SelectItem>
+                          <SelectItem value="Hauts-de-France">Hauts-de-France</SelectItem>
+                          <SelectItem value="Île-de-France">Île-de-France</SelectItem>
+                          <SelectItem value="Normandie">Normandie</SelectItem>
+                          <SelectItem value="Nouvelle-Aquitaine">Nouvelle-Aquitaine</SelectItem>
+                          <SelectItem value="Occitanie">Occitanie</SelectItem>
+                          <SelectItem value="Pays de la Loire">Pays de la Loire</SelectItem>
+                          <SelectItem value="Provence-Alpes-Côte d'Azur">Provence-Alpes-Côte d'Azur</SelectItem>
+                          <SelectItem value="Outre-mer">Outre-mer</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
                   {errors.region && (
                     <p className="text-sm text-destructive">{errors.region.message}</p>
