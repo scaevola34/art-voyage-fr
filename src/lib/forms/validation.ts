@@ -1,11 +1,85 @@
 import { z } from 'zod';
-import { LocationType } from '@/data/locations';
 
 /**
- * Validation schemas for location submissions
- * Using Zod for runtime type safety and form validation
+ * EmailJS suggestion form validation schema
+ * Matches template variables exactly
  */
+export const emailJsSuggestionSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(2, { message: "Le nom est requis" })
+    .max(100, { message: "Le nom ne peut pas dépasser 100 caractères" }),
+  
+  type: z.enum(['mural', 'gallery', 'event', 'other'] as const, {
+    required_error: "Veuillez sélectionner un type",
+  }),
+  
+  city: z.string()
+    .trim()
+    .max(100, { message: "La ville ne peut pas dépasser 100 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  region: z.string()
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  
+  address: z.string()
+    .trim()
+    .max(200, { message: "L'adresse ne peut pas dépasser 200 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  description: z.string()
+    .trim()
+    .max(1000, { message: "La description ne peut pas dépasser 1000 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  openingHours: z.string()
+    .trim()
+    .max(200, { message: "Horaires trop longs" })
+    .optional()
+    .or(z.literal('')),
+  
+  website: z.string()
+    .trim()
+    .url({ message: "URL invalide" })
+    .optional()
+    .or(z.literal('')),
+  
+  email: z.string()
+    .trim()
+    .email({ message: "Email invalide" })
+    .optional()
+    .or(z.literal('')),
+  
+  instagram: z.string()
+    .trim()
+    .max(30, { message: "Pseudo Instagram trop long" })
+    .optional()
+    .or(z.literal('')),
+  
+  submitterName: z.string()
+    .trim()
+    .max(100, { message: "Nom trop long" })
+    .optional()
+    .or(z.literal('')),
+  
+  submitterEmail: z.string()
+    .trim()
+    .email({ message: "Email invalide" })
+    .max(255, { message: "Email trop long" })
+    .optional()
+    .or(z.literal('')),
+});
 
+export type EmailJsSuggestionFormData = z.infer<typeof emailJsSuggestionSchema>;
+
+/**
+ * Legacy validation schemas (kept for backwards compatibility)
+ */
 export const locationSchema = z.object({
   name: z.string()
     .trim()
