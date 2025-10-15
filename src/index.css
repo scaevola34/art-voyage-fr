@@ -90,16 +90,28 @@ All colors MUST be HSL.
   /* Mapbox controls styling */
   .mapboxgl-ctrl-group {
     @apply bg-card border-border shadow-lg rounded-lg;
+    backdrop-filter: blur(8px);
+    background: hsl(var(--card) / 0.95) !important;
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2), var(--shadow-card);
   }
 
   .mapboxgl-ctrl-group button {
-    @apply bg-card hover:bg-muted transition-colors;
+    @apply bg-transparent hover:bg-primary/20 transition-all duration-200;
     width: 36px !important;
     height: 36px !important;
+    border: none !important;
   }
 
   .mapboxgl-ctrl-group button:hover {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
+  }
+
+  .mapboxgl-ctrl-group button:focus {
+    @apply outline-none ring-2 ring-primary;
+  }
+
+  .mapboxgl-ctrl-group button + button {
+    @apply border-t border-border;
   }
 
   .mapboxgl-ctrl-icon {
@@ -113,6 +125,10 @@ All colors MUST be HSL.
     filter: invert(1) brightness(2);
   }
 
+  .mapboxgl-ctrl button:hover .mapboxgl-ctrl-icon {
+    filter: invert(1) brightness(2.5);
+  }
+
   .mapboxgl-ctrl-top-right {
     top: 20px !important;
     right: 20px !important;
@@ -122,9 +138,28 @@ All colors MUST be HSL.
     margin: 0 0 10px 0 !important;
   }
 
+  .mapboxgl-ctrl-bottom-right {
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 50 !important;
+  }
+
+  .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl {
+    margin: 0 0 10px 0 !important;
+  }
+
   /* Ensure controls are above map content */
   .mapboxgl-ctrl {
     z-index: 100 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Mobile touch targets */
+  @media (max-width: 768px) {
+    .mapboxgl-ctrl-group button {
+      width: 44px !important;
+      height: 44px !important;
+    }
   }
 
   /* User location dot */

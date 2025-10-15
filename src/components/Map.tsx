@@ -261,25 +261,11 @@ const MapComponent: React.FC<MapProps> = memo(
             showZoom 
             showCompass 
             visualizePitch 
-            style={{ 
-              zIndex: 100,
-              marginBottom: '20px',
-              marginRight: '20px',
-              // Larger hit area for mobile
-              padding: isMobile ? '8px' : '4px',
-            }} 
           />
           <GeolocateControl 
             position="bottom-right" 
             trackUserLocation 
             showUserHeading 
-            style={{ 
-              zIndex: 100,
-              marginBottom: '100px',
-              marginRight: '20px',
-              // Larger hit area for mobile
-              padding: isMobile ? '8px' : '4px',
-            }} 
           />
 
           {clusters.map((cluster) => {
