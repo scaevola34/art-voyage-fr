@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Download, Share2, ChevronLeft, ChevronRight, DownloadCloud } from 'lucide-react';
+import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +13,7 @@ import { locations } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
 import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { downloadEventICS, downloadMultipleEventsICS } from '@/lib/ics/export';
+
 import { useToast } from '@/hooks/use-toast';
 
 const EventsCalendar = () => {
@@ -83,22 +83,6 @@ const EventsCalendar = () => {
     return locations.find(l => l.id === locationId);
   };
 
-  const handleDownloadAllEvents = () => {
-    try {
-      downloadMultipleEventsICS(filteredEvents, 'agenda-street-art');
-      toast({
-        title: "Calendrier exporté",
-        description: `${filteredEvents.length} événement(s) exporté(s) au format ICS`,
-      });
-    } catch (error) {
-      console.error('Export error:', error);
-      toast({
-        title: "Erreur d'export",
-        description: "Impossible d'exporter le calendrier",
-        variant: "destructive",
-      });
-    }
-  };
 
   const shareEvent = async (event: Event) => {
     const url = `${window.location.origin}/agenda?event=${event.id}`;
@@ -474,26 +458,6 @@ const EventsCalendar = () => {
                       </Link>
                     </Button>
                   )}
-                  
-                  <Button variant="outline" onClick={() => {
-                    try {
-                      downloadEventICS(selectedEvent);
-                      toast({
-                        title: "Événement exporté",
-                        description: "L'événement a été ajouté à votre calendrier",
-                      });
-                    } catch (error) {
-                      console.error('Export error:', error);
-                      toast({
-                        title: "Erreur d'export",
-                        description: "Impossible d'exporter l'événement",
-                        variant: "destructive",
-                      });
-                    }
-                  }}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Ajouter au calendrier
-                  </Button>
                   
                   <Button variant="outline" onClick={() => shareEvent(selectedEvent)}>
                     <Share2 className="h-4 w-4 mr-2" />
