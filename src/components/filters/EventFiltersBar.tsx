@@ -74,7 +74,7 @@ export const EventFiltersBar = memo<EventFiltersBarProps>(
                 <Badge
                   key={value}
                   variant={filters.types.includes(value) ? 'default' : 'outline'}
-                  className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-all duration-300 ease-in-out"
+                  className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
                   onClick={() => toggleType(value)}
                 >
                   {label}
@@ -86,7 +86,7 @@ export const EventFiltersBar = memo<EventFiltersBarProps>(
               {/* Region filters */}
               <Badge
                 variant={filters.region === 'all' ? 'default' : 'outline'}
-                className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-all duration-300 ease-in-out"
+                className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
                 onClick={() => setRegion('all')}
               >
                 Toutes régions
@@ -95,7 +95,7 @@ export const EventFiltersBar = memo<EventFiltersBarProps>(
                 <Badge
                   key={region}
                   variant={filters.region === region ? 'default' : 'outline'}
-                  className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-all duration-300 ease-in-out"
+                  className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
                   onClick={() => setRegion(region)}
                 >
                   {region}

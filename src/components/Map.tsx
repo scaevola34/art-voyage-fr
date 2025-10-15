@@ -112,11 +112,13 @@ const MapComponent: React.FC<MapProps> = memo(
           easing: (t) => t * (2 - t), // ease-out
         });
       } else {
-        // Desktop: offset to the left (20-25% of map width) so popup is fully visible
-        const sidebarWidth = 400; // sidebar width
-        const mapVisibleWidth = width - sidebarWidth;
-        const offsetPercent = 0.22; // 22% offset to the left
-        const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
+        // Desktop: offset to the left to account for sidebar and drawer
+        const sidebarWidth = 320; // w-80 = 320px
+        const drawerWidth = 384; // drawer width when open (24rem)
+        const availableMapWidth = width - sidebarWidth - drawerWidth;
+        
+        // Center in the available map area with a slight left bias
+        const desiredX = sidebarWidth + (availableMapWidth * 0.45);
         const desiredY = height / 2;
 
         const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
@@ -130,7 +132,7 @@ const MapComponent: React.FC<MapProps> = memo(
 
         map.flyTo({
           center: [newCenter.lng, newCenter.lat],
-          zoom: 12,
+          zoom: 13,
           duration: 1000,
           essential: true,
           easing: (t) => t * (2 - t), // ease-out
@@ -180,11 +182,13 @@ const MapComponent: React.FC<MapProps> = memo(
           easing: (t) => t * (2 - t), // ease-out
         });
       } else {
-        // Desktop: offset to the left (20-25% of map width) so popup is fully visible
-        const sidebarWidth = 400; // sidebar width
-        const mapVisibleWidth = width - sidebarWidth;
-        const offsetPercent = 0.22; // 22% offset to the left
-        const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
+        // Desktop: offset to the left to account for sidebar and drawer
+        const sidebarWidth = 320; // w-80 = 320px
+        const drawerWidth = 384; // drawer width when open (24rem)
+        const availableMapWidth = width - sidebarWidth - drawerWidth;
+        
+        // Center in the available map area with a slight left bias
+        const desiredX = sidebarWidth + (availableMapWidth * 0.45);
         const desiredY = height / 2;
 
         const projected = map.project([location.coordinates.lng, location.coordinates.lat]);
@@ -198,7 +202,7 @@ const MapComponent: React.FC<MapProps> = memo(
 
         map.flyTo({
           center: [newCenter.lng, newCenter.lat],
-          zoom: 12,
+          zoom: 13,
           duration: 1000,
           essential: true,
           easing: (t) => t * (2 - t), // ease-out
