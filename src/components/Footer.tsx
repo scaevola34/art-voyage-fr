@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Github, Mail, Heart } from 'lucide-react';
+import { Instagram, Mail, Heart } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -26,6 +26,14 @@ export default function Footer() {
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   Explorer la carte
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/agenda" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Agenda
                 </Link>
               </li>
               <li>
@@ -79,13 +87,13 @@ export default function Footer() {
             </ul>
             <div className="flex gap-4">
               <a
-                href="https://github.com"
+                href="https://www.instagram.com/bibstreet"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Voir sur GitHub"
+                aria-label="Suivez-nous sur Instagram"
               >
-                <Github className="h-5 w-5" />
+                <Instagram className="h-5 w-5" />
               </a>
             </div>
           </div>
