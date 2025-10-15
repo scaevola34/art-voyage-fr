@@ -2,9 +2,12 @@ import { z } from 'zod';
 
 /**
  * EmailJS suggestion form validation schema
- * Matches template variables exactly
+ * Supports both places and events with discriminated union
  */
-export const emailJsSuggestionSchema = z.object({
+
+// Base schemas for place and event
+const basePlaceSchema = z.object({
+  suggestionType: z.literal('place'),
   name: z.string()
     .trim()
     .min(2, { message: "Le nom est requis" })
@@ -74,6 +77,97 @@ export const emailJsSuggestionSchema = z.object({
     .optional()
     .or(z.literal('')),
 });
+
+const baseEventSchema = z.object({
+  suggestionType: z.literal('event'),
+  name: z.string()
+    .trim()
+    .min(2, { message: "Le nom de l'événement est requis" })
+    .max(100, { message: "Le nom ne peut pas dépasser 100 caractères" }),
+  
+  eventType: z.enum(['festival', 'atelier', 'vernissage'] as const, {
+    required_error: "Veuillez sélectionner un type d'événement",
+  }),
+  
+  startDate: z.string()
+    .min(1, { message: "La date de début est requise" }),
+  
+  endDate: z.string()
+    .min(1, { message: "La date de fin est requise" }),
+  
+  city: z.string()
+    .trim()
+    .max(100, { message: "La ville ne peut pas dépasser 100 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  region: z.string()
+    .trim()
+    .optional()
+    .or(z.literal('')),
+  
+  address: z.string()
+    .trim()
+    .max(200, { message: "L'adresse ne peut pas dépasser 200 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  description: z.string()
+    .trim()
+    .max(1000, { message: "La description ne peut pas dépasser 1000 caractères" })
+    .optional()
+    .or(z.literal('')),
+  
+  website: z.string()
+    .trim()
+    .url({ message: "URL invalide" })
+    .optional()
+    .or(z.literal('')),
+  
+  email: z.string()
+    .trim()
+    .email({ message: "Email invalide" })
+    .optional()
+    .or(z.literal('')),
+  
+  instagram: z.string()
+    .trim()
+    .max(30, { message: "Pseudo Instagram trop long" })
+    .optional()
+    .or(z.literal('')),
+  
+  submitterName: z.string()
+    .trim()
+    .max(100, { message: "Nom trop long" })
+    .optional()
+    .or(z.literal('')),
+  
+  submitterEmail: z.string()
+    .trim()
+    .email({ message: "Email invalide" })
+    .max(255, { message: "Email trop long" })
+    .optional()
+    .or(z.literal('')),
+});
+
+// Combine with discriminated union
+export const emailJsSuggestionSchema = z.discriminatedUnion('suggestionType', [
+  basePlaceSchema,
+  baseEventSchema,
+]).refine(
+  (data) => {
+    if (data.suggestionType === 'event') {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return end >= start;
+    }
+    return true;
+  },
+  {
+    message: "La date de fin doit être après ou égale à la date de début",
+    path: ["endDate"],
+  }
+);
 
 export type EmailJsSuggestionFormData = z.infer<typeof emailJsSuggestionSchema>;
 
