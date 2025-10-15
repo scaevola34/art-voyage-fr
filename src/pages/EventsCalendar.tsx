@@ -13,6 +13,7 @@ import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, start
 import { fr } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
 import { EventFiltersBar, EventFilterState } from '@/components/filters/EventFiltersBar';
+import { SEO } from '@/components/SEO';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -100,6 +101,11 @@ const EventsCalendar = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-12">
+      <SEO 
+        title="Agenda des Événements"
+        description="Consultez l'agenda complet des événements street art en France : festivals, vernissages, ateliers. Filtrez par type et région pour ne rien manquer de la scène artistique."
+        path="/agenda"
+      />
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16 px-4">
         <div className="container mx-auto max-w-6xl">
