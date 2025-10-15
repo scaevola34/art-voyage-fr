@@ -11,6 +11,7 @@ import {
 } from '@/lib/map/cluster';
 import { LocationMarker } from '@/components/map/LocationMarker';
 import { ClusterMarker } from '@/components/map/ClusterMarker';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MapProps {
   locations: Location[];
@@ -23,6 +24,7 @@ interface MapProps {
 
 const MapComponent: React.FC<MapProps> = memo(
   ({ locations, selectedLocation, onLocationSelect, centerOnLocation, viewState, onViewStateChange }) => {
+    const isMobile = useIsMobile();
     const [localViewState, setLocalViewState] = useState({
       longitude: viewState?.longitude ?? 2.3522,
       latitude: viewState?.latitude ?? 46.6031,
@@ -78,45 +80,63 @@ const MapComponent: React.FC<MapProps> = memo(
       setClusters(newClusters);
     };
 
-    // Fly to selected or centered location
+    // Fly to selected or centered location with offset for better UX
     useEffect(() => {
       const targetLocation = centerOnLocation || selectedLocation;
       if (!targetLocation || !mapRef.current) return;
 
       const map = mapRef.current.getMap();
-      const isMobile = window.innerWidth < 768;
-
-      // Calculate adjusted center so the marker appears centered in the VISIBLE area
       const container = map.getContainer();
       const { width, height } = container.getBoundingClientRect();
-      const sidebarWidth = isMobile ? 0 : 400; // px
-      const drawerHeight = isMobile ? 160 : 0; // px
 
-      // Desired on-screen position for the marker (middle of the visible area)
-      const desiredX = isMobile ? width / 2 : sidebarWidth + (width - sidebarWidth) / 2;
-      const desiredY = isMobile ? (height - drawerHeight) / 2 : height / 2;
+      if (isMobile) {
+        // Mobile: center vertically with offset for drawer
+        const drawerHeight = 200; // approximate drawer height
+        const desiredX = width / 2;
+        const desiredY = (height - drawerHeight) / 2;
 
-      const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
-      const deltaX = desiredX - projected.x;
-      const deltaY = desiredY - projected.y;
+        const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
+        const deltaX = desiredX - projected.x;
+        const deltaY = desiredY - projected.y;
 
-      const currentCenter = map.getCenter();
-      const centerPx = map.project(currentCenter);
-      const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-      const newCenter = map.unproject(newCenterPx);
+        const currentCenter = map.getCenter();
+        const centerPx = map.project(currentCenter);
+        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+        const newCenter = map.unproject(newCenterPx);
 
-      console.log('[Map] center on location', {
-        zoom: map.getZoom(), isMobile, width, height, sidebarWidth, drawerHeight, desiredX, desiredY, projected,
-        deltaX, deltaY, newCenter
-      });
+        map.flyTo({
+          center: [newCenter.lng, newCenter.lat],
+          zoom: 12,
+          duration: 1000,
+          essential: true,
+          easing: (t) => t * (2 - t), // ease-out
+        });
+      } else {
+        // Desktop: offset to the left (20-25% of map width) so popup is fully visible
+        const sidebarWidth = 400; // sidebar width
+        const mapVisibleWidth = width - sidebarWidth;
+        const offsetPercent = 0.22; // 22% offset to the left
+        const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
+        const desiredY = height / 2;
 
-      map.flyTo({
-        center: [newCenter.lng, newCenter.lat],
-        zoom: 12,
-        duration: 1000,
-        essential: true,
-      });
-    }, [selectedLocation, centerOnLocation]);
+        const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
+        const deltaX = desiredX - projected.x;
+        const deltaY = desiredY - projected.y;
+
+        const currentCenter = map.getCenter();
+        const centerPx = map.project(currentCenter);
+        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+        const newCenter = map.unproject(newCenterPx);
+
+        map.flyTo({
+          center: [newCenter.lng, newCenter.lat],
+          zoom: 12,
+          duration: 1000,
+          essential: true,
+          easing: (t) => t * (2 - t), // ease-out
+        });
+      }
+    }, [selectedLocation, centerOnLocation, isMobile]);
 
     const handleClusterClick = (clusterId: number, longitude: number, latitude: number) => {
       if (!superclusterRef.current || !mapRef.current) return;
@@ -134,37 +154,56 @@ const MapComponent: React.FC<MapProps> = memo(
     const handleMarkerClick = (location: Location) => {
       if (!mapRef.current) return;
       const map = mapRef.current.getMap();
-      const isMobile = window.innerWidth < 768;
-
-      // Calculate adjusted center so the marker appears centered in the VISIBLE area
       const container = map.getContainer();
       const { width, height } = container.getBoundingClientRect();
-      const sidebarWidth = isMobile ? 0 : 400; // px
-      const drawerHeight = isMobile ? 160 : 0; // px
 
-      const desiredX = isMobile ? width / 2 : sidebarWidth + (width - sidebarWidth) / 2;
-      const desiredY = isMobile ? (height - drawerHeight) / 2 : height / 2;
+      if (isMobile) {
+        // Mobile: center vertically with offset for drawer
+        const drawerHeight = 200; // approximate drawer height
+        const desiredX = width / 2;
+        const desiredY = (height - drawerHeight) / 2;
 
-      const projected = map.project([location.coordinates.lng, location.coordinates.lat]);
-      const deltaX = desiredX - projected.x;
-      const deltaY = desiredY - projected.y;
+        const projected = map.project([location.coordinates.lng, location.coordinates.lat]);
+        const deltaX = desiredX - projected.x;
+        const deltaY = desiredY - projected.y;
 
-      const currentCenter = map.getCenter();
-      const centerPx = map.project(currentCenter);
-      const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-      const newCenter = map.unproject(newCenterPx);
+        const currentCenter = map.getCenter();
+        const centerPx = map.project(currentCenter);
+        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+        const newCenter = map.unproject(newCenterPx);
 
-      console.log('[Map] marker click center adjust', {
-        zoom: map.getZoom(), isMobile, width, height, sidebarWidth, drawerHeight, desiredX, desiredY, projected,
-        deltaX, deltaY, newCenter
-      });
+        map.flyTo({
+          center: [newCenter.lng, newCenter.lat],
+          zoom: 12,
+          duration: 1000,
+          essential: true,
+          easing: (t) => t * (2 - t), // ease-out
+        });
+      } else {
+        // Desktop: offset to the left (20-25% of map width) so popup is fully visible
+        const sidebarWidth = 400; // sidebar width
+        const mapVisibleWidth = width - sidebarWidth;
+        const offsetPercent = 0.22; // 22% offset to the left
+        const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
+        const desiredY = height / 2;
 
-      map.flyTo({
-        center: [newCenter.lng, newCenter.lat],
-        zoom: 12,
-        duration: 1000,
-        essential: true,
-      });
+        const projected = map.project([location.coordinates.lng, location.coordinates.lat]);
+        const deltaX = desiredX - projected.x;
+        const deltaY = desiredY - projected.y;
+
+        const currentCenter = map.getCenter();
+        const centerPx = map.project(currentCenter);
+        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+        const newCenter = map.unproject(newCenterPx);
+
+        map.flyTo({
+          center: [newCenter.lng, newCenter.lat],
+          zoom: 12,
+          duration: 1000,
+          essential: true,
+          easing: (t) => t * (2 - t), // ease-out
+        });
+      }
 
       // Open popup/details after animation completes
       map.once('moveend', () => {
@@ -225,7 +264,9 @@ const MapComponent: React.FC<MapProps> = memo(
             style={{ 
               zIndex: 100,
               marginBottom: '20px',
-              marginRight: '20px'
+              marginRight: '20px',
+              // Larger hit area for mobile
+              padding: isMobile ? '8px' : '4px',
             }} 
           />
           <GeolocateControl 
@@ -235,7 +276,9 @@ const MapComponent: React.FC<MapProps> = memo(
             style={{ 
               zIndex: 100,
               marginBottom: '100px',
-              marginRight: '20px'
+              marginRight: '20px',
+              // Larger hit area for mobile
+              padding: isMobile ? '8px' : '4px',
             }} 
           />
 
