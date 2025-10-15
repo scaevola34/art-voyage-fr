@@ -227,11 +227,11 @@ const MapPage = memo(() => {
           </div>
         </div>
 
-        <div className="flex flex-1 pt-40">
+        <div className="flex flex-1 overflow-hidden mt-[156px]">
           {/* Locations list sidebar */}
-          <aside className="w-80 border-r border-border bg-card hidden md:block">
-            <ScrollArea className="h-full">
-              <div className="p-4 space-y-2">
+          <aside className="w-80 border-r border-border bg-card hidden md:flex md:flex-col">
+            <ScrollArea className="flex-1">
+              <div className="p-4 space-y-2 pt-2">
                 {filteredLocations.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-sm text-muted-foreground">Aucun lieu trouvé</p>
