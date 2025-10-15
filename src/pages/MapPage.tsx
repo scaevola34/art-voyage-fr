@@ -11,10 +11,11 @@ import {
 import { createLocationSearchIndex, searchLocations } from '@/lib/search/fuse';
 import type { FilterState } from '@/components/filters/FiltersPanel';
 import { getLocations } from '@/lib/supabase/queries';
-import { HorizontalFiltersBar } from '@/components/filters/HorizontalFiltersBar';
 import { SearchBar } from '@/components/search/SearchBar';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { frenchRegions } from '@/data/regions';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -171,22 +172,62 @@ const MapPage = memo(() => {
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
         {/* Header with search and filters */}
         <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">
-          <div className="px-4 py-3">
+          <div className="px-4 py-3 space-y-3">
             <SearchBar
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Rechercher un lieu, une ville..."
             />
+            
+            {/* Filters */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                  <div className="flex gap-2 flex-1 w-full sm:w-auto">
+                    <Select 
+                      value={filters.types.length === 1 ? filters.types[0] : filters.types.length > 1 ? 'multiple' : 'all'} 
+                      onValueChange={(value) => {
+                        if (value === 'all') {
+                          handleFilterChange({ ...filters, types: [] });
+                        } else if (value !== 'multiple') {
+                          handleFilterChange({ ...filters, types: [value as LocationType] });
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Type de lieu" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Tous les types</SelectItem>
+                        <SelectItem value="gallery">Galeries</SelectItem>
+                        <SelectItem value="association">Associations</SelectItem>
+                        <SelectItem value="festival">Festivals</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Select value={filters.region} onValueChange={(value) => handleFilterChange({ ...filters, region: value })}>
+                      <SelectTrigger className="w-full sm:w-[200px]">
+                        <SelectValue placeholder="Région" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Toutes les régions</SelectItem>
+                        {frenchRegions.map(region => (
+                          <SelectItem key={region} value={region}>{region}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">
+                    {filteredLocations.length} / {allLocations.length} lieux
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <HorizontalFiltersBar
-            filters={filters}
-            onFiltersChange={handleFilterChange}
-            resultCount={filteredLocations.length}
-            totalCount={allLocations.length}
-          />
         </div>
 
-        <div className="flex flex-1 pt-32">
+        <div className="flex flex-1 pt-40">
           {/* Locations list sidebar */}
           <aside className="w-80 border-r border-border bg-card hidden md:block">
             <ScrollArea className="h-full">
