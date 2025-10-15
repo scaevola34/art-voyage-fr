@@ -182,8 +182,7 @@ const MapPage = memo(() => {
             {/* Filters */}
             <Card>
               <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                  <div className="flex gap-2 flex-1 w-full sm:w-auto">
+                <div className="flex gap-2 w-full">
                     <Select 
                       value={filters.types.length === 1 ? filters.types[0] : filters.types.length > 1 ? 'multiple' : 'all'} 
                       onValueChange={(value) => {
@@ -194,7 +193,7 @@ const MapPage = memo(() => {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-full sm:w-[180px]">
+                      <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Type de lieu" />
                       </SelectTrigger>
                       <SelectContent>
@@ -206,7 +205,7 @@ const MapPage = memo(() => {
                     </Select>
 
                     <Select value={filters.region} onValueChange={(value) => handleFilterChange({ ...filters, region: value })}>
-                      <SelectTrigger className="w-full sm:w-[200px]">
+                      <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Région" />
                       </SelectTrigger>
                       <SelectContent>
@@ -216,11 +215,6 @@ const MapPage = memo(() => {
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground whitespace-nowrap">
-                    {filteredLocations.length} / {allLocations.length} lieux
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -230,8 +224,16 @@ const MapPage = memo(() => {
         <div className="flex flex-1 overflow-hidden mt-[156px]">
           {/* Locations list sidebar */}
           <aside className="w-80 border-r border-border bg-card hidden md:flex md:flex-col">
+            {/* Fixed counter at top of sidebar */}
+            <div className="px-4 py-3 border-b border-border bg-card/95 backdrop-blur-sm">
+              <div className="text-sm text-muted-foreground">
+                {filteredLocations.length} / {allLocations.length} lieux
+              </div>
+            </div>
+            
+            {/* Scrollable location cards */}
             <ScrollArea className="flex-1">
-              <div className="p-4 space-y-2 pt-2">
+              <div className="p-4 space-y-2">
                 {filteredLocations.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-sm text-muted-foreground">Aucun lieu trouvé</p>

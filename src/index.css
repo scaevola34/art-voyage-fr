@@ -87,46 +87,79 @@ All colors MUST be HSL.
     background: hsl(0 0% 30%);
   }
 
-  /* Mapbox controls styling */
+  /* Mapbox controls styling - high contrast for visibility */
   .mapboxgl-ctrl-group {
-    @apply bg-card border-border shadow-lg rounded-lg;
+    @apply rounded-lg shadow-lg;
+    background: rgba(26, 26, 26, 0.95) !important;
     backdrop-filter: blur(8px);
-    background: hsl(var(--card) / 0.95) !important;
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.2), var(--shadow-card);
+    border: 1px solid hsl(var(--primary) / 0.3) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px hsl(var(--primary) / 0.2) !important;
   }
 
   .mapboxgl-ctrl-group button {
-    @apply bg-transparent hover:bg-primary/20 transition-all duration-200;
-    width: 36px !important;
-    height: 36px !important;
+    @apply transition-all duration-200;
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
     border: none !important;
   }
 
   .mapboxgl-ctrl-group button:hover {
-    box-shadow: 0 0 15px hsl(var(--primary) / 0.4);
+    background: hsl(var(--primary)) !important;
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.6) !important;
   }
 
   .mapboxgl-ctrl-group button:focus {
-    @apply outline-none ring-2 ring-primary;
+    @apply outline-none;
+    box-shadow: 0 0 0 2px hsl(var(--primary)) !important;
+  }
+
+  .mapboxgl-ctrl-group button:active {
+    background: hsl(var(--primary)) !important;
+    transform: scale(0.95);
   }
 
   .mapboxgl-ctrl-group button + button {
-    @apply border-t border-border;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
+  /* Make all control icons bright white for visibility */
   .mapboxgl-ctrl-icon {
-    @apply opacity-90;
+    opacity: 1 !important;
   }
 
   .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon,
   .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon,
   .mapboxgl-ctrl button.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon,
   .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
-    filter: invert(1) brightness(2);
+    filter: invert(1) brightness(3) !important;
   }
 
   .mapboxgl-ctrl button:hover .mapboxgl-ctrl-icon {
-    filter: invert(1) brightness(2.5);
+    filter: invert(0) brightness(0) !important;
+  }
+
+  /* GPS button active state with pulsing animation */
+  .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active,
+  .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active-error {
+    background: hsl(var(--primary)) !important;
+  }
+
+  .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active .mapboxgl-ctrl-icon {
+    animation: pulse-gps 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-gps {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active-error {
+    background: hsl(var(--destructive)) !important;
   }
 
   .mapboxgl-ctrl-top-right {
