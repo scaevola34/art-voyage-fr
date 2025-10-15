@@ -1,16 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Users, MapPin, Heart } from 'lucide-react';
 import { memo } from 'react';
-import { SEO } from '@/components/SEO';
 
 const About = memo(() => {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
-      <SEO 
-        title="À Propos"
-        description="Découvrez la mission d'Urbanomap : recenser et promouvoir les lieux de street art en France. Une plateforme collaborative pour la communauté de l'art urbain."
-        path="/about"
-      />
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">

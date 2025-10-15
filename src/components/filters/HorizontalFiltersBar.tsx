@@ -73,7 +73,7 @@ export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
                 <Badge
                   key={value}
                   variant={filters.types.includes(value) ? 'default' : 'outline'}
-                  className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
+                  className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-colors"
                   onClick={() => toggleType(value)}
                 >
                   {label}
@@ -85,7 +85,7 @@ export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
               {/* Region filters */}
               <Badge
                 variant={filters.region === 'all' ? 'default' : 'outline'}
-                className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
+                className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-colors"
                 onClick={() => setRegion('all')}
               >
                 Toutes régions
@@ -94,7 +94,7 @@ export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
                 <Badge
                   key={region}
                   variant={filters.region === region ? 'default' : 'outline'}
-                  className="cursor-pointer whitespace-nowrap hover:bg-primary/90"
+                  className="cursor-pointer whitespace-nowrap hover:bg-primary/80 transition-colors"
                   onClick={() => setRegion(region)}
                 >
                   {region}

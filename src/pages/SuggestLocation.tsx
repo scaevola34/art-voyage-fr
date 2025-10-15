@@ -11,7 +11,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { emailJsSuggestionSchema, type EmailJsSuggestionFormData } from "@/lib/forms/validation";
 import emailjs from "@emailjs/browser";
-import { SEO } from "@/components/SEO";
 
 const SuggestLocation = () => {
   const { toast } = useToast();
@@ -123,11 +122,6 @@ const SuggestLocation = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 bg-background">
-      <SEO 
-        title="Suggérer un Lieu"
-        description="Contribuez à la carte du street art en France. Proposez de nouveaux lieux, événements et festivals d'art urbain pour enrichir la communauté."
-        path="/suggest"
-      />
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">

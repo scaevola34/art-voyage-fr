@@ -4,24 +4,23 @@ import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Share2, ChevronLe
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { events, EventType as DataEventType } from '@/data/events';
 import { Event, EventType, getEventTypeName, getEventTypeColor, validateEvents } from '@/domain/events';
 import { locations } from '@/data/locations';
+import { frenchRegions } from '@/data/regions';
 import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
 import { useToast } from '@/hooks/use-toast';
-import { EventFiltersBar, EventFilterState } from '@/components/filters/EventFiltersBar';
-import { SEO } from '@/components/SEO';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
   const [viewMode, setViewMode] = useState<'calendar' | 'list' | 'week'>('list');
-  const [filters, setFilters] = useState<EventFilterState>({
-    types: [],
-    region: 'all',
-  });
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -50,14 +49,14 @@ const EventsCalendar = () => {
 
   const filteredEvents = useMemo(() => {
     return validatedEvents.filter(event => {
-      const matchesType = filters.types.length === 0 || filters.types.includes(event.type);
-      const matchesRegion = filters.region === 'all' || event.region === filters.region;
+      const matchesType = selectedType === 'all' || event.type === selectedType;
+      const matchesRegion = selectedRegion === 'all' || event.region === selectedRegion;
       const isPastEvent = isPast(parseISO(event.endDate));
       const matchesPastFilter = showPastEvents ? isPastEvent : !isPastEvent;
       
       return matchesType && matchesRegion && matchesPastFilter;
     }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-  }, [validatedEvents, filters, showPastEvents]);
+  }, [validatedEvents, selectedType, selectedRegion, showPastEvents]);
 
   const monthDays = useMemo(() => {
     const start = startOfMonth(currentMonth);
@@ -101,11 +100,6 @@ const EventsCalendar = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-12">
-      <SEO 
-        title="Agenda des Événements"
-        description="Consultez l'agenda complet des événements street art en France : festivals, vernissages, ateliers. Filtrez par type et région pour ne rien manquer de la scène artistique."
-        path="/agenda"
-      />
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16 px-4">
         <div className="container mx-auto max-w-6xl">
@@ -125,53 +119,76 @@ const EventsCalendar = () => {
 
       <div className="container mx-auto max-w-6xl px-4 mt-8">
         {/* Filters */}
-        <EventFiltersBar
-          filters={filters}
-          onFiltersChange={setFilters}
-          resultCount={filteredEvents.length}
-          totalCount={validatedEvents.length}
-          className="mb-6 rounded-lg"
-        />
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              <div className="flex gap-2 flex-1">
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Type d'événement" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les types</SelectItem>
+                    <SelectItem value="festival">Festivals</SelectItem>
+                    <SelectItem value="vernissage">Vernissages</SelectItem>
+                    <SelectItem value="atelier">Ateliers</SelectItem>
+                    <SelectItem value="autre">Autres</SelectItem>
+                  </SelectContent>
+                </Select>
 
-        {/* View Mode Toggle */}
-        <div className="flex justify-between items-center mb-6">
-          <Button
-            variant={showPastEvents ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowPastEvents(!showPastEvents)}
-            className="transition-all duration-200 ease-in-out hover:scale-105"
-          >
-            {showPastEvents ? 'À venir' : 'Archive'}
-          </Button>
+                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Région" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toutes les régions</SelectItem>
+                    {frenchRegions.map(region => (
+                      <SelectItem key={region} value={region}>{region}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')}>
-            <TabsList>
-              <TabsTrigger value="list" className="transition-all duration-200 ease-in-out">
-                <List className="h-4 w-4 mr-2" />
-                Liste
-              </TabsTrigger>
-              <TabsTrigger value="week" className="transition-all duration-200 ease-in-out">
-                <CalendarIcon className="h-4 w-4 mr-2" />
-                Semaine
-              </TabsTrigger>
-              <TabsTrigger value="calendar" className="transition-all duration-200 ease-in-out">
-                <CalendarIcon className="h-4 w-4 mr-2" />
-                Mois
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant={showPastEvents ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setShowPastEvents(!showPastEvents)}
+                >
+                  {showPastEvents ? 'À venir' : 'Archive'}
+                </Button>
+                
+                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')}>
+                  <TabsList>
+                    <TabsTrigger value="list">
+                      <List className="h-4 w-4 mr-2" />
+                      Liste
+                    </TabsTrigger>
+                    <TabsTrigger value="week">
+                      <CalendarIcon className="h-4 w-4 mr-2" />
+                      Semaine
+                    </TabsTrigger>
+                    <TabsTrigger value="calendar">
+                      <CalendarIcon className="h-4 w-4 mr-2" />
+                      Mois
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Week View */}
         {viewMode === 'week' && (
           <Card className="mb-6">
             <CardContent className="p-6">
+              {/* Week Navigation */}
               <div className="flex items-center justify-between mb-6">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentWeek(addDays(currentWeek, -7))}
-                  className="transition-all duration-200 ease-in-out hover:scale-105"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -182,7 +199,6 @@ const EventsCalendar = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentWeek(addDays(currentWeek, 7))}
-                  className="transition-all duration-200 ease-in-out hover:scale-105"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -215,7 +231,7 @@ const EventsCalendar = () => {
                             <button
                               key={event.id}
                               onClick={() => setSelectedEvent(event)}
-                              className={`w-full text-left text-xs p-2 rounded transition-all duration-300 ease-in-out hover:scale-105 ${getEventTypeColor(event.type)}`}
+                              className={`w-full text-left text-xs p-2 rounded transition-all hover:scale-105 ${getEventTypeColor(event.type)}`}
                             >
                               <div className="font-medium line-clamp-2">{event.title}</div>
                               <div className="text-xs opacity-75 mt-1">{event.city}</div>
@@ -235,12 +251,12 @@ const EventsCalendar = () => {
         {viewMode === 'calendar' && (
           <Card className="mb-6">
             <CardContent className="p-6">
+              {/* Month Navigation */}
               <div className="flex items-center justify-between mb-6">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                  className="transition-all duration-200 ease-in-out hover:scale-105"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -251,7 +267,6 @@ const EventsCalendar = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                  className="transition-all duration-200 ease-in-out hover:scale-105"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -274,10 +289,10 @@ const EventsCalendar = () => {
                       key={day.toString()}
                       onClick={() => dayEvents.length > 0 && setSelectedDate(day)}
                       className={`
-                        min-h-[80px] p-2 border rounded-lg text-left transition-all duration-300 ease-in-out
+                        min-h-[80px] p-2 border rounded-lg text-left transition-all
                         ${isCurrentDay ? 'bg-primary/10 border-primary' : 'border-border hover:border-primary/50'}
                         ${!isSameMonth(day, currentMonth) ? 'opacity-30' : ''}
-                        ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-accent/50 hover:scale-105' : 'cursor-default'}
+                        ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-accent/50' : 'cursor-default'}
                       `}
                     >
                       <div className={`text-sm font-medium mb-1 ${isCurrentDay ? 'text-primary' : ''}`}>
@@ -314,7 +329,7 @@ const EventsCalendar = () => {
                 <h3 className="text-lg font-semibold">
                   Événements du {format(selectedDate, 'd MMMM yyyy', { locale: fr })}
                 </h3>
-                <Button variant="ghost" size="sm" onClick={() => setSelectedDate(null)} className="transition-all duration-200 ease-in-out hover:scale-105">
+                <Button variant="ghost" size="sm" onClick={() => setSelectedDate(null)}>
                   Fermer
                 </Button>
               </div>
@@ -339,7 +354,7 @@ const EventsCalendar = () => {
                     Aucun événement ne correspond à vos critères
                   </p>
                   <Link to="/suggest">
-                    <Button className="transition-all duration-200 ease-in-out hover:scale-105">Suggérer un événement</Button>
+                    <Button>Suggérer un événement</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -427,7 +442,7 @@ const EventsCalendar = () => {
 
                 <div className="flex flex-wrap gap-2 pt-4 border-t">
                   {selectedEvent.website && (
-                    <Button asChild variant="default" className="transition-all duration-200 ease-in-out hover:scale-105">
+                    <Button asChild variant="default">
                       <a href={selectedEvent.website} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Site officiel
@@ -436,7 +451,7 @@ const EventsCalendar = () => {
                   )}
                   
                   {selectedEvent.locationId && (
-                    <Button asChild variant="outline" className="transition-all duration-200 ease-in-out hover:scale-105">
+                    <Button asChild variant="outline">
                       <Link to={`/map?location=${selectedEvent.locationId}`}>
                         <MapPin className="h-4 w-4 mr-2" />
                         Voir sur la carte
@@ -444,7 +459,7 @@ const EventsCalendar = () => {
                     </Button>
                   )}
                   
-                  <Button variant="outline" onClick={() => shareEvent(selectedEvent)} className="transition-all duration-200 ease-in-out hover:scale-105">
+                  <Button variant="outline" onClick={() => shareEvent(selectedEvent)}>
                     <Share2 className="h-4 w-4 mr-2" />
                     Partager
                   </Button>
@@ -489,7 +504,7 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
 
   return (
     <Card 
-      className="overflow-hidden hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02] cursor-pointer"
+      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={onClick}
     >
       <CardContent className="p-0">
@@ -536,7 +551,7 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
               {event.description}
             </p>
 
-            <Button variant="outline" size="sm" className="transition-all duration-200 ease-in-out hover:scale-105">
+            <Button variant="outline" size="sm">
               En savoir plus
             </Button>
           </div>

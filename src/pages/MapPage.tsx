@@ -15,7 +15,6 @@ import { HorizontalFiltersBar } from '@/components/filters/HorizontalFiltersBar'
 import { SearchBar } from '@/components/search/SearchBar';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SEO } from '@/components/SEO';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -169,11 +168,6 @@ const MapPage = memo(() => {
 
   return (
     <ErrorBoundary>
-      <SEO 
-        title="Carte Interactive"
-        description="Explorez la carte interactive des lieux de street art en France : galeries, associations et festivals. Filtrez par région et découvrez la scène artistique près de chez vous."
-        path="/map"
-      />
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
         {/* Header with search and filters */}
         <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">
@@ -205,7 +199,7 @@ const MapPage = memo(() => {
                   filteredLocations.map((location) => (
                     <Card
                       key={location.id}
-                      className={`cursor-pointer transition-all hover:shadow-md ${
+                      className={`cursor-pointer transition-all hover:shadow-lg ${
                         selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
                       }`}
                       onClick={() => handleLocationSelect(location)}
