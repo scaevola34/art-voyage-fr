@@ -1,33 +1,34 @@
 import { memo } from 'react';
-import { LocationType } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { X, Filter } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { EventType } from '@/domain/events';
 
-export interface FilterState {
-  types: LocationType[];
+export interface EventFilterState {
+  types: string[];
   region: string;
 }
 
-interface HorizontalFiltersBarProps {
-  filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+interface EventFiltersBarProps {
+  filters: EventFilterState;
+  onFiltersChange: (filters: EventFilterState) => void;
   resultCount: number;
   totalCount: number;
   className?: string;
 }
 
-const locationTypes: { value: LocationType; label: string }[] = [
-  { value: 'gallery', label: 'Galeries' },
-  { value: 'association', label: 'Associations' },
+const eventTypes: { value: string; label: string }[] = [
   { value: 'festival', label: 'Festivals' },
+  { value: 'vernissage', label: 'Vernissages' },
+  { value: 'atelier', label: 'Ateliers' },
+  { value: 'autre', label: 'Autres' },
 ];
 
-export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
+export const EventFiltersBar = memo<EventFiltersBarProps>(
   ({ filters, onFiltersChange, resultCount, totalCount, className = '' }) => {
-    const toggleType = (type: LocationType) => {
+    const toggleType = (type: string) => {
       const newTypes = filters.types.includes(type)
         ? filters.types.filter((t) => t !== type)
         : [...filters.types, type];
@@ -62,14 +63,14 @@ export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
               </Button>
             )}
             <span className="text-xs text-muted-foreground ml-auto">
-              {resultCount} / {totalCount} lieux
+              {resultCount} / {totalCount} événements
             </span>
           </div>
 
           <ScrollArea className="w-full">
             <div className="flex gap-2 pb-2">
               {/* Type filters */}
-              {locationTypes.map(({ value, label }) => (
+              {eventTypes.map(({ value, label }) => (
                 <Badge
                   key={value}
                   variant={filters.types.includes(value) ? 'default' : 'outline'}
@@ -109,4 +110,4 @@ export const HorizontalFiltersBar = memo<HorizontalFiltersBarProps>(
   }
 );
 
-HorizontalFiltersBar.displayName = 'HorizontalFiltersBar';
+EventFiltersBar.displayName = 'EventFiltersBar';

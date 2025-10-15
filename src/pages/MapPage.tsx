@@ -199,7 +199,7 @@ const MapPage = memo(() => {
                   filteredLocations.map((location) => (
                     <Card
                       key={location.id}
-                      className={`cursor-pointer transition-all hover:shadow-lg ${
+                      className={`cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] ${
                         selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
                       }`}
                       onClick={() => handleLocationSelect(location)}
