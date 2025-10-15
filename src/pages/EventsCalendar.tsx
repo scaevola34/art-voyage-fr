@@ -173,16 +173,6 @@ const EventsCalendar = () => {
                 >
                   {showPastEvents ? 'À venir' : 'Archive'}
                 </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDownloadAllEvents}
-                  disabled={filteredEvents.length === 0}
-                >
-                  <DownloadCloud className="h-4 w-4 mr-2" />
-                  Exporter ({filteredEvents.length})
-                </Button>
                 
                 <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')}>
                   <TabsList>

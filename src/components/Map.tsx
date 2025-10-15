@@ -112,7 +112,7 @@ const MapComponent: React.FC<MapProps> = memo(
 
       map.flyTo({
         center: [newCenter.lng, newCenter.lat],
-        zoom: 14,
+        zoom: 12,
         duration: 1000,
         essential: true,
       });
@@ -161,7 +161,7 @@ const MapComponent: React.FC<MapProps> = memo(
 
       map.flyTo({
         center: [newCenter.lng, newCenter.lat],
-        zoom: 14,
+        zoom: 12,
         duration: 1000,
         essential: true,
       });
@@ -217,8 +217,27 @@ const MapComponent: React.FC<MapProps> = memo(
             setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
           }}
         >
-          <NavigationControl position="top-right" showZoom showCompass visualizePitch style={{ zIndex: 100 }} />
-          <GeolocateControl position="top-right" trackUserLocation showUserHeading style={{ zIndex: 100 }} />
+          <NavigationControl 
+            position="bottom-right" 
+            showZoom 
+            showCompass 
+            visualizePitch 
+            style={{ 
+              zIndex: 100,
+              marginBottom: '20px',
+              marginRight: '20px'
+            }} 
+          />
+          <GeolocateControl 
+            position="bottom-right" 
+            trackUserLocation 
+            showUserHeading 
+            style={{ 
+              zIndex: 100,
+              marginBottom: '100px',
+              marginRight: '20px'
+            }} 
+          />
 
           {clusters.map((cluster) => {
             const [longitude, latitude] = cluster.geometry.coordinates;

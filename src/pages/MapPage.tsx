@@ -1,5 +1,4 @@
 import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo } from 'react';
-import Sidebar from '@/components/Sidebar';
 import { LocationDrawer } from '@/components/map/LocationDrawer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { locations as fallbackLocations, Location, LocationType } from '@/data/locations';
@@ -12,6 +11,10 @@ import {
 import { createLocationSearchIndex, searchLocations } from '@/lib/search/fuse';
 import type { FilterState } from '@/components/filters/FiltersPanel';
 import { getLocations } from '@/lib/supabase/queries';
+import { HorizontalFiltersBar } from '@/components/filters/HorizontalFiltersBar';
+import { SearchBar } from '@/components/search/SearchBar';
+import { Card, CardContent } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -165,42 +168,78 @@ const MapPage = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div className="h-screen w-full overflow-hidden bg-background">
-        <Sidebar
-          locations={filteredLocations}
-          selectedLocation={selectedLocation}
-          onLocationSelect={handleLocationSelect}
-          onFilterChange={handleFilterChange}
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-          filters={filters}
-          filteredCount={filteredLocations.length}
-          totalCount={allLocations.length}
-        />
-
-        <main
-          className="h-[calc(100vh-64px)] w-full md:ml-[400px]"
-          role="main"
-          aria-label="Carte interactive"
-          style={{ marginTop: '64px' }}
-        >
-          <Suspense
-            fallback={
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="text-sm text-muted-foreground">Loading...</div>
-              </div>
-            }
-          >
-            <Map
-              locations={filteredLocations}
-              selectedLocation={selectedLocation}
-              onLocationSelect={handleLocationSelect}
-              centerOnLocation={centeredLocation}
-              viewState={viewState}
-              onViewStateChange={handleViewStateChange}
+      <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
+        {/* Header with search and filters */}
+        <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">
+          <div className="px-4 py-3">
+            <SearchBar
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Rechercher un lieu, une ville..."
             />
-          </Suspense>
-        </main>
+          </div>
+          <HorizontalFiltersBar
+            filters={filters}
+            onFiltersChange={handleFilterChange}
+            resultCount={filteredLocations.length}
+            totalCount={allLocations.length}
+          />
+        </div>
+
+        <div className="flex flex-1 pt-32">
+          {/* Locations list sidebar */}
+          <aside className="w-80 border-r border-border bg-card hidden md:block">
+            <ScrollArea className="h-full">
+              <div className="p-4 space-y-2">
+                {filteredLocations.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">Aucun lieu trouvé</p>
+                  </div>
+                ) : (
+                  filteredLocations.map((location) => (
+                    <Card
+                      key={location.id}
+                      className={`cursor-pointer transition-all hover:shadow-lg ${
+                        selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
+                      }`}
+                      onClick={() => handleLocationSelect(location)}
+                    >
+                      <CardContent className="p-3">
+                        <h3 className="font-semibold text-sm mb-1">{location.name}</h3>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          {location.city}, {location.region}
+                        </p>
+                        <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                          {location.type}
+                        </span>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+          </aside>
+
+          {/* Map */}
+          <main className="flex-1 relative" role="main" aria-label="Carte interactive">
+            <Suspense
+              fallback={
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="text-sm text-muted-foreground">Loading...</div>
+                </div>
+              }
+            >
+              <Map
+                locations={filteredLocations}
+                selectedLocation={selectedLocation}
+                onLocationSelect={handleLocationSelect}
+                centerOnLocation={centeredLocation}
+                viewState={viewState}
+                onViewStateChange={handleViewStateChange}
+              />
+            </Suspense>
+          </main>
+        </div>
 
         <LocationDrawer location={selectedLocation} onClose={handleCloseDrawer} />
       </div>
