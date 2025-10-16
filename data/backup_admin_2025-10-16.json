@@ -1,0 +1,244 @@
+{
+  "metadata": {
+    "backup_date": "2025-10-16T09:12:00.000Z",
+    "backup_type": "full_admin_export",
+    "source": "lovable_workspace",
+    "purpose": "pre_github_export",
+    "total_locations": 11,
+    "total_events": 0,
+    "admin_password": "streetart2025"
+  },
+  "locations": [
+    {
+      "id": "17cda8ef-48d9-4105-af8b-ff893fdeadce",
+      "name": "Fluctuart",
+      "type": "gallery",
+      "description": "",
+      "address": "2 port du Gros Caillou",
+      "city": "75007 Paris",
+      "region": "Île-de-France",
+      "coordinates": {
+        "lat": 48.863132649161265,
+        "lng": 2.310295464455276
+      },
+      "website": "https://fluctuart.fr/",
+      "instagram": "fluctuart",
+      "email": "hello@fluctuart.fr",
+      "opening_hours": "HIVER : mer-dim : 12h - 02h ; ÉTÉ : 7J/7 : 12h - 02h",
+      "image": null,
+      "created_at": "2025-10-13T16:56:06.962509+00:00",
+      "updated_at": "2025-10-13T16:56:06.962509+00:00"
+    },
+    {
+      "id": "24bfeb54-7063-49e7-a329-6c069b9b7d10",
+      "name": "Graffiti & co Fine Arts",
+      "type": "gallery",
+      "description": "",
+      "address": "29 Rue Charlot",
+      "city": "75003 Paris",
+      "region": "Île-de-France",
+      "coordinates": {
+        "lat": 48.86240618587687,
+        "lng": 2.362516414188663
+      },
+      "website": "https://graffitifinearts.com/",
+      "instagram": "graffitiandco",
+      "email": null,
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:51:42.857063+00:00",
+      "updated_at": "2025-10-13T16:51:42.857063+00:00"
+    },
+    {
+      "id": "92862058-96a5-4412-8395-ca50e5c0209c",
+      "name": "Le Comoedia",
+      "type": "gallery",
+      "description": "",
+      "address": "35 Rue du Château",
+      "city": "29200 Brest",
+      "region": "Bretagne",
+      "coordinates": {
+        "lat": 48.38585353628859,
+        "lng": -4.487744771801004
+      },
+      "website": "https://www.artcomoedia.fr/",
+      "instagram": "comoedia_brest",
+      "email": "contact@artcomoedia.fr",
+      "opening_hours": "Jeudi - Samedi : 14h - 18h",
+      "image": null,
+      "created_at": "2025-10-13T16:49:53.892507+00:00",
+      "updated_at": "2025-10-13T16:49:53.892507+00:00"
+    },
+    {
+      "id": "01ddb358-7cd6-4bce-80ed-7979c1e3db4d",
+      "name": "Speerstra Gallery Paris",
+      "type": "gallery",
+      "description": "",
+      "address": "24 Rue Saint-Claude",
+      "city": "75003 Paris",
+      "region": "Île-de-France",
+      "coordinates": {
+        "lat": 48.86033599934997,
+        "lng": 2.3655664914396635
+      },
+      "website": "https://speerstra.net/",
+      "instagram": "speerstra_gallery",
+      "email": null,
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:46:33.369107+00:00",
+      "updated_at": "2025-10-13T16:46:33.369107+00:00"
+    },
+    {
+      "id": "b15643d2-0de0-4040-b5a7-6e1183fcd11f",
+      "name": "Art Five gallery",
+      "type": "gallery",
+      "description": "",
+      "address": "14 Quai de Rive Neuve",
+      "city": "13007 Marseille",
+      "region": "Provence-Alpes-Côte d'Azur",
+      "coordinates": {
+        "lat": 43.293099779687196,
+        "lng": 5.371547427260195
+      },
+      "website": "https://artfive.fr/",
+      "instagram": "artefivegallery",
+      "email": null,
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:40:58.88202+00:00",
+      "updated_at": "2025-10-13T16:40:58.88202+00:00"
+    },
+    {
+      "id": "72e960c8-56e5-4004-988f-b7a425584567",
+      "name": "La Poassonerie by Poasson",
+      "type": "gallery",
+      "description": "",
+      "address": "5 Rue des Phocéens",
+      "city": "13002 Marseille",
+      "region": "Provence-Alpes-Côte d'Azur",
+      "coordinates": {
+        "lat": 43.30049572648551,
+        "lng": 5.370826929112014
+      },
+      "website": "https://www.poasson.com/",
+      "instagram": null,
+      "email": "contact@aurdi.com",
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:38:13.67252+00:00",
+      "updated_at": "2025-10-13T16:38:13.67252+00:00"
+    },
+    {
+      "id": "e39cc42a-e14b-4860-ae02-0a25620a6ac6",
+      "name": "Ghost Galerie - Paris",
+      "type": "gallery",
+      "description": "",
+      "address": "11 Rue de Miromesnil",
+      "city": "75008 Paris",
+      "region": "Île-de-France",
+      "coordinates": {
+        "lat": 48.87201212374516,
+        "lng": 2.3165261374713824
+      },
+      "website": "https://www.ghostgalerie.com/",
+      "instagram": "ghostgalerie",
+      "email": "info@ghostgalerie.com",
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:34:54.170982+00:00",
+      "updated_at": "2025-10-13T16:34:54.170982+00:00"
+    },
+    {
+      "id": "a8320892-8c9a-4b9b-a063-1380dfe27b64",
+      "name": "Ghost Galerie - Marseille",
+      "type": "gallery",
+      "description": "",
+      "address": "2 Rue de Belloi",
+      "city": "13006 Marseille",
+      "region": "Provence-Alpes-Côte d'Azur",
+      "coordinates": {
+        "lat": 43.28963461167143,
+        "lng": 5.37865303740822
+      },
+      "website": "https://ghostgalerie.com/fr/",
+      "instagram": "ghostgalerie",
+      "email": "info@ghostgalerie.com",
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:33:43.965535+00:00",
+      "updated_at": "2025-10-13T16:35:13.510167+00:00"
+    },
+    {
+      "id": "d60d6e2e-a35e-43a7-b076-e3fb9f7074b1",
+      "name": "La Graffiti Compagnie ",
+      "type": "gallery",
+      "description": "",
+      "address": "27 rue du Général Leclerc",
+      "city": "44510 Le Pouliguen",
+      "region": "Pays de la Loire",
+      "coordinates": {
+        "lat": 47.27852122658911,
+        "lng": -2.42977032958165
+      },
+      "website": "https://galerieligne13paris.blogspot.com/",
+      "instagram": "graffiticompagnie",
+      "email": null,
+      "opening_hours": null,
+      "image": null,
+      "created_at": "2025-10-13T16:30:36.457555+00:00",
+      "updated_at": "2025-10-13T16:30:36.457555+00:00"
+    },
+    {
+      "id": "a0cc7916-dd67-4ac4-8cbf-5b0626b4decf",
+      "name": "Orlinda Gallery",
+      "type": "gallery",
+      "description": "",
+      "address": "33 Rue des 3 Rois",
+      "city": "68100 Mulhouse",
+      "region": "Grand Est",
+      "coordinates": {
+        "lat": 47.74601226410177,
+        "lng": 7.335878541085513
+      },
+      "website": "https://orlinda.gallery/",
+      "instagram": "orlinda.gallery",
+      "email": "contact@orlinda.gallery",
+      "opening_hours": "Jeudi - Vendredi : 14h30 - 19h ; Samedi : 10h30 - 12h30 et 14h30 - 19h",
+      "image": null,
+      "created_at": "2025-10-13T16:27:24.424581+00:00",
+      "updated_at": "2025-10-13T16:27:24.424581+00:00"
+    },
+    {
+      "id": "b47f57de-5eb8-4102-9b4b-70dade13250e",
+      "name": "Galerie Le Container",
+      "type": "gallery",
+      "description": "",
+      "address": "4 Rue Granet",
+      "city": "13100 Aix-en-Provence",
+      "region": "Île-de-France",
+      "coordinates": {
+        "lat": 43.52988227119029,
+        "lng": 5.4491249143180625
+      },
+      "website": "https://www.galerielecontainer.com/",
+      "instagram": "galerielecontainer",
+      "email": "contact@galerielecontainer.com",
+      "opening_hours": "Mardi - Samedi : 11h - 19h",
+      "image": null,
+      "created_at": "2025-10-13T16:20:35.942278+00:00",
+      "updated_at": "2025-10-13T16:20:35.942278+00:00"
+    }
+  ],
+  "events": [],
+  "audit_log": [],
+  "submissions": [],
+  "notes": [
+    "This backup was created before exporting the admin interface to GitHub",
+    "All data is currently stored in Supabase (Lovable Cloud)",
+    "Admin authentication uses client-side password: streetart2025",
+    "RLS policies on locations and events tables allow public read/write access",
+    "Admin page route: /admin",
+    "The admin interface includes: location management, event management, import/export, and statistics"
+  ]
+}
