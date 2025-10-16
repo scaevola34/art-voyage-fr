@@ -87,13 +87,13 @@ All colors MUST be HSL.
     background: hsl(0 0% 30%);
   }
 
-  /* Mapbox controls styling - high contrast for visibility */
+  /* Mapbox controls styling - light gray with dark icons for visibility */
   .mapboxgl-ctrl-group {
     @apply rounded-lg shadow-lg;
-    background: rgba(26, 26, 26, 0.95) !important;
-    backdrop-filter: blur(8px);
-    border: 1px solid hsl(var(--primary) / 0.3) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px hsl(var(--primary) / 0.2) !important;
+    background: #e0e0e0 !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
   }
 
   .mapboxgl-ctrl-group button {
@@ -102,11 +102,13 @@ All colors MUST be HSL.
     height: 40px !important;
     background: transparent !important;
     border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .mapboxgl-ctrl-group button:hover {
-    background: hsl(var(--primary)) !important;
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.6) !important;
+    background: #d0d0d0 !important;
   }
 
   .mapboxgl-ctrl-group button:focus {
@@ -123,7 +125,7 @@ All colors MUST be HSL.
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
-  /* Make all control icons bright white for visibility */
+  /* Make all control icons dark for high contrast on light background */
   .mapboxgl-ctrl-icon {
     opacity: 1 !important;
   }
@@ -132,7 +134,7 @@ All colors MUST be HSL.
   .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon,
   .mapboxgl-ctrl button.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon,
   .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
-    filter: invert(1) brightness(3) !important;
+    filter: invert(0) brightness(0.15) !important;
   }
 
   .mapboxgl-ctrl button:hover .mapboxgl-ctrl-icon {
@@ -142,7 +144,7 @@ All colors MUST be HSL.
   /* GPS button active state with pulsing animation */
   .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active,
   .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active-error {
-    background: hsl(var(--primary)) !important;
+    background: #c0c0c0 !important;
   }
 
   .mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active .mapboxgl-ctrl-icon {
