@@ -130,6 +130,7 @@ const MapPage = memo(() => {
   }, []);
 
   const handleLocationSelect = useCallback((location: Location) => {
+    console.log('[MapPage] Location card clicked:', location.name, location.coordinates);
     setSelectedLocation(location);
     setCenteredLocation(location);
 

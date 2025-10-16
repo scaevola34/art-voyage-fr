@@ -83,8 +83,17 @@ const MapComponent: React.FC<MapProps> = memo(
     // Fly to selected or centered location with offset for better UX
     useEffect(() => {
       const targetLocation = centerOnLocation || selectedLocation;
-      if (!targetLocation || !mapRef.current) return;
+      if (!targetLocation) {
+        console.log('[Map] No target location to center on');
+        return;
+      }
+      
+      if (!mapRef.current) {
+        console.log('[Map] Map reference not available yet');
+        return;
+      }
 
+      console.log('[Map] Centering on location:', targetLocation.name, targetLocation.coordinates);
       const map = mapRef.current.getMap();
       const container = map.getContainer();
       const { width, height } = container.getBoundingClientRect();
@@ -104,9 +113,10 @@ const MapComponent: React.FC<MapProps> = memo(
         const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
         const newCenter = map.unproject(newCenterPx);
 
+        console.log('[Map] Flying to mobile position:', newCenter.lng, newCenter.lat);
         map.flyTo({
           center: [newCenter.lng, newCenter.lat],
-          zoom: 12,
+          zoom: 14,
           duration: 1000,
           essential: true,
           easing: (t) => t * (2 - t), // ease-out
@@ -128,9 +138,10 @@ const MapComponent: React.FC<MapProps> = memo(
         const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
         const newCenter = map.unproject(newCenterPx);
 
+        console.log('[Map] Flying to desktop position:', newCenter.lng, newCenter.lat);
         map.flyTo({
           center: [newCenter.lng, newCenter.lat],
-          zoom: 12,
+          zoom: 14,
           duration: 1000,
           essential: true,
           easing: (t) => t * (2 - t), // ease-out
