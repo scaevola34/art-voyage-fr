@@ -34,6 +34,9 @@ const MapComponent: React.FC<MapProps> = memo(
     const [mapError, setMapError] = useState<string | null>(null);
     const superclusterRef = useRef(createClusterIndex());
     const mapRef = useRef<any>(null);
+    const mapReadyRef = useRef<boolean>(false);
+    const pendingFlyToRef = useRef<{ lng: number; lat: number } | null>(null);
+
 
     // Sync external viewState changes
     useEffect(() => {
@@ -80,141 +83,70 @@ const MapComponent: React.FC<MapProps> = memo(
       setClusters(newClusters);
     };
 
-    // Fly to selected or centered location with offset for better UX
+    // Fly to selected or centered location — robust with ready check
     useEffect(() => {
       const targetLocation = centerOnLocation || selectedLocation;
       if (!targetLocation) {
         console.log('[Map] No target location to center on');
         return;
       }
-      
-      if (!mapRef.current) {
-        console.log('[Map] Map reference not available yet');
-        return;
-      }
 
-      // Wrap in try-catch to prevent cascading failures
+      const coords = targetLocation.coordinates;
+      console.log('[Map] Requested center on:', targetLocation.name, coords);
+
       try {
-        console.log('[Map] Centering on location:', targetLocation.name, targetLocation.coordinates);
-        
-        // Validate coordinates exist and are valid numbers
-        if (!targetLocation.coordinates || 
-            typeof targetLocation.coordinates.lat !== 'number' || 
-            typeof targetLocation.coordinates.lng !== 'number') {
-          console.error('[Map] Invalid coordinates for', targetLocation.name, targetLocation.coordinates);
+        if (!coords || typeof coords.lat !== 'number' || typeof coords.lng !== 'number') {
+          console.error('[Map] Invalid coordinates for', targetLocation.name, coords);
           return;
         }
 
-        const { lat, lng } = targetLocation.coordinates;
-        
-        // Validate coordinates are in valid ranges
-        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          console.error('[Map] Coordinates out of range for', targetLocation.name, { lat, lng });
+        const lng = coords.lng;
+        const lat = coords.lat;
+
+        if (!mapRef.current) {
+          console.warn('[Map] mapRef missing, will queue flyTo after load');
+          pendingFlyToRef.current = { lng, lat };
           return;
         }
 
         const map = mapRef.current.getMap();
-        const container = map.getContainer();
-        const { width, height } = container.getBoundingClientRect();
 
-        if (isMobile) {
-          // Mobile: center vertically with offset for drawer
-          const drawerHeight = 200; // approximate drawer height
-          const desiredX = width / 2;
-          const desiredY = (height - drawerHeight) / 2;
-
-          const projected = map.project([lng, lat]);
-          const deltaX = desiredX - projected.x;
-          const deltaY = desiredY - projected.y;
-
-          const currentCenter = map.getCenter();
-          const centerPx = map.project(currentCenter);
-          const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-          const newCenter = map.unproject(newCenterPx);
-
-          // Validate calculated center before flying
-          if (isNaN(newCenter.lat) || isNaN(newCenter.lng) || 
-              newCenter.lat < -90 || newCenter.lat > 90 || 
-              newCenter.lng < -180 || newCenter.lng > 180) {
-            console.error('[Map] Invalid calculated center for mobile:', newCenter);
-            // Fallback: just center directly on location
-            map.flyTo({
-              center: [lng, lat],
-              zoom: 14,
-              duration: 1000,
-              essential: true,
-              easing: (t) => t * (2 - t),
-            });
-            return;
-          }
-
-          console.log('[Map] Flying to mobile position:', newCenter.lng, newCenter.lat);
+        const fly = () => {
+          console.log('[Map] flyTo called with', { lng, lat, zoom: 12 });
           map.flyTo({
-            center: [newCenter.lng, newCenter.lat],
-            zoom: 14,
-            duration: 1000,
+            center: [lng, lat],
+            zoom: 12,
+            speed: 1.2,
+            curve: 1.3,
             essential: true,
-            easing: (t) => t * (2 - t), // ease-out
           });
+        };
+
+        if (mapReadyRef.current || map.isStyleLoaded()) {
+          fly();
         } else {
-          // Desktop: offset to the left (20-25% of map width) so popup is fully visible
-          const sidebarWidth = 400; // sidebar width
-          const mapVisibleWidth = width - sidebarWidth;
-          const offsetPercent = 0.22; // 22% offset to the left
-          const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
-          const desiredY = height / 2;
-
-          const projected = map.project([lng, lat]);
-          const deltaX = desiredX - projected.x;
-          const deltaY = desiredY - projected.y;
-
-          const currentCenter = map.getCenter();
-          const centerPx = map.project(currentCenter);
-          const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-          const newCenter = map.unproject(newCenterPx);
-
-          // Validate calculated center before flying
-          if (isNaN(newCenter.lat) || isNaN(newCenter.lng) || 
-              newCenter.lat < -90 || newCenter.lat > 90 || 
-              newCenter.lng < -180 || newCenter.lng > 180) {
-            console.error('[Map] Invalid calculated center for desktop:', newCenter);
-            // Fallback: just center directly on location
-            map.flyTo({
-              center: [lng, lat],
-              zoom: 14,
-              duration: 1000,
-              essential: true,
-              easing: (t) => t * (2 - t),
-            });
-            return;
-          }
-
-          console.log('[Map] Flying to desktop position:', newCenter.lng, newCenter.lat);
-          map.flyTo({
-            center: [newCenter.lng, newCenter.lat],
-            zoom: 14,
-            duration: 1000,
-            essential: true,
-            easing: (t) => t * (2 - t), // ease-out
+          console.log('[Map] Map not ready yet, queueing flyTo');
+          pendingFlyToRef.current = { lng, lat };
+          map.once('load', () => {
+            mapReadyRef.current = true;
+            const pending = pendingFlyToRef.current;
+            pendingFlyToRef.current = null;
+            if (pending) {
+              console.log('[Map] Running queued flyTo after load', pending);
+              map.flyTo({
+                center: [pending.lng, pending.lat],
+                zoom: 12,
+                speed: 1.2,
+                curve: 1.3,
+                essential: true,
+              });
+            }
           });
         }
       } catch (error) {
-        console.error('[Map] Centering failed for', targetLocation.name, error);
-        // Don't let one failure break future centering attempts
-        // Try simple fallback: center directly without offset
-        try {
-          const map = mapRef.current.getMap();
-          map.flyTo({
-            center: [targetLocation.coordinates.lng, targetLocation.coordinates.lat],
-            zoom: 14,
-            duration: 1000,
-            essential: true,
-          });
-        } catch (fallbackError) {
-          console.error('[Map] Fallback centering also failed:', fallbackError);
-        }
+        console.error('[Map] Centering failed:', error);
       }
-    }, [selectedLocation, centerOnLocation, isMobile]);
+    }, [selectedLocation, centerOnLocation]);
 
     const handleClusterClick = (clusterId: number, longitude: number, latitude: number) => {
       if (!superclusterRef.current || !mapRef.current) return;
@@ -325,7 +257,20 @@ const MapComponent: React.FC<MapProps> = memo(
           style={{ width: '100%', height: '100%' }}
           onLoad={() => {
             setMapError(null);
+            mapReadyRef.current = true;
             console.log('[Map] onLoad: map initialized');
+            // If a flyTo was queued before load, run it now
+            if (pendingFlyToRef.current) {
+              const { lng, lat } = pendingFlyToRef.current;
+              pendingFlyToRef.current = null;
+              try {
+                const m = mapRef.current?.getMap();
+                console.log('[Map] Executing pending flyTo on onLoad', { lng, lat });
+                m?.flyTo({ center: [lng, lat], zoom: 12, speed: 1.2, curve: 1.3, essential: true });
+              } catch (e) {
+                console.error('[Map] Pending flyTo failed on load', e);
+              }
+            }
             const zoomInBtn = document.querySelector('.mapboxgl-ctrl-zoom-in');
             console.log('[Map] zoom control present:', !!zoomInBtn);
           }}
