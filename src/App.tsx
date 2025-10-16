@@ -21,6 +21,7 @@ const AdminQueue = lazy(() => import("./pages/AdminQueue"));
 const EventsCalendar = lazy(() => import("./pages/EventsCalendar"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const CGU = lazy(() => import("./pages/CGU"));
+const Partenaires = lazy(() => import("./pages/Partenaires"));
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ function AppContent() {
           <Route path="/admin/queue" element={<AdminQueue />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />
           <Route path="/cgu" element={<CGU />} />
+          <Route path="/partenaires" element={<Partenaires />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
