@@ -93,59 +93,126 @@ const MapComponent: React.FC<MapProps> = memo(
         return;
       }
 
-      console.log('[Map] Centering on location:', targetLocation.name, targetLocation.coordinates);
-      const map = mapRef.current.getMap();
-      const container = map.getContainer();
-      const { width, height } = container.getBoundingClientRect();
+      // Wrap in try-catch to prevent cascading failures
+      try {
+        console.log('[Map] Centering on location:', targetLocation.name, targetLocation.coordinates);
+        
+        // Validate coordinates exist and are valid numbers
+        if (!targetLocation.coordinates || 
+            typeof targetLocation.coordinates.lat !== 'number' || 
+            typeof targetLocation.coordinates.lng !== 'number') {
+          console.error('[Map] Invalid coordinates for', targetLocation.name, targetLocation.coordinates);
+          return;
+        }
 
-      if (isMobile) {
-        // Mobile: center vertically with offset for drawer
-        const drawerHeight = 200; // approximate drawer height
-        const desiredX = width / 2;
-        const desiredY = (height - drawerHeight) / 2;
+        const { lat, lng } = targetLocation.coordinates;
+        
+        // Validate coordinates are in valid ranges
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          console.error('[Map] Coordinates out of range for', targetLocation.name, { lat, lng });
+          return;
+        }
 
-        const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
-        const deltaX = desiredX - projected.x;
-        const deltaY = desiredY - projected.y;
+        const map = mapRef.current.getMap();
+        const container = map.getContainer();
+        const { width, height } = container.getBoundingClientRect();
 
-        const currentCenter = map.getCenter();
-        const centerPx = map.project(currentCenter);
-        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-        const newCenter = map.unproject(newCenterPx);
+        if (isMobile) {
+          // Mobile: center vertically with offset for drawer
+          const drawerHeight = 200; // approximate drawer height
+          const desiredX = width / 2;
+          const desiredY = (height - drawerHeight) / 2;
 
-        console.log('[Map] Flying to mobile position:', newCenter.lng, newCenter.lat);
-        map.flyTo({
-          center: [newCenter.lng, newCenter.lat],
-          zoom: 14,
-          duration: 1000,
-          essential: true,
-          easing: (t) => t * (2 - t), // ease-out
-        });
-      } else {
-        // Desktop: offset to the left (20-25% of map width) so popup is fully visible
-        const sidebarWidth = 400; // sidebar width
-        const mapVisibleWidth = width - sidebarWidth;
-        const offsetPercent = 0.22; // 22% offset to the left
-        const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
-        const desiredY = height / 2;
+          const projected = map.project([lng, lat]);
+          const deltaX = desiredX - projected.x;
+          const deltaY = desiredY - projected.y;
 
-        const projected = map.project([targetLocation.coordinates.lng, targetLocation.coordinates.lat]);
-        const deltaX = desiredX - projected.x;
-        const deltaY = desiredY - projected.y;
+          const currentCenter = map.getCenter();
+          const centerPx = map.project(currentCenter);
+          const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+          const newCenter = map.unproject(newCenterPx);
 
-        const currentCenter = map.getCenter();
-        const centerPx = map.project(currentCenter);
-        const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
-        const newCenter = map.unproject(newCenterPx);
+          // Validate calculated center before flying
+          if (isNaN(newCenter.lat) || isNaN(newCenter.lng) || 
+              newCenter.lat < -90 || newCenter.lat > 90 || 
+              newCenter.lng < -180 || newCenter.lng > 180) {
+            console.error('[Map] Invalid calculated center for mobile:', newCenter);
+            // Fallback: just center directly on location
+            map.flyTo({
+              center: [lng, lat],
+              zoom: 14,
+              duration: 1000,
+              essential: true,
+              easing: (t) => t * (2 - t),
+            });
+            return;
+          }
 
-        console.log('[Map] Flying to desktop position:', newCenter.lng, newCenter.lat);
-        map.flyTo({
-          center: [newCenter.lng, newCenter.lat],
-          zoom: 14,
-          duration: 1000,
-          essential: true,
-          easing: (t) => t * (2 - t), // ease-out
-        });
+          console.log('[Map] Flying to mobile position:', newCenter.lng, newCenter.lat);
+          map.flyTo({
+            center: [newCenter.lng, newCenter.lat],
+            zoom: 14,
+            duration: 1000,
+            essential: true,
+            easing: (t) => t * (2 - t), // ease-out
+          });
+        } else {
+          // Desktop: offset to the left (20-25% of map width) so popup is fully visible
+          const sidebarWidth = 400; // sidebar width
+          const mapVisibleWidth = width - sidebarWidth;
+          const offsetPercent = 0.22; // 22% offset to the left
+          const desiredX = sidebarWidth + (mapVisibleWidth * (0.5 - offsetPercent));
+          const desiredY = height / 2;
+
+          const projected = map.project([lng, lat]);
+          const deltaX = desiredX - projected.x;
+          const deltaY = desiredY - projected.y;
+
+          const currentCenter = map.getCenter();
+          const centerPx = map.project(currentCenter);
+          const newCenterPx = { x: centerPx.x - deltaX, y: centerPx.y - deltaY };
+          const newCenter = map.unproject(newCenterPx);
+
+          // Validate calculated center before flying
+          if (isNaN(newCenter.lat) || isNaN(newCenter.lng) || 
+              newCenter.lat < -90 || newCenter.lat > 90 || 
+              newCenter.lng < -180 || newCenter.lng > 180) {
+            console.error('[Map] Invalid calculated center for desktop:', newCenter);
+            // Fallback: just center directly on location
+            map.flyTo({
+              center: [lng, lat],
+              zoom: 14,
+              duration: 1000,
+              essential: true,
+              easing: (t) => t * (2 - t),
+            });
+            return;
+          }
+
+          console.log('[Map] Flying to desktop position:', newCenter.lng, newCenter.lat);
+          map.flyTo({
+            center: [newCenter.lng, newCenter.lat],
+            zoom: 14,
+            duration: 1000,
+            essential: true,
+            easing: (t) => t * (2 - t), // ease-out
+          });
+        }
+      } catch (error) {
+        console.error('[Map] Centering failed for', targetLocation.name, error);
+        // Don't let one failure break future centering attempts
+        // Try simple fallback: center directly without offset
+        try {
+          const map = mapRef.current.getMap();
+          map.flyTo({
+            center: [targetLocation.coordinates.lng, targetLocation.coordinates.lat],
+            zoom: 14,
+            duration: 1000,
+            essential: true,
+          });
+        } catch (fallbackError) {
+          console.error('[Map] Fallback centering also failed:', fallbackError);
+        }
       }
     }, [selectedLocation, centerOnLocation, isMobile]);
 
