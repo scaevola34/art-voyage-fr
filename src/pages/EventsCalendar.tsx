@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,12 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { events, EventType as DataEventType } from '@/data/events';
 import { Event, EventType, getEventTypeName, getEventTypeColor, validateEvents } from '@/domain/events';
 import { locations } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
 import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { getEvents } from '@/lib/supabase/queries';
 
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,8 +26,31 @@ const EventsCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Validate events on mount
+  // Load events from Supabase
+  useEffect(() => {
+    const loadEvents = async () => {
+      setIsLoading(true);
+      try {
+        const dbEvents = await getEvents();
+        setEvents(dbEvents);
+      } catch (error) {
+        console.error('Failed to load events:', error);
+        toast({
+          title: 'Erreur',
+          description: 'Impossible de charger les événements',
+          variant: 'destructive'
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadEvents();
+  }, [toast]);
+
+  // Validate events
   const validatedEvents = useMemo(() => {
     try {
       return validateEvents(events);
@@ -35,7 +58,7 @@ const EventsCalendar = () => {
       console.error('Event validation error:', error);
       return events; // Fallback to unvalidated
     }
-  }, []);
+  }, [events]);
 
 
   const getDateBadge = (dateStr: string) => {

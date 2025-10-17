@@ -201,7 +201,6 @@ const MapPage = memo(() => {
                         <SelectItem value="all">Tous les types</SelectItem>
                         <SelectItem value="gallery">Galeries</SelectItem>
                         <SelectItem value="association">Associations</SelectItem>
-                        <SelectItem value="festival">Festivals</SelectItem>
                       </SelectContent>
                     </Select>
 

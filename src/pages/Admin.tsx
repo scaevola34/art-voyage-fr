@@ -454,7 +454,7 @@ export default function Admin() {
         <Tabs defaultValue="list" className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 lg:w-auto">
             <TabsTrigger value="list">📋 Liste</TabsTrigger>
-            <TabsTrigger value="add">➕ Ajout rapide</TabsTrigger>
+            <TabsTrigger value="add">➕ Add Actor</TabsTrigger>
             <TabsTrigger value="import">📥 Import massif</TabsTrigger>
             <TabsTrigger value="events">📅 Événements</TabsTrigger>
             <TabsTrigger value="stats">📊 Statistiques</TabsTrigger>
@@ -631,11 +631,11 @@ export default function Admin() {
             </Card>
           </TabsContent>
 
-          {/* TAB: Ajout rapide */}
+          {/* TAB: Add Actor */}
           <TabsContent value="add">
             <Card>
               <CardHeader>
-                <CardTitle>Ajout rapide</CardTitle>
+                <CardTitle>Add Actor</CardTitle>
                 <CardDescription>Ajoutez un nouveau lieu rapidement</CardDescription>
               </CardHeader>
               <CardContent>
@@ -662,7 +662,6 @@ export default function Admin() {
                         <SelectContent>
                           <SelectItem value="gallery">Galerie</SelectItem>
                           <SelectItem value="association">Association</SelectItem>
-                          <SelectItem value="festival">Festival</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
