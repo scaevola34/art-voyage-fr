@@ -195,7 +195,7 @@ const MapPage = memo(() => {
             {/* Filters */}
             <Card>
               <CardContent className="p-4">
-                <div className="flex gap-2 w-full items-center">
+                <div className="flex flex-wrap gap-2 w-full items-center">
                     <Select 
                       value={filters.types.length === 1 ? filters.types[0] : filters.types.length > 1 ? 'multiple' : 'all'} 
                       onValueChange={(value) => {
@@ -206,7 +206,7 @@ const MapPage = memo(() => {
                         }
                       }}
                     >
-                      <SelectTrigger className="flex-1">
+                      <SelectTrigger className="w-[220px]">
                         <SelectValue placeholder="Type de lieu" />
                       </SelectTrigger>
                       <SelectContent>
@@ -217,7 +217,7 @@ const MapPage = memo(() => {
                     </Select>
 
                     <Select value={filters.region} onValueChange={(value) => handleFilterChange({ ...filters, region: value })}>
-                      <SelectTrigger className="flex-1">
+                      <SelectTrigger className="w-[220px]">
                         <SelectValue placeholder="Région" />
                       </SelectTrigger>
                       <SelectContent>
@@ -235,6 +235,16 @@ const MapPage = memo(() => {
                     >
                       Réinitialiser
                     </button>
+
+                    {isFiltersActive && (
+                      <div className="ml-auto px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30">
+                        <span className="text-sm font-medium text-primary">
+                          {filteredLocations.length === 0
+                            ? "Aucun résultat"
+                            : `${filteredLocations.length} résultat${filteredLocations.length > 1 ? 's' : ''}`}
+                        </span>
+                      </div>
+                    )}
                 </div>
               </CardContent>
             </Card>
