@@ -168,6 +168,18 @@ const MapPage = memo(() => {
     });
   }, []);
 
+  const handleResetFilters = useCallback(() => {
+    setFilters({ types: [], region: 'all' });
+    setSearchQuery('');
+    setViewState({
+      latitude: 46.6031,
+      longitude: 2.3522,
+      zoom: 6,
+    });
+  }, []);
+
+  const isFiltersActive = filters.types.length > 0 || filters.region !== 'all' || searchQuery.length > 0;
+
   return (
     <ErrorBoundary>
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
@@ -183,7 +195,7 @@ const MapPage = memo(() => {
             {/* Filters */}
             <Card>
               <CardContent className="p-4">
-                <div className="flex gap-2 w-full">
+                <div className="flex gap-2 w-full items-center">
                     <Select 
                       value={filters.types.length === 1 ? filters.types[0] : filters.types.length > 1 ? 'multiple' : 'all'} 
                       onValueChange={(value) => {
@@ -215,6 +227,14 @@ const MapPage = memo(() => {
                         ))}
                       </SelectContent>
                     </Select>
+
+                    <button
+                      onClick={handleResetFilters}
+                      disabled={!isFiltersActive}
+                      className="px-4 py-2 rounded-md border transition-all whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed border-primary/30 hover:border-primary hover:bg-primary/10 disabled:hover:border-primary/30 disabled:hover:bg-transparent"
+                    >
+                      Réinitialiser
+                    </button>
                 </div>
               </CardContent>
             </Card>
@@ -226,8 +246,8 @@ const MapPage = memo(() => {
           <aside className="w-80 border-r border-border bg-card hidden md:flex md:flex-col">
             {/* Fixed counter at top of sidebar */}
             <div className="px-4 py-3 border-b border-border bg-card/95 backdrop-blur-sm">
-              <div className="text-sm text-muted-foreground">
-                {filteredLocations.length} / {allLocations.length} lieux
+              <div className="text-sm font-medium text-primary">
+                {filteredLocations.length} {filteredLocations.length === 1 ? 'résultat trouvé' : 'résultats trouvés'}
               </div>
             </div>
             
