@@ -1,5 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Mail } from 'lucide-react';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 export default function CGU() {
   const currentDate = new Date().toLocaleDateString('fr-FR', { 
@@ -10,12 +11,7 @@ export default function CGU() {
 
   return (
     <>
-      <Helmet>
-        <title>Conditions Générales d'Utilisation - Urbanomap</title>
-        <meta name="description" content="Conditions générales d'utilisation du site Urbanomap. Droits, obligations et responsabilités des utilisateurs." />
-        <meta name="robots" content="noindex, follow" />
-      </Helmet>
-
+      <SEO config={getPageSEO('cgu')} />
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <article className="prose prose-invert max-w-none">
           <h1 className="text-4xl font-bold text-foreground mb-8">Conditions Générales d'Utilisation</h1>

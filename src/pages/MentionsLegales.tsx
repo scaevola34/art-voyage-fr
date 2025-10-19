@@ -1,15 +1,11 @@
-import { Helmet } from 'react-helmet-async';
 import { Mail } from 'lucide-react';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 export default function MentionsLegales() {
   return (
     <>
-      <Helmet>
-        <title>Mentions Légales - Urbanomap</title>
-        <meta name="description" content="Mentions légales du site Urbanomap. Informations sur l'éditeur, l'hébergement, et les données personnelles." />
-        <meta name="robots" content="noindex, follow" />
-      </Helmet>
-
+      <SEO config={getPageSEO('legal')} />
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <article className="prose prose-invert max-w-none">
           <h1 className="text-4xl font-bold text-foreground mb-8">Mentions Légales</h1>

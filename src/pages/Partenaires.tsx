@@ -1,8 +1,9 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 const Partenaires = () => {
   const comptabilitePartners = [
@@ -48,11 +49,7 @@ const Partenaires = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Nos Partenaires - Urbano Map</title>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
-
+      <SEO config={getPageSEO('partners')} />
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary/20 via-background to-background py-20 px-4 sm:px-6 lg:px-8">

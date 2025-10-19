@@ -12,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { emailJsSuggestionSchema, type EmailJsSuggestionFormData } from "@/lib/forms/validation";
 import emailjs from "@emailjs/browser";
 import { frenchRegions } from "@/data/regions";
+import { SEO } from "@/components/SEO";
+import { getPageSEO } from "@/config/seo";
 
 const SuggestLocation = () => {
   const { toast } = useToast();
@@ -123,6 +125,7 @@ const SuggestLocation = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 bg-background">
+      <SEO config={getPageSEO('suggest')} />
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">

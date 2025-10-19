@@ -13,8 +13,9 @@ import { frenchRegions } from '@/data/regions';
 import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getEvents } from '@/lib/supabase/queries';
-
 import { useToast } from '@/hooks/use-toast';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -123,6 +124,7 @@ const EventsCalendar = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-12">
+      <SEO config={getPageSEO('events')} />
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16 px-4">
         <div className="container mx-auto max-w-6xl">

@@ -16,6 +16,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { frenchRegions } from '@/data/regions';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -182,6 +184,7 @@ const MapPage = memo(() => {
 
   return (
     <ErrorBoundary>
+      <SEO config={getPageSEO('map')} />
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
         {/* Header with search and filters */}
         <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">
