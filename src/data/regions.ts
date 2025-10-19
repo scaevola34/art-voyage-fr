@@ -10,6 +10,7 @@ export const frenchRegions = [
   'Normandie',
   'Nouvelle-Aquitaine',
   'Occitanie',
+  'Outre-Mer',
   'Pays de la Loire',
   'Provence-Alpes-Côte d\'Azur',
 ] as const;

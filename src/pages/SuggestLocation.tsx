@@ -11,6 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { emailJsSuggestionSchema, type EmailJsSuggestionFormData } from "@/lib/forms/validation";
 import emailjs from "@emailjs/browser";
+import { frenchRegions } from "@/data/regions";
 
 const SuggestLocation = () => {
   const { toast } = useToast();
@@ -266,20 +267,9 @@ const SuggestLocation = () => {
                           <SelectValue placeholder="Sélectionnez une région" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Auvergne-Rhône-Alpes">Auvergne-Rhône-Alpes</SelectItem>
-                          <SelectItem value="Bourgogne-Franche-Comté">Bourgogne-Franche-Comté</SelectItem>
-                          <SelectItem value="Bretagne">Bretagne</SelectItem>
-                          <SelectItem value="Centre-Val de Loire">Centre-Val de Loire</SelectItem>
-                          <SelectItem value="Corse">Corse</SelectItem>
-                          <SelectItem value="Grand Est">Grand Est</SelectItem>
-                          <SelectItem value="Hauts-de-France">Hauts-de-France</SelectItem>
-                          <SelectItem value="Île-de-France">Île-de-France</SelectItem>
-                          <SelectItem value="Normandie">Normandie</SelectItem>
-                          <SelectItem value="Nouvelle-Aquitaine">Nouvelle-Aquitaine</SelectItem>
-                          <SelectItem value="Occitanie">Occitanie</SelectItem>
-                          <SelectItem value="Pays de la Loire">Pays de la Loire</SelectItem>
-                          <SelectItem value="Provence-Alpes-Côte d'Azur">Provence-Alpes-Côte d'Azur</SelectItem>
-                          <SelectItem value="Outre-mer">Outre-mer</SelectItem>
+                          {frenchRegions.map(region => (
+                            <SelectItem key={region} value={region}>{region}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
