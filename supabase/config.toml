@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.submit-suggestion]
 verify_jwt = false
+
+[functions.optimize-image]
+verify_jwt = false
