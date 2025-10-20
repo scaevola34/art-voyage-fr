@@ -130,12 +130,48 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          action: string
+          attempts: number
+          blocked_until: string | null
+          created_at: string
+          id: string
+          identifier: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          action: string
+          attempts?: number
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          identifier: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          action?: string
+          attempts?: number
+          blocked_until?: string | null
+          created_at?: string
+          id?: string
+          identifier?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_rate_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       event_type: "festival" | "vernissage" | "atelier" | "autre"
