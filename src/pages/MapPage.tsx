@@ -18,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { frenchRegions } from '@/data/regions';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
-import { trackMarkerClick, trackFilterChange, trackPageView } from '@/lib/analytics';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -38,11 +37,6 @@ const MapPage = memo(() => {
     longitude: 2.3522,
     zoom: 6,
   });
-
-  // Track page view on mount
-  useEffect(() => {
-    trackPageView('/carte', 'Carte Interactive');
-  }, []);
 
   // Load locations from Supabase on mount
   useEffect(() => {
@@ -130,15 +124,8 @@ const MapPage = memo(() => {
   }, [allLocations]); // Run when allLocations loads
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {
-    // Track filter changes
-    if (newFilters.types !== filters.types) {
-      trackFilterChange('category', newFilters.types.join(',') || 'all');
-    }
-    if (newFilters.region !== filters.region) {
-      trackFilterChange('region', newFilters.region);
-    }
     setFilters(newFilters);
-  }, [filters]);
+  }, []);
 
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
@@ -146,10 +133,6 @@ const MapPage = memo(() => {
 
   const handleLocationSelect = useCallback((location: Location) => {
     console.log('[MapPage] Location card clicked:', location.name, location.coordinates);
-    
-    // Track marker click
-    trackMarkerClick(location.name, location.type, location.city);
-    
     setSelectedLocation(location);
     setCenteredLocation(location);
 

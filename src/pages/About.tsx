@@ -1,16 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Users, MapPin, Heart } from 'lucide-react';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
-import { trackPageView } from '@/lib/analytics';
 
 const About = memo(() => {
-  // Track page view on mount
-  useEffect(() => {
-    trackPageView('/a-propos', 'À Propos');
-  }, []);
-
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <SEO config={getPageSEO('about')} />
