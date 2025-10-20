@@ -36,7 +36,7 @@ export const LocationMarker = memo(function LocationMarker({
           height: isSelected ? '32px' : '28px',
           borderRadius: '50%',
           backgroundColor: color,
-          border: isSelected ? '3px solid rgba(255, 255, 255, 0.8)' : '2px solid rgba(255, 255, 255, 0.2)',
+          border: isSelected ? '3px solid rgba(255, 255, 255, 0.9)' : '2px solid rgba(255, 255, 255, 0.4)',
           cursor: 'pointer',
           boxShadow: isSelected
             ? `0 0 30px ${color}, 0 4px 12px rgba(0, 0, 0, 0.3)`
@@ -47,7 +47,7 @@ export const LocationMarker = memo(function LocationMarker({
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.3) translateY(-3px)';
           e.currentTarget.style.boxShadow = `0 0 25px ${color}, 0 6px 16px rgba(0, 0, 0, 0.4)`;
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.8)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = isSelected ? 'scale(1.2)' : 'scale(1)';
@@ -55,8 +55,8 @@ export const LocationMarker = memo(function LocationMarker({
             ? `0 0 30px ${color}, 0 4px 12px rgba(0, 0, 0, 0.3)`
             : `0 0 15px ${color}60`;
           e.currentTarget.style.borderColor = isSelected
-            ? 'rgba(255, 255, 255, 0.8)'
-            : 'rgba(255, 255, 255, 0.2)';
+            ? 'rgba(255, 255, 255, 0.9)'
+            : 'rgba(255, 255, 255, 0.4)';
         }}
       />
     </Marker>

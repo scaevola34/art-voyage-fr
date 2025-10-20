@@ -39,7 +39,7 @@ export const ClusterMarker = memo(function ClusterMarker({
           height: `${size}px`,
           borderRadius: '50%',
           backgroundColor: 'hsl(var(--primary))',
-          border: '3px solid rgba(255, 255, 255, 0.3)',
+          border: '3px solid rgba(255, 255, 255, 0.5)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
