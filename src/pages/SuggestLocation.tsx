@@ -14,6 +14,7 @@ import emailjs from "@emailjs/browser";
 import { frenchRegions } from "@/data/regions";
 import { SEO } from "@/components/SEO";
 import { getPageSEO } from "@/config/seo";
+import { checkRateLimit, recordAttempt, formatBlockedTime } from "@/lib/security/rateLimit";
 
 const SuggestLocation = () => {
   const { toast } = useToast();
@@ -59,6 +60,27 @@ const SuggestLocation = () => {
   };
 
   const onSubmit = async (data: EmailJsSuggestionFormData) => {
+    // Check rate limit before submitting
+    const rateLimitKey = 'suggest-location-form';
+    const rateLimitCheck = checkRateLimit(rateLimitKey, {
+      maxAttempts: 3,
+      windowMs: 60000, // 1 minute
+      blockDurationMs: 300000, // 5 minutes
+    });
+
+    if (!rateLimitCheck.isAllowed) {
+      const blockedTime = rateLimitCheck.blockedUntil
+        ? formatBlockedTime(rateLimitCheck.blockedUntil)
+        : '5 minutes';
+      
+      toast({
+        title: "Trop de tentatives",
+        description: `Veuillez attendre ${blockedTime} avant de soumettre à nouveau.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setStatus("");
       
@@ -96,6 +118,9 @@ const SuggestLocation = () => {
       );
 
       console.log("✅ EmailJS response:", response);
+
+      // Record successful attempt for rate limiting
+      recordAttempt(rateLimitKey);
 
       setStatus("✅ Merci ! Votre suggestion a été envoyée à notre équipe.");
       toast({

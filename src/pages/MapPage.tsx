@@ -19,6 +19,7 @@ import { frenchRegions } from '@/data/regions';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateWebSiteSchema } from '@/lib/seo/structuredData';
+import { LocationListSkeleton, MapSkeleton } from '@/components/LoadingSkeleton';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -29,6 +30,7 @@ const MapPage = memo(() => {
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
   const [filteredLocations, setFilteredLocations] = useState<Location[]>(fallbackLocations);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoadingLocations, setIsLoadingLocations] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     types: [],
     region: 'all',
@@ -42,6 +44,7 @@ const MapPage = memo(() => {
   // Load locations from Supabase on mount
   useEffect(() => {
     const loadLocations = async () => {
+      setIsLoadingLocations(true);
       try {
         const dbLocations = await getLocations();
         if (dbLocations && dbLocations.length > 0) {
@@ -50,6 +53,8 @@ const MapPage = memo(() => {
       } catch (error) {
         console.error('Failed to load locations from database, using local data:', error);
         // Keep using fallbackLocations
+      } finally {
+        setIsLoadingLocations(false);
       }
     };
     loadLocations();
@@ -269,45 +274,43 @@ const MapPage = memo(() => {
             
             {/* Scrollable location cards */}
             <ScrollArea className="flex-1">
-              <div className="p-4 space-y-2">
-                {filteredLocations.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">Aucun lieu trouvé</p>
-                  </div>
-                ) : (
-                  filteredLocations.map((location) => (
-                    <Card
-                      key={location.id}
-                      className={`cursor-pointer transition-all hover:shadow-lg ${
-                        selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
-                      }`}
-                      onClick={() => handleLocationSelect(location)}
-                    >
-                      <CardContent className="p-3">
-                        <h3 className="font-semibold text-sm mb-1">{location.name}</h3>
-                        <p className="text-xs text-muted-foreground mb-1">
-                          {location.city}, {location.region}
-                        </p>
-                        <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
-                          {location.type}
-                        </span>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
+              {isLoadingLocations ? (
+                <LocationListSkeleton count={8} />
+              ) : (
+                <div className="p-4 space-y-2">
+                  {filteredLocations.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-muted-foreground">Aucun lieu trouvé</p>
+                    </div>
+                  ) : (
+                    filteredLocations.map((location) => (
+                      <Card
+                        key={location.id}
+                        className={`cursor-pointer transition-all hover:shadow-lg ${
+                          selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
+                        }`}
+                        onClick={() => handleLocationSelect(location)}
+                      >
+                        <CardContent className="p-3">
+                          <h3 className="font-semibold text-sm mb-1">{location.name}</h3>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            {location.city}, {location.region}
+                          </p>
+                          <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
+                            {location.type}
+                          </span>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              )}
             </ScrollArea>
           </aside>
 
           {/* Map */}
           <main className="flex-1 relative" role="main" aria-label="Carte interactive">
-            <Suspense
-              fallback={
-                <div className="h-full w-full flex items-center justify-center">
-                  <div className="text-sm text-muted-foreground">Loading...</div>
-                </div>
-              }
-            >
+            <Suspense fallback={<MapSkeleton />}>
               <Map
                 locations={filteredLocations}
                 selectedLocation={selectedLocation}
