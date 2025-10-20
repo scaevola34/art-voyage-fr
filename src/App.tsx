@@ -31,27 +31,32 @@ function AppContent() {
 
   return (
     <>
+      <a href="#main-content" className="skip-to-content">
+        Aller au contenu principal
+      </a>
       <Header />
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <Skeleton className="h-96 w-full max-w-4xl" />
-        </div>
-      }>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/agenda" element={<EventsCalendar />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/suggest" element={<SuggestLocation />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/queue" element={<AdminQueue />} />
-          <Route path="/mentions-legales" element={<MentionsLegales />} />
-          <Route path="/cgu" element={<CGU />} />
-          <Route path="/partenaires" element={<Partenaires />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <main id="main-content">
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <Skeleton className="h-96 w-full max-w-4xl" />
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/map" element={<MapPage />} />
+            <Route path="/agenda" element={<EventsCalendar />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/suggest" element={<SuggestLocation />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/queue" element={<AdminQueue />} />
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/cgu" element={<CGU />} />
+            <Route path="/partenaires" element={<Partenaires />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
       {!isMapPage && <Footer />}
       <ConsentBanner />
     </>

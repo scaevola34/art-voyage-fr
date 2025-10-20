@@ -16,7 +16,10 @@ export const UrbanoMapLogo = ({ className = "", size = 40 }: UrbanoMapLogoProps)
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      role="img"
+      aria-label="Logo Urbanomap - Réseau interconnecté de lieux street art"
     >
+      <title>Logo Urbanomap</title>
       {/* Central map pin with urban flow */}
       <g>
         {/* Connection routes - organic network */}
@@ -71,7 +74,10 @@ export const UrbanoMapFavicon = () => {
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Favicon Urbanomap"
     >
+      <title>Favicon Urbanomap</title>
       {/* Simplified pin with network */}
       <circle cx="16" cy="8" r="2" fill="#00ff88" />
       <path
