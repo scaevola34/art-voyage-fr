@@ -9,6 +9,7 @@ import { getLocations } from '@/lib/supabase/queries';
 import UpcomingEvents from '@/components/UpcomingEvents';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { generateWebSiteSchema, generateOrganizationSchema } from '@/lib/seo/structuredData';
 
 const Home = memo(() => {
   const { data: locations = [], isLoading } = useQuery({
@@ -23,9 +24,17 @@ const Home = memo(() => {
     total: locations.length,
   }), [locations]);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      generateWebSiteSchema(),
+      generateOrganizationSchema()
+    ]
+  };
+
   return (
     <div className="min-h-screen">
-      <SEO config={getPageSEO('home')} />
+      <SEO config={getPageSEO('home')} structuredData={structuredData} />
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 bg-gradient-hero overflow-hidden" aria-labelledby="hero-title">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(0,255,135,0.1),transparent_50%)]" />

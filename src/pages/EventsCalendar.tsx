@@ -16,6 +16,7 @@ import { getEvents } from '@/lib/supabase/queries';
 import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { generateEventSchema } from '@/lib/seo/structuredData';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -122,9 +123,22 @@ const EventsCalendar = () => {
     }
   };
 
+  // Generate structured data for upcoming events
+  const structuredData = filteredEvents.length > 0 && !showPastEvents
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": filteredEvents.slice(0, 5).map((event, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": generateEventSchema(event)
+        }))
+      }
+    : undefined;
+
   return (
     <div className="min-h-screen pt-20 pb-12">
-      <SEO config={getPageSEO('events')} />
+      <SEO config={getPageSEO('events')} structuredData={structuredData} />
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16 px-4">
         <div className="container mx-auto max-w-6xl">

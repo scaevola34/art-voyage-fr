@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { frenchRegions } from '@/data/regions';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { generateWebSiteSchema } from '@/lib/seo/structuredData';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -182,9 +183,11 @@ const MapPage = memo(() => {
 
   const isFiltersActive = filters.types.length > 0 || filters.region !== 'all' || searchQuery.length > 0;
 
+  const structuredData = generateWebSiteSchema();
+
   return (
     <ErrorBoundary>
-      <SEO config={getPageSEO('map')} />
+      <SEO config={getPageSEO('map')} structuredData={structuredData} />
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
         {/* Header with search and filters */}
         <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">

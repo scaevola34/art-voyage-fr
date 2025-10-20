@@ -25,13 +25,13 @@ export const defaultSEO: SEOConfig = {
 export const pageSEO: Record<string, SEOConfig> = {
   home: {
     title: 'Urbanomap – Carte Interactive du Street Art en France',
-    description: 'Découvrez galeries, associations et festivals de street art en France. Une carte interactive et vivante pour explorer la culture urbaine.',
+    description: 'Découvrez galeries, associations et festivals de street art en France. Carte interactive pour explorer la culture urbaine.',
     path: '/',
     image: DEFAULT_OG_IMAGE,
   },
   map: {
     title: 'Carte Interactive – Urbanomap',
-    description: 'Explorez notre carte interactive du street art en France. Trouvez des galeries, associations et festivals près de chez vous.',
+    description: 'Explorez la carte interactive du street art en France. Trouvez galeries, associations et festivals près de chez vous.',
     path: '/carte',
     image: DEFAULT_OG_IMAGE,
   },
@@ -43,7 +43,7 @@ export const pageSEO: Record<string, SEOConfig> = {
   },
   events: {
     title: 'Agenda des Événements – Urbanomap',
-    description: 'Retrouvez tous les événements street art en France : festivals, expositions, vernissages et rencontres artistiques.',
+    description: 'Tous les événements street art en France : festivals, expositions, vernissages et rencontres artistiques à venir.',
     path: '/agenda',
     image: DEFAULT_OG_IMAGE,
   },
