@@ -1,5 +1,19 @@
 # Welcome to your Lovable project
 
+## 🧭 Development Workflow
+
+**Branch Strategy:**
+- All Lovable prompts and experimental changes are made on the `lovable-test` branch
+- Once verified and tested, merge `lovable-test` into `main` to deploy to production
+- Vercel automatically deploys `main` to production
+- Vercel also deploys `lovable-test` as a preview at a temporary URL
+
+**How to use:**
+1. Make changes via Lovable prompts (auto-commits to `lovable-test`)
+2. Test the preview deployment
+3. When ready, merge `lovable-test` → `main` via GitHub PR
+4. Production automatically updates
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/0d493090-85b6-4326-bc59-5493751a5d09
