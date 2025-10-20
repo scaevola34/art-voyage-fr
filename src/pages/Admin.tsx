@@ -15,6 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { frenchRegions } from '@/data/regions';
 import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
+import { MissingPlacesDetector } from '@/components/admin/MissingPlacesDetector';
 
 const ADMIN_PASSWORD = 'streetart2025';
 
@@ -462,6 +463,12 @@ export default function Admin() {
 
           {/* TAB: Liste des lieux */}
           <TabsContent value="list" className="space-y-4">
+            {/* Missing Places Detector */}
+            <MissingPlacesDetector 
+              onPlaceAdded={(newLocation) => {
+                setLocations([...locations, newLocation]);
+              }}
+            />
             <Card>
               <CardHeader>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
