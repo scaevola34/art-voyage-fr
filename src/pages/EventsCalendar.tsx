@@ -16,6 +16,7 @@ import { getEvents } from '@/lib/supabase/queries';
 import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { trackPageView } from '@/lib/analytics';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -29,6 +30,11 @@ const EventsCalendar = () => {
   const [showPastEvents, setShowPastEvents] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/agenda', 'Agenda des Événements');
+  }, []);
 
   // Load events from Supabase
   useEffect(() => {
