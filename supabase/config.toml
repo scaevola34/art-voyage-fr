@@ -2,3 +2,6 @@ project_id = "banxmieassvfwjzixrln"
 
 [functions.detect-missing-places]
 verify_jwt = false
+
+[functions.submit-suggestion]
+verify_jwt = false
