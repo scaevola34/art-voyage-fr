@@ -12,6 +12,7 @@ import {
 import { LocationMarker } from '@/components/map/LocationMarker';
 import { ClusterMarker } from '@/components/map/ClusterMarker';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface MapProps {
   locations: Location[];
@@ -25,6 +26,7 @@ interface MapProps {
 const MapComponent: React.FC<MapProps> = memo(
   ({ locations, selectedLocation, onLocationSelect, centerOnLocation, viewState, onViewStateChange }) => {
     const isMobile = useIsMobile();
+    const { trackMapInteraction } = useAnalytics();
     const [localViewState, setLocalViewState] = useState({
       longitude: viewState?.longitude ?? 2.3522,
       latitude: viewState?.latitude ?? 46.6031,
@@ -153,6 +155,12 @@ const MapComponent: React.FC<MapProps> = memo(
 
       const expansionZoom = getClusterExpansionZoom(superclusterRef.current, clusterId);
 
+      // Track cluster interaction
+      trackMapInteraction('cluster_clicked', {
+        cluster_id: clusterId,
+        expansion_zoom: expansionZoom,
+      });
+
       setLocalViewState({
         ...localViewState,
         longitude,
@@ -224,6 +232,13 @@ const MapComponent: React.FC<MapProps> = memo(
     const handleMove = (evt: any) => {
       setLocalViewState(evt.viewState);
       onViewStateChange?.(evt.viewState);
+      
+      // Track significant map movements (debounced via throttle)
+      if (Math.abs(evt.viewState.zoom - localViewState.zoom) > 0.5) {
+        trackMapInteraction('moved', {
+          zoom_level: Math.round(evt.viewState.zoom),
+        });
+      }
     };
 
     return (

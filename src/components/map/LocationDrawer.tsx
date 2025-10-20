@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { typeConfig } from '@/lib/constants';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface LocationDrawerProps {
   location: Location | null;
@@ -20,6 +21,7 @@ export const LocationDrawer = memo(function LocationDrawer({
   onClose,
 }: LocationDrawerProps) {
   const { toast } = useToast();
+  const { trackLocation, trackExternalLink } = useAnalytics();
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -73,6 +75,9 @@ export const LocationDrawer = memo(function LocationDrawer({
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/map?location=${location.id}`;
+
+    // Track share action
+    trackLocation('shared', location.id, location.name, location.type);
 
     if (navigator.share) {
       try {
@@ -202,6 +207,7 @@ export const LocationDrawer = memo(function LocationDrawer({
                   <a
                     href={`mailto:${location.email}`}
                     className="hover:text-gray-300 transition-colors focus:outline-none focus:underline"
+                    onClick={() => trackExternalLink('email', `mailto:${location.email}`)}
                   >
                     {location.email}
                   </a>
@@ -235,6 +241,7 @@ export const LocationDrawer = memo(function LocationDrawer({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2"
+                    onClick={() => trackExternalLink('website', location.website!)}
                   >
                     <Globe className="h-4 w-4" />
                     Site web
@@ -266,6 +273,7 @@ export const LocationDrawer = memo(function LocationDrawer({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2"
+                    onClick={() => trackExternalLink('instagram', `https://instagram.com/${location.instagram!.replace('@', '')}`)}
                   >
                     <Instagram className="h-4 w-4" />
                     {!location.website && 'Instagram'}

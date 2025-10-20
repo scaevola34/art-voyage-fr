@@ -20,11 +20,13 @@ import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateWebSiteSchema } from '@/lib/seo/structuredData';
 import { LocationListSkeleton, MapSkeleton } from '@/components/LoadingSkeleton';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 const Map = lazy(() => import('@/components/Map'));
 
 const MapPage = memo(() => {
   const [searchParams] = useSearchParams();
+  const { trackSearch, trackFilter, trackLocation, trackEvent } = useAnalytics();
   const [allLocations, setAllLocations] = useState<Location[]>(fallbackLocations);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [centeredLocation, setCenteredLocation] = useState<Location | null>(null);
@@ -131,16 +133,38 @@ const MapPage = memo(() => {
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
-  }, []);
+    
+    // Track filter changes
+    if (newFilters.types.length > 0) {
+      trackFilter('type', newFilters.types.join(','), filteredLocations.length);
+    }
+    if (newFilters.region !== 'all') {
+      trackFilter('region', newFilters.region, filteredLocations.length);
+    }
+  }, [trackFilter, filteredLocations.length]);
 
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
-  }, []);
+    
+    // Track search with debounce effect (will track when results update)
+    if (query.length >= 2) {
+      setTimeout(() => {
+        trackSearch(query, filteredLocations.length);
+      }, 500);
+    }
+  }, [trackSearch, filteredLocations.length]);
 
   const handleLocationSelect = useCallback((location: Location) => {
     console.log('[MapPage] Location card clicked:', location.name, location.coordinates);
     setSelectedLocation(location);
     setCenteredLocation(location);
+
+    // Track location selection
+    trackLocation('selected', location.id, location.name, location.type);
+    trackEvent('drawer_opened', {
+      location_id: location.id,
+      location_name: location.name,
+    });
 
     // Update URL for sharing
     updateURLState({
@@ -152,10 +176,13 @@ const MapPage = memo(() => {
 
     // Reset centered location after animation
     setTimeout(() => setCenteredLocation(null), 2000);
-  }, [viewState]);
+  }, [viewState, trackLocation, trackEvent]);
 
   const handleCloseDrawer = useCallback(() => {
     setSelectedLocation(null);
+    
+    // Track drawer close
+    trackEvent('drawer_closed');
 
     // Remove location from URL
     const urlState = parseMapURLState(searchParams);
@@ -163,7 +190,7 @@ const MapPage = memo(() => {
       ...urlState,
       locationId: undefined,
     });
-  }, [searchParams]);
+  }, [searchParams, trackEvent]);
 
   const handleViewStateChange = useCallback((newViewState: { latitude: number; longitude: number; zoom: number }) => {
     setViewState(newViewState);
@@ -184,7 +211,10 @@ const MapPage = memo(() => {
       longitude: 2.3522,
       zoom: 6,
     });
-  }, []);
+    
+    // Track filter reset
+    trackEvent('filter_reset');
+  }, [trackEvent]);
 
   const isFiltersActive = filters.types.length > 0 || filters.region !== 'all' || searchQuery.length > 0;
 
