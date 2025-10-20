@@ -103,6 +103,11 @@ export const LocationDrawer = memo(function LocationDrawer({
 
   return (
     <>
+      {/* Screen reader announcement */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {location && `Détails de ${location.name} affichés`}
+      </div>
+
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] animate-fade-in"

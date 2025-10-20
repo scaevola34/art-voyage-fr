@@ -228,6 +228,11 @@ const MapComponent: React.FC<MapProps> = memo(
 
     return (
       <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        {/* Screen reader announcement for map interactions */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {selectedLocation && `Carte centrée sur ${selectedLocation.name}`}
+        </div>
+
         {mapError && (
           <div
             style={{

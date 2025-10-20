@@ -194,6 +194,13 @@ const MapPage = memo(() => {
     <ErrorBoundary>
       <SEO config={getPageSEO('map')} structuredData={structuredData} />
       <div className="h-screen w-full overflow-hidden bg-background flex flex-col">
+        {/* Screen reader announcements */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {isLoadingLocations ? 'Chargement des lieux en cours...' : `${filteredLocations.length} ${filteredLocations.length === 1 ? 'lieu trouvé' : 'lieux trouvés'}`}
+        </div>
+        <div className="sr-only" aria-live="assertive" aria-atomic="true">
+          {selectedLocation && `${selectedLocation.name} sélectionné à ${selectedLocation.city}`}
+        </div>
         {/* Header with search and filters */}
         <div className="fixed top-16 left-0 right-0 z-10 bg-background border-b border-border">
           <div className="px-4 py-3 space-y-3">
