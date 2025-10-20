@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { MapPin, Users, Calendar, ArrowRight } from 'lucide-react';
 import { memo, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getLocations } from '@/lib/supabase/queries';
+import { getLocations, getEvents } from '@/lib/supabase/queries';
 import UpcomingEvents from '@/components/UpcomingEvents';
 import { SEO } from '@/components/SEO';
 import { StatCardSkeleton } from '@/components/LoadingSkeleton';
@@ -13,17 +13,35 @@ import { getPageSEO } from '@/config/seo';
 import { generateWebSiteSchema, generateOrganizationSchema } from '@/lib/seo/structuredData';
 
 const Home = memo(() => {
-  const { data: locations = [], isLoading } = useQuery({
+  const { data: locations = [], isLoading: isLoadingLocations } = useQuery({
     queryKey: ['locations'],
     queryFn: () => getLocations(),
   });
 
-  const stats = useMemo(() => ({
-    galleries: locations.filter(l => l.type === 'gallery').length,
-    associations: locations.filter(l => l.type === 'association').length,
-    festivals: locations.filter(l => l.type === 'festival').length,
-    total: locations.length,
-  }), [locations]);
+  const { data: events = [], isLoading: isLoadingEvents } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => getEvents(),
+  });
+
+  const stats = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const activeFestivals = events.filter(event => {
+      if (event.type !== 'festival') return false;
+      const endDate = new Date(event.endDate);
+      return endDate >= today;
+    }).length;
+
+    return {
+      galleries: locations.filter(l => l.type === 'gallery').length,
+      associations: locations.filter(l => l.type === 'association').length,
+      festivals: activeFestivals,
+      total: locations.length,
+    };
+  }, [locations, events]);
+
+  const isLoading = isLoadingLocations || isLoadingEvents;
 
   const structuredData = {
     "@context": "https://schema.org",
