@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { getPartnersBreadcrumbs } from '@/lib/seo/breadcrumbs';
 
 const Partenaires = () => {
   const comptabilitePartners = [
@@ -49,7 +50,7 @@ const Partenaires = () => {
 
   return (
     <>
-      <SEO config={getPageSEO('partners')} />
+      <SEO config={getPageSEO('partners')} structuredData={getPartnersBreadcrumbs()} />
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary/20 via-background to-background py-20 px-4 sm:px-6 lg:px-8">

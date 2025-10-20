@@ -4,9 +4,13 @@ import { memo } from 'react';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateOrganizationSchema } from '@/lib/seo/structuredData';
+import { getAboutBreadcrumbs } from '@/lib/seo/breadcrumbs';
 
 const About = memo(() => {
-  const structuredData = generateOrganizationSchema();
+  const structuredData = [
+    generateOrganizationSchema(),
+    getAboutBreadcrumbs()
+  ];
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">

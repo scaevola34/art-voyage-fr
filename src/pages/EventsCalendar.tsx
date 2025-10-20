@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateEventSchema } from '@/lib/seo/structuredData';
+import { getEventsBreadcrumbs } from '@/lib/seo/breadcrumbs';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -124,7 +125,7 @@ const EventsCalendar = () => {
   };
 
   // Generate structured data for upcoming events
-  const structuredData = filteredEvents.length > 0 && !showPastEvents
+  const eventListSchema = filteredEvents.length > 0 && !showPastEvents
     ? {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -135,6 +136,10 @@ const EventsCalendar = () => {
         }))
       }
     : undefined;
+
+  const structuredData = eventListSchema 
+    ? [eventListSchema, getEventsBreadcrumbs()]
+    : getEventsBreadcrumbs();
 
   return (
     <div className="min-h-screen pt-20 pb-12">

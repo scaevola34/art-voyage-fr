@@ -1,11 +1,12 @@
 import { Mail } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { getLegalBreadcrumbs } from '@/lib/seo/breadcrumbs';
 
 export default function MentionsLegales() {
   return (
     <>
-      <SEO config={getPageSEO('legal')} />
+      <SEO config={getPageSEO('legal')} structuredData={getLegalBreadcrumbs()} />
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <article className="prose prose-invert max-w-none">
           <h1 className="text-4xl font-bold text-foreground mb-8">Mentions Légales</h1>

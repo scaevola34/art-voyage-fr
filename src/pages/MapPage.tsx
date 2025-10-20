@@ -19,6 +19,7 @@ import { frenchRegions } from '@/data/regions';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateWebSiteSchema } from '@/lib/seo/structuredData';
+import { getMapBreadcrumbs } from '@/lib/seo/breadcrumbs';
 import { LocationListSkeleton, MapSkeleton } from '@/components/LoadingSkeleton';
 import { useAnalytics } from '@/hooks/useAnalytics';
 
@@ -218,7 +219,13 @@ const MapPage = memo(() => {
 
   const isFiltersActive = filters.types.length > 0 || filters.region !== 'all' || searchQuery.length > 0;
 
-  const structuredData = generateWebSiteSchema();
+  const structuredData = [
+    generateWebSiteSchema(),
+    getMapBreadcrumbs({ 
+      region: filters.region !== 'all' ? filters.region : undefined,
+      type: filters.types[0]
+    })
+  ];
 
   return (
     <ErrorBoundary>

@@ -3,7 +3,7 @@ import { SEOConfig, getFullURL } from '@/config/seo';
 
 interface SEOProps {
   config: SEOConfig;
-  structuredData?: Record<string, any>;
+  structuredData?: Record<string, any> | Record<string, any>[];
 }
 
 /**
@@ -65,9 +65,17 @@ export const SEO = ({ config, structuredData }: SEOProps) => {
       <meta name="theme-color" content="#00FF87" />
 
       {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData || defaultStructuredData)}
-      </script>
+      {Array.isArray(structuredData) ? (
+        structuredData.map((data, index) => (
+          <script key={index} type="application/ld+json">
+            {JSON.stringify(data)}
+          </script>
+        ))
+      ) : (
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData || defaultStructuredData)}
+        </script>
+      )}
     </Helmet>
   );
 };

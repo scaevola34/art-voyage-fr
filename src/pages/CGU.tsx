@@ -1,6 +1,7 @@
 import { Mail } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
+import { getCGUBreadcrumbs } from '@/lib/seo/breadcrumbs';
 
 export default function CGU() {
   const currentDate = new Date().toLocaleDateString('fr-FR', { 
@@ -11,7 +12,7 @@ export default function CGU() {
 
   return (
     <>
-      <SEO config={getPageSEO('cgu')} />
+      <SEO config={getPageSEO('cgu')} structuredData={getCGUBreadcrumbs()} />
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <article className="prose prose-invert max-w-none">
           <h1 className="text-4xl font-bold text-foreground mb-8">Conditions Générales d'Utilisation</h1>
