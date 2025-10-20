@@ -37,7 +37,6 @@ export const getCategoryColor = (type: LocationType): string => {
 };
 
 /**
- * Mapbox access token
- * TODO: In production, consider moving to environment variable
+ * Mapbox access token from environment variable
  */
-export const MAPBOX_TOKEN = 'pk.eyJ1Ijoic2NhZXZvbGEzNCIsImEiOiJjbWdiM3h0Y2kwdWNjMmpzN3ppN291aXdvIn0.ptfb3pU7Fb7CWtJqojeGrw';
+export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
