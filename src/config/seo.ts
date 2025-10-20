@@ -11,7 +11,7 @@ export interface SEOConfig {
   type?: 'website' | 'article';
 }
 
-const DEFAULT_OG_IMAGE = 'https://lovable.dev/opengraph-image-p98pqg.png';
+const DEFAULT_OG_IMAGE = 'https://urbanomap.eu/og-image.png';
 const SITE_URL = 'https://urbanomap.eu';
 
 export const defaultSEO: SEOConfig = {
