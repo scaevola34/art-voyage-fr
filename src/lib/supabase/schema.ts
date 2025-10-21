@@ -9,7 +9,7 @@ import { z } from 'zod';
 // ENUMS
 // =====================================================
 
-export const LocationTypeSchema = z.enum(['gallery', 'association', 'festival']);
+export const LocationTypeSchema = z.enum(['gallery', 'museum', 'association', 'festival']);
 export type LocationType = z.infer<typeof LocationTypeSchema>;
 
 export const EventTypeSchema = z.enum(['festival', 'vernissage', 'atelier', 'autre']);

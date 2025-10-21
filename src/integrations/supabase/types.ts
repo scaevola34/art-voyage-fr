@@ -175,7 +175,7 @@ export type Database = {
     }
     Enums: {
       event_type: "festival" | "vernissage" | "atelier" | "autre"
-      location_type: "gallery" | "association" | "festival"
+      location_type: "gallery" | "association" | "festival" | "museum"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -304,7 +304,7 @@ export const Constants = {
   public: {
     Enums: {
       event_type: ["festival", "vernissage", "atelier", "autre"],
-      location_type: ["gallery", "association", "festival"],
+      location_type: ["gallery", "association", "festival", "museum"],
     },
   },
 } as const

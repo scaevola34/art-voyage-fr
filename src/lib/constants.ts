@@ -13,6 +13,13 @@ export const typeConfig = {
     bgColor: 'bg-gallery',
     cssVar: 'gallery'
   },
+  museum: { 
+    label: 'Musées', 
+    icon: Globe, 
+    color: '#00d4ff', 
+    bgColor: 'bg-museum',
+    cssVar: 'museum'
+  },
   association: { 
     label: 'Associations', 
     icon: Users, 

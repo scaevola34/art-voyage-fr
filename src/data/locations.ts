@@ -1,4 +1,4 @@
-export type LocationType = 'gallery' | 'association' | 'festival';
+export type LocationType = 'gallery' | 'museum' | 'association' | 'festival';
 
 export interface Location {
   id: string;

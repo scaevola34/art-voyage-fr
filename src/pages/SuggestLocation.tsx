@@ -226,6 +226,7 @@ const SuggestLocation = () => {
                         <SelectContent>
                           <SelectItem value="association">Association</SelectItem>
                           <SelectItem value="gallery">Galerie</SelectItem>
+                          <SelectItem value="museum">Musée</SelectItem>
                           <SelectItem value="event">Festival / Evenement</SelectItem>
                           <SelectItem value="other">Autre</SelectItem>
                         </SelectContent>

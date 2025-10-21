@@ -506,6 +506,7 @@ export default function Admin() {
                     <SelectContent>
                       <SelectItem value="all">Tous les types</SelectItem>
                       <SelectItem value="gallery">Galeries</SelectItem>
+                      <SelectItem value="museum">Musées</SelectItem>
                       <SelectItem value="association">Associations</SelectItem>
                       <SelectItem value="festival">Festivals</SelectItem>
                     </SelectContent>
@@ -577,6 +578,7 @@ export default function Admin() {
                           <TableCell>
                             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                               location.type === 'gallery' ? 'bg-primary/10 text-primary' :
+                              location.type === 'museum' ? 'bg-[hsl(190,100%,50%)]/10 text-[hsl(190,100%,50%)]' :
                               location.type === 'association' ? 'bg-secondary/10 text-secondary' :
                               'bg-accent/10 text-accent'
                             }`}>
@@ -668,6 +670,7 @@ export default function Admin() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="gallery">Galerie</SelectItem>
+                          <SelectItem value="museum">Musée</SelectItem>
                           <SelectItem value="association">Association</SelectItem>
                         </SelectContent>
                       </Select>
@@ -1395,6 +1398,7 @@ export default function Admin() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="gallery">Galerie</SelectItem>
+                      <SelectItem value="museum">Musée</SelectItem>
                       <SelectItem value="association">Association</SelectItem>
                       <SelectItem value="festival">Festival</SelectItem>
                     </SelectContent>

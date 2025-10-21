@@ -27,16 +27,15 @@ const Home = memo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const activeFestivals = events.filter(event => {
-      if (event.type !== 'festival') return false;
-      const endDate = new Date(event.endDate);
-      return endDate >= today;
+    const upcomingEvents = events.filter(event => {
+      const startDate = new Date(event.startDate);
+      return startDate >= today;
     }).length;
 
     return {
-      galleries: locations.filter(l => l.type === 'gallery').length,
+      lieux: locations.filter(l => l.type === 'gallery' || l.type === 'museum').length,
       associations: locations.filter(l => l.type === 'association').length,
-      festivals: activeFestivals,
+      evenements: upcomingEvents,
       total: locations.length,
     };
   }, [locations, events]);
@@ -95,11 +94,9 @@ const Home = memo(() => {
               <>
                 <Card className="bg-card/50 backdrop-blur border-border hover:border-gallery/50 transition-all duration-300 animate-scale-in">
                   <CardContent className="p-6 text-center">
-                    <div className="h-8 w-8 mx-auto mb-3 rounded-full bg-gallery/20 flex items-center justify-center" aria-hidden="true">
-                      <div className="h-4 w-4 rounded-full bg-gallery" />
-                    </div>
-                    <div className="text-4xl font-bold text-foreground mb-1">{stats.galleries}</div>
-                    <div className="text-sm text-muted-foreground">Galeries</div>
+                    <MapPin className="h-8 w-8 mx-auto mb-3 text-gallery" aria-hidden="true" />
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.lieux}</div>
+                    <div className="text-sm text-muted-foreground">Lieux</div>
                   </CardContent>
                 </Card>
 
@@ -114,8 +111,8 @@ const Home = memo(() => {
                 <Card className="bg-card/50 backdrop-blur border-border hover:border-festival/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
                   <CardContent className="p-6 text-center">
                     <Calendar className="h-8 w-8 mx-auto mb-3 text-festival" aria-hidden="true" />
-                    <div className="text-4xl font-bold text-foreground mb-1">{stats.festivals}</div>
-                    <div className="text-sm text-muted-foreground">Festivals</div>
+                    <div className="text-4xl font-bold text-foreground mb-1">{stats.evenements}</div>
+                    <div className="text-sm text-muted-foreground">Événements</div>
                   </CardContent>
                 </Card>
               </>
