@@ -27,9 +27,11 @@ const Home = memo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    // Count events that are ongoing or upcoming (endDate >= today)
     const upcomingEvents = events.filter(event => {
-      const startDate = new Date(event.startDate);
-      return startDate >= today;
+      const endDate = new Date(event.endDate);
+      endDate.setHours(23, 59, 59, 999); // Include events ending today
+      return endDate >= today;
     }).length;
 
     return {
