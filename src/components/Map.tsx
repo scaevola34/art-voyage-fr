@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import Map, { NavigationControl, GeolocateControl } from 'react-map-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Location } from '@/data/locations';
 import { MAPBOX_TOKEN } from '@/lib/constants';
@@ -13,6 +14,13 @@ import { LocationMarker } from '@/components/map/LocationMarker';
 import { ClusterMarker } from '@/components/map/ClusterMarker';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAnalytics } from '@/hooks/useAnalytics';
+
+// Ensure global Mapbox token is set for mapbox-gl consumers (safety for some environments)
+if (MAPBOX_TOKEN) {
+  (mapboxgl as any).accessToken = MAPBOX_TOKEN;
+} else {
+  console.warn('[Map] VITE_MAPBOX_TOKEN is empty at module load');
+}
 
 interface MapProps {
   locations: Location[];
