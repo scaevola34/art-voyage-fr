@@ -319,7 +319,18 @@ const MapComponent: React.FC<MapProps> = memo(
           onLoad={() => {
             setMapError(null);
             mapReadyRef.current = true;
-            console.log('[Map] onLoad: map initialized');
+            console.log('[Map] ✅ Map initialized with dark style: mapbox://styles/mapbox/dark-v11');
+            console.log('[Map] Token present:', !!MAPBOX_TOKEN);
+            
+            // Verify style loaded correctly
+            const map = mapRef.current?.getMap();
+            const styleUrl = map?.getStyle()?.sprite;
+            if (styleUrl) {
+              console.log('[Map] ✅ Style loaded successfully');
+            } else {
+              console.warn('[Map] ⚠️ Style URL may be invalid or not loaded yet');
+            }
+            
             // If a flyTo was queued before load, run it now
             if (pendingFlyToRef.current) {
               const { lng, lat } = pendingFlyToRef.current;
