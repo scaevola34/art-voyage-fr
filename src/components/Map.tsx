@@ -319,16 +319,23 @@ const MapComponent: React.FC<MapProps> = memo(
           onLoad={() => {
             setMapError(null);
             mapReadyRef.current = true;
-            console.log('[Map] ✅ Map initialized with dark style: mapbox://styles/mapbox/dark-v11');
-            console.log('[Map] Token present:', !!MAPBOX_TOKEN);
             
-            // Verify style loaded correctly
             const map = mapRef.current?.getMap();
-            const styleUrl = map?.getStyle()?.sprite;
-            if (styleUrl) {
-              console.log('[Map] ✅ Style loaded successfully');
+            const loadedStyle = map?.getStyle();
+            
+            console.log('[Map] ✅ Map loaded successfully');
+            console.log('[Map] Token present:', !!MAPBOX_TOKEN);
+            console.log('[Map] Token value:', MAPBOX_TOKEN ? `${MAPBOX_TOKEN.substring(0, 20)}...` : 'UNDEFINED');
+            console.log('[Map] Requested style: mapbox://styles/mapbox/dark-v11');
+            console.log('[Map] Loaded style name:', loadedStyle?.name || 'unknown');
+            
+            // Verify dark style loaded
+            if (!loadedStyle || !loadedStyle.name) {
+              console.warn('[Map] ⚠️ Style failed to load properly - style object is missing');
+            } else if (!loadedStyle.name.toLowerCase().includes('dark')) {
+              console.warn('[Map] ⚠️ Dark style may not have loaded - current style:', loadedStyle.name);
             } else {
-              console.warn('[Map] ⚠️ Style URL may be invalid or not loaded yet');
+              console.log('[Map] ✅ Dark style confirmed:', loadedStyle.name);
             }
             
             // If a flyTo was queued before load, run it now
@@ -347,8 +354,19 @@ const MapComponent: React.FC<MapProps> = memo(
             console.log('[Map] zoom control present:', !!zoomInBtn);
           }}
           onError={(e: any) => {
-            console.error('[Map] onError', e);
-            setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
+            console.error('[Map] ❌ Map Error:', e);
+            console.error('[Map] Token status:', MAPBOX_TOKEN ? 'Present' : 'MISSING');
+            console.error('[Map] Style requested: mapbox://styles/mapbox/dark-v11');
+            
+            if (!MAPBOX_TOKEN) {
+              console.warn('[Map] ⚠️ VITE_MAPBOX_TOKEN is undefined - check Vercel environment variables');
+              setMapError('Token Mapbox manquant. Vérifiez la configuration Vercel.');
+            } else if (e?.error?.message?.includes('401')) {
+              console.warn('[Map] ⚠️ 401 Unauthorized - token may be invalid or domain-restricted');
+              setMapError('Token Mapbox invalide ou restreint au domaine.');
+            } else {
+              setMapError('Impossible de charger la carte. Vérifiez le token Mapbox.');
+            }
           }}
         >
           <NavigationControl 
