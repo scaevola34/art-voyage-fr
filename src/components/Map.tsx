@@ -241,6 +241,39 @@ const MapComponent: React.FC<MapProps> = memo(
       }
     };
 
+    // Check for missing Mapbox token
+    if (!MAPBOX_TOKEN) {
+      return (
+        <div style={{ width: '100%', height: '100%', position: 'relative', background: '#1a1a1a' }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 1000,
+              background: 'rgba(0, 0, 0, 0.95)',
+              padding: '30px',
+              borderRadius: '12px',
+              color: '#ff6b6b',
+              maxWidth: '500px',
+              border: '2px solid #ff6b6b',
+            }}
+          >
+            <h3 style={{ margin: '0 0 15px 0', fontSize: '20px', fontWeight: 'bold' }}>
+              🗺️ Token Mapbox manquant
+            </h3>
+            <p style={{ margin: '0 0 10px 0', lineHeight: '1.5' }}>
+              La variable d'environnement <code style={{ background: '#333', padding: '2px 6px', borderRadius: '4px' }}>VITE_MAPBOX_TOKEN</code> n'est pas configurée.
+            </p>
+            <p style={{ margin: '0', lineHeight: '1.5', fontSize: '14px', color: '#ccc' }}>
+              Vérifiez les variables d'environnement dans Vercel (Settings → Environment Variables) et ajoutez votre token Mapbox.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div style={{ width: '100%', height: '100%', position: 'relative' }}>
         {/* Screen reader announcement for map interactions */}
