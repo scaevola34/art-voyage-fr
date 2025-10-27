@@ -24,20 +24,10 @@ const Home = memo(() => {
   });
 
   const stats = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // Count events that are ongoing or upcoming (endDate >= today)
-    const upcomingEvents = events.filter(event => {
-      const endDate = new Date(event.endDate);
-      endDate.setHours(23, 59, 59, 999); // Include events ending today
-      return endDate >= today;
-    }).length;
-
     return {
       lieux: locations.filter(l => l.type === 'gallery' || l.type === 'museum').length,
       associations: locations.filter(l => l.type === 'association').length,
-      evenements: upcomingEvents,
+      evenements: events.length,
       total: locations.length,
     };
   }, [locations, events]);
