@@ -79,10 +79,22 @@ const UpcomingEvents = () => {
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                   <Calendar className="h-3 w-3" />
                   <span>
-                    {format(parseISO(event.startDate), 'd MMM', { locale: fr })}
-                    {event.startDate !== event.endDate && 
-                      ` - ${format(parseISO(event.endDate), 'd MMM', { locale: fr })}`
-                    }
+                    {(() => {
+                      const start = parseISO(event.startDate);
+                      const end = parseISO(event.endDate);
+                      const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+                      const sameYear = start.getFullYear() === end.getFullYear();
+                      
+                      if (event.startDate === event.endDate) {
+                        return format(start, 'd MMM yyyy', { locale: fr });
+                      } else if (sameMonth) {
+                        return `${format(start, 'd', { locale: fr })} – ${format(end, 'd MMM yyyy', { locale: fr })}`;
+                      } else if (sameYear) {
+                        return `${format(start, 'd MMM', { locale: fr })} – ${format(end, 'd MMM yyyy', { locale: fr })}`;
+                      } else {
+                        return `${format(start, 'd MMM yyyy', { locale: fr })} – ${format(end, 'd MMM yyyy', { locale: fr })}`;
+                      }
+                    })()}
                   </span>
                 </div>
 

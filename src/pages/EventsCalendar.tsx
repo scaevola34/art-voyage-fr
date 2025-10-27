@@ -445,10 +445,22 @@ const EventsCalendar = () => {
                   <div>
                     <div className="text-muted-foreground mb-1">Dates</div>
                     <div className="font-medium">
-                      {selectedEvent.startDate === selectedEvent.endDate
-                        ? format(parseISO(selectedEvent.startDate), 'd MMMM yyyy', { locale: fr })
-                        : `${format(parseISO(selectedEvent.startDate), 'd', { locale: fr })} - ${format(parseISO(selectedEvent.endDate), 'd MMMM yyyy', { locale: fr })}`
-                      }
+                      {(() => {
+                        const start = parseISO(selectedEvent.startDate);
+                        const end = parseISO(selectedEvent.endDate);
+                        const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+                        const sameYear = start.getFullYear() === end.getFullYear();
+                        
+                        if (selectedEvent.startDate === selectedEvent.endDate) {
+                          return format(start, 'd MMMM yyyy', { locale: fr });
+                        } else if (sameMonth) {
+                          return `${format(start, 'd', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                        } else if (sameYear) {
+                          return `${format(start, 'd MMMM', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                        } else {
+                          return `${format(start, 'd MMMM yyyy', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                        }
+                      })()}
                     </div>
                     {!isPast(parseISO(selectedEvent.endDate)) && (
                       <div className="text-xs text-muted-foreground mt-1">
@@ -574,10 +586,22 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
               <CalendarIcon className="h-4 w-4" />
               <span>
-                {event.startDate === event.endDate
-                  ? format(parseISO(event.startDate), 'd MMMM yyyy', { locale: fr })
-                  : `${format(parseISO(event.startDate), 'd', { locale: fr })} - ${format(parseISO(event.endDate), 'd MMMM yyyy', { locale: fr })}`
-                }
+                {(() => {
+                  const start = parseISO(event.startDate);
+                  const end = parseISO(event.endDate);
+                  const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+                  const sameYear = start.getFullYear() === end.getFullYear();
+                  
+                  if (event.startDate === event.endDate) {
+                    return format(start, 'd MMMM yyyy', { locale: fr });
+                  } else if (sameMonth) {
+                    return `${format(start, 'd', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                  } else if (sameYear) {
+                    return `${format(start, 'd MMMM', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                  } else {
+                    return `${format(start, 'd MMMM yyyy', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                  }
+                })()}
               </span>
               {getDateBadge(event.startDate) && (
                 <Badge variant="outline" className="text-xs">
