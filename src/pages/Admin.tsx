@@ -1032,7 +1032,7 @@ export default function Admin() {
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventRegion: v } as any)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           {frenchRegions.map((region) => (
@@ -1103,7 +1103,11 @@ export default function Admin() {
                       <Button
                         onClick={async () => {
                           const form = quickAddForm as any;
-                          if (!form.eventTitle || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventRegion || !form.eventDescription) {
+                          // Set default values for fields that have UI defaults
+                          const eventType = form.eventType || 'festival';
+                          const eventRegion = form.eventRegion || 'Île-de-France';
+                          
+                          if (!form.eventTitle || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventDescription) {
                             toast({ title: '❌ Erreur', description: 'Remplissez les champs requis (*)', variant: 'destructive' });
                             return;
                           }
@@ -1111,11 +1115,11 @@ export default function Admin() {
                           try {
                             const newEvent = await createEvent({
                               title: form.eventTitle,
-                              type: form.eventType || 'festival',
+                              type: eventType,
                               startDate: form.eventStartDate,
                               endDate: form.eventEndDate,
                               city: form.eventCity,
-                              region: form.eventRegion,
+                              region: eventRegion,
                               description: form.eventDescription,
                               locationId: form.eventLocationId,
                               price: form.eventPrice,
