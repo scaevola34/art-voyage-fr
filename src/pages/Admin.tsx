@@ -506,7 +506,7 @@ export default function Admin() {
                     <SelectContent>
                       <SelectItem value="all">Tous les types</SelectItem>
                       <SelectItem value="gallery">Galeries</SelectItem>
-                      <SelectItem value="museum">Musées</SelectItem>
+                      <SelectItem value="museum">Musée / Tiers lieux</SelectItem>
                       <SelectItem value="association">Associations</SelectItem>
                       <SelectItem value="festival">Festivals</SelectItem>
                     </SelectContent>
@@ -670,7 +670,7 @@ export default function Admin() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="gallery">Galerie</SelectItem>
-                          <SelectItem value="museum">Musée</SelectItem>
+                          <SelectItem value="museum">Musée / Tiers lieux</SelectItem>
                           <SelectItem value="association">Association</SelectItem>
                         </SelectContent>
                       </Select>
@@ -1398,7 +1398,7 @@ export default function Admin() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="gallery">Galerie</SelectItem>
-                      <SelectItem value="museum">Musée</SelectItem>
+                      <SelectItem value="museum">Musée / Tiers lieux</SelectItem>
                       <SelectItem value="association">Association</SelectItem>
                       <SelectItem value="festival">Festival</SelectItem>
                     </SelectContent>

@@ -14,7 +14,7 @@ export const typeConfig = {
     cssVar: 'gallery'
   },
   museum: { 
-    label: 'Musées', 
+    label: 'Musée / Tiers lieux', 
     icon: Globe, 
     color: '#00d4ff', 
     bgColor: 'bg-museum',

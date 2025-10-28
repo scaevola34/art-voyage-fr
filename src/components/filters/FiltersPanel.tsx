@@ -30,7 +30,7 @@ interface FiltersPanelProps {
 
 const locationTypes: Array<{ value: LocationType; label: string }> = [
   { value: 'gallery', label: 'Galeries' },
-  { value: 'museum', label: 'Musées' },
+  { value: 'museum', label: 'Musée / Tiers lieux' },
   { value: 'association', label: 'Associations' },
   { value: 'festival', label: 'Festivals' },
 ];
