@@ -39,6 +39,10 @@ export default function Admin() {
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [editForm, setEditForm] = useState<Partial<Location>>({});
   
+  // Edit event modal states
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [editEventForm, setEditEventForm] = useState<Partial<Event>>({});
+  
   // Quick add states
   const [quickAddForm, setQuickAddForm] = useState<Partial<Location>>({
     type: 'gallery',
@@ -222,6 +226,50 @@ export default function Admin() {
       toast({
         title: '❌ Erreur',
         description: error.message || 'Impossible de supprimer le lieu',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // Edit event
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setEditEventForm(event);
+  };
+
+  const handleSaveEventEdit = async () => {
+    if (!editEventForm.id) return;
+    
+    try {
+      const updated = await updateEvent(editEventForm.id, editEventForm);
+      setEvents(events.map(evt => 
+        evt.id === updated.id ? updated : evt
+      ));
+      
+      toast({ title: '✅ Modifié', description: 'L\'événement a été mis à jour' });
+      setEditingEvent(null);
+      setEditEventForm({});
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de modifier l\'événement',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteEvent = async (id: string, title: string) => {
+    if (!confirm(`Supprimer "${title}" ?`)) return;
+    
+    try {
+      await deleteEvent(id);
+      setEvents(events.filter(evt => evt.id !== id));
+      toast({ title: '🗑️ Supprimé', description: `${title} a été supprimé` });
+      setEditingEvent(null);
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de supprimer l\'événement',
         variant: 'destructive',
       });
     }
@@ -1209,6 +1257,13 @@ export default function Admin() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
+                                        onClick={() => handleEditEvent(event)}
+                                      >
+                                        <Edit2 className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={async () => {
                                           try {
                                             const duplicated = await createEvent({
@@ -1241,21 +1296,7 @@ export default function Admin() {
                                       <Button
                                         variant="destructive"
                                         size="sm"
-                                        onClick={async () => {
-                                          if (confirm(`Supprimer "${event.title}" ?`)) {
-                                            try {
-                                              await deleteEvent(event.id);
-                                              setEvents(events.filter(e => e.id !== event.id));
-                                              toast({ title: '✅ Supprimé', description: 'Événement supprimé' });
-                                            } catch (error: any) {
-                                              toast({
-                                                title: '❌ Erreur',
-                                                description: error.message || 'Impossible de supprimer',
-                                                variant: 'destructive',
-                                              });
-                                            }
-                                          }
-                                        }}
+                                        onClick={() => handleDeleteEvent(event.id, event.title)}
                                       >
                                         <Trash2 className="h-4 w-4" />
                                       </Button>
@@ -1371,7 +1412,7 @@ export default function Admin() {
           </TabsContent>
         </Tabs>
 
-        {/* Edit Modal */}
+        {/* Edit Location Modal */}
         <Dialog open={!!editingLocation} onOpenChange={() => setEditingLocation(null)}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -1537,6 +1578,166 @@ export default function Admin() {
                   Annuler
                 </Button>
                 <Button onClick={handleSaveEdit}>
+                  Sauvegarder
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Event Modal */}
+        <Dialog open={!!editingEvent} onOpenChange={() => setEditingEvent(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Modifier l'événement</DialogTitle>
+              <DialogDescription>
+                Modifiez les informations de l'événement
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div>
+                  <Label>Titre *</Label>
+                  <Input
+                    value={editEventForm.title || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, title: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Type *</Label>
+                  <Select
+                    value={editEventForm.type}
+                    onValueChange={(v) => setEditEventForm({ ...editEventForm, type: v as EventType })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="festival">Festival</SelectItem>
+                      <SelectItem value="vernissage">Vernissage</SelectItem>
+                      <SelectItem value="atelier">Atelier</SelectItem>
+                      <SelectItem value="autre">Autre</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Date début *</Label>
+                  <Input
+                    type="date"
+                    value={editEventForm.startDate || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, startDate: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Date fin *</Label>
+                  <Input
+                    type="date"
+                    value={editEventForm.endDate || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, endDate: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Ville *</Label>
+                  <Input
+                    value={editEventForm.city || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, city: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Région *</Label>
+                  <Select
+                    value={editEventForm.region}
+                    onValueChange={(v) => setEditEventForm({ ...editEventForm, region: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {frenchRegions.map((region) => (
+                        <SelectItem key={region} value={region}>
+                          {region}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Lier à un lieu</Label>
+                  <Select
+                    value={editEventForm.locationId || 'none'}
+                    onValueChange={(v) => setEditEventForm({ ...editEventForm, locationId: v === 'none' ? undefined : v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Aucun" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Aucun</SelectItem>
+                      {locations.map((loc) => (
+                        <SelectItem key={loc.id} value={loc.id}>
+                          {loc.name} - {loc.city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Tarif</Label>
+                  <Input
+                    value={editEventForm.price || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, price: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Site web</Label>
+                  <Input
+                    value={editEventForm.website || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, website: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Image URL</Label>
+                  <Input
+                    value={editEventForm.image || ''}
+                    onChange={(e) => setEditEventForm({ ...editEventForm, image: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="lg:col-span-2">
+                <Label>Description *</Label>
+                <Textarea
+                  value={editEventForm.description || ''}
+                  onChange={(e) => setEditEventForm({ ...editEventForm, description: e.target.value })}
+                  rows={4}
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="destructive"
+                onClick={() => editingEvent && handleDeleteEvent(editingEvent.id, editingEvent.title)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Supprimer
+              </Button>
+              <div className="flex gap-2 flex-1 justify-end">
+                <Button variant="outline" onClick={() => setEditingEvent(null)}>
+                  Annuler
+                </Button>
+                <Button onClick={handleSaveEventEdit}>
                   Sauvegarder
                 </Button>
               </div>
