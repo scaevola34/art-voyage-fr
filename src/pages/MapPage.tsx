@@ -13,6 +13,7 @@ import type { FilterState } from '@/components/filters/FiltersPanel';
 import { getLocations } from '@/lib/supabase/queries';
 import { SearchBar } from '@/components/search/SearchBar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { frenchRegions } from '@/data/regions';
@@ -22,6 +23,7 @@ import { generateWebSiteSchema } from '@/lib/seo/structuredData';
 import { getMapBreadcrumbs } from '@/lib/seo/breadcrumbs';
 import { LocationListSkeleton, MapSkeleton } from '@/components/LoadingSkeleton';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { typeConfig } from '@/lib/constants';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -340,9 +342,16 @@ const MapPage = memo(() => {
                           <p className="text-xs text-muted-foreground mb-1">
                             {location.city}, {location.region}
                           </p>
-                          <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
-                            {location.type}
-                          </span>
+                          <Badge 
+                            className="text-xs px-2 py-0.5"
+                            style={{
+                              backgroundColor: `hsl(var(--${typeConfig[location.type].cssVar}) / 0.2)`,
+                              color: `hsl(var(--${typeConfig[location.type].cssVar}))`,
+                              border: `1px solid hsl(var(--${typeConfig[location.type].cssVar}) / 0.3)`
+                            }}
+                          >
+                            {typeConfig[location.type].label}
+                          </Badge>
                         </CardContent>
                       </Card>
                     ))
