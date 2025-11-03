@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Event, EventType, getEventTypeName, getEventTypeColor, validateEvents } from '@/domain/events';
 import { locations } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
-import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays } from 'date-fns';
+import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays, isAfter, isBefore, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getEvents } from '@/lib/supabase/queries';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +18,7 @@ import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
 import { generateEventSchema } from '@/lib/seo/structuredData';
 import { getEventsBreadcrumbs } from '@/lib/seo/breadcrumbs';
+import { LazyImage } from '@/components/LazyImage';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -163,12 +164,12 @@ const EventsCalendar = () => {
 
       <div className="container mx-auto max-w-6xl px-4 mt-8">
         {/* Filters */}
-        <Card className="mb-6">
+        <Card className="mb-6 shadow-card">
           <CardContent className="p-4">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="flex gap-2 flex-1">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                 <Select value={selectedType} onValueChange={setSelectedType}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue placeholder="Type d'événement" />
                   </SelectTrigger>
                   <SelectContent>
@@ -181,7 +182,7 @@ const EventsCalendar = () => {
                 </Select>
 
                 <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-full sm:w-[220px]">
                     <SelectValue placeholder="Région" />
                   </SelectTrigger>
                   <SelectContent>
@@ -191,33 +192,55 @@ const EventsCalendar = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
 
-              <div className="flex gap-2 flex-wrap">
                 <Button
                   variant={showPastEvents ? "default" : "outline"}
                   size="sm"
                   onClick={() => setShowPastEvents(!showPastEvents)}
+                  className="w-full sm:w-auto"
                 >
                   {showPastEvents ? 'À venir' : 'Archive'}
                 </Button>
-                
-                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')}>
-                  <TabsList>
-                    <TabsTrigger value="list">
-                      <List className="h-4 w-4 mr-2" />
-                      Liste
+
+                <button
+                  onClick={() => {
+                    setSelectedType('all');
+                    setSelectedRegion('all');
+                    setShowPastEvents(false);
+                    setSelectedDate(null);
+                  }}
+                  disabled={selectedType === 'all' && selectedRegion === 'all' && !showPastEvents}
+                  className="px-4 py-2 rounded-md border transition-all whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed border-primary/30 hover:border-primary hover:bg-primary/10 disabled:hover:border-primary/30 disabled:hover:bg-transparent w-full sm:w-auto"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'calendar' | 'list' | 'week')} className="w-full sm:w-auto">
+                  <TabsList className="grid w-full grid-cols-3 sm:w-auto">
+                    <TabsTrigger value="list" className="text-xs sm:text-sm">
+                      <List className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Liste</span>
                     </TabsTrigger>
-                    <TabsTrigger value="week">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      Semaine
+                    <TabsTrigger value="week" className="text-xs sm:text-sm">
+                      <CalendarIcon className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Semaine</span>
                     </TabsTrigger>
-                    <TabsTrigger value="calendar">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      Mois
+                    <TabsTrigger value="calendar" className="text-xs sm:text-sm">
+                      <CalendarIcon className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Mois</span>
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
+
+                {filteredEvents.length > 0 && (
+                  <div className="px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30 text-center">
+                    <span className="text-sm font-medium text-primary">
+                      {filteredEvents.length} événement{filteredEvents.length > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
@@ -388,18 +411,32 @@ const EventsCalendar = () => {
 
         {/* List View */}
         {viewMode === 'list' && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {filteredEvents.length === 0 ? (
-              <Card>
+              <Card className="shadow-card border-2 border-dashed">
                 <CardContent className="p-12 text-center">
-                  <CalendarIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">Aucun événement prévu</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Aucun événement ne correspond à vos critères
+                  <CalendarIcon className="h-16 w-16 mx-auto mb-6 text-muted-foreground/50" />
+                  <h3 className="text-2xl font-semibold mb-3">Aucun événement trouvé</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    {showPastEvents 
+                      ? "Aucun événement passé ne correspond à vos critères. Consultez les événements à venir."
+                      : "Aucun événement à venir ne correspond à vos critères. Essayez d'élargir votre recherche ou suggérez un nouvel événement."}
                   </p>
-                  <Link to="/suggest">
-                    <Button>Suggérer un événement</Button>
-                  </Link>
+                  <div className="flex gap-3 justify-center flex-wrap">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedType('all');
+                        setSelectedRegion('all');
+                        setShowPastEvents(false);
+                      }}
+                    >
+                      Voir tous les événements
+                    </Button>
+                    <Link to="/suggest">
+                      <Button>Suggérer un événement</Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
@@ -421,7 +458,7 @@ const EventsCalendar = () => {
               </DialogHeader>
               
               {selectedEvent.image && (
-                <img
+                <LazyImage
                   src={selectedEvent.image}
                   alt={selectedEvent.title}
                   className="w-full h-64 object-cover rounded-lg"
@@ -558,69 +595,102 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
     return null;
   };
 
+  // Determine event status
+  const now = startOfDay(new Date());
+  const startDate = parseISO(event.startDate);
+  const endDate = parseISO(event.endDate);
+  const isUpcoming = isAfter(startDate, now);
+  const isOngoing = !isAfter(startDate, now) && !isBefore(endDate, now);
+  const isPastEvent = isBefore(endDate, now);
+
+  // Apply visual hierarchy based on event status
+  const getCardClasses = () => {
+    const base = "overflow-hidden cursor-pointer transition-all duration-300 shadow-card";
+    if (isPastEvent) {
+      return `${base} opacity-60 hover:opacity-80 hover:shadow-lg border-border`;
+    }
+    if (isOngoing) {
+      return `${base} border-2 border-primary/40 shadow-glow-gallery hover:shadow-glow-gallery hover:scale-[1.02]`;
+    }
+    return `${base} hover:shadow-xl hover:scale-[1.01] border-border/50 hover:border-primary/30`;
+  };
+
   return (
     <Card 
-      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      className={getCardClasses()}
       onClick={onClick}
     >
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
           {event.image && (
-            <div className="md:w-[200px] h-[150px] flex-shrink-0">
-              <img
+            <div className="md:w-[240px] h-[180px] md:h-[200px] flex-shrink-0 overflow-hidden">
+              <LazyImage
                 src={event.image}
                 alt={event.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
           )}
           
-          <div className="flex-1 p-4">
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <h3 className="text-lg font-semibold">{event.title}</h3>
+          <div className="flex-1 p-5 md:p-6">
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div className="flex-1">
+                <h3 className="text-lg md:text-xl font-semibold mb-1 line-clamp-2">{event.title}</h3>
+                {isOngoing && (
+                  <Badge className="bg-primary/20 text-primary border border-primary/30 text-xs mb-2 animate-pulse">
+                    🔴 En cours
+                  </Badge>
+                )}
+              </div>
               <Badge className={getEventTypeColor(event.type)}>
                 {getEventTypeName(event.type)}
               </Badge>
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <CalendarIcon className="h-4 w-4" />
-              <span>
-                {(() => {
-                  const start = parseISO(event.startDate);
-                  const end = parseISO(event.endDate);
-                  const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
-                  const sameYear = start.getFullYear() === end.getFullYear();
-                  
-                  if (event.startDate === event.endDate) {
-                    return format(start, 'd MMMM yyyy', { locale: fr });
-                  } else if (sameMonth) {
-                    return `${format(start, 'd', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
-                  } else if (sameYear) {
-                    return `${format(start, 'd MMMM', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
-                  } else {
-                    return `${format(start, 'd MMMM yyyy', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
-                  }
-                })()}
-              </span>
-              {getDateBadge(event.startDate) && (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm mb-3">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <CalendarIcon className="h-4 w-4 flex-shrink-0" />
+                <span>
+                  {(() => {
+                    const start = parseISO(event.startDate);
+                    const end = parseISO(event.endDate);
+                    const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+                    const sameYear = start.getFullYear() === end.getFullYear();
+                    
+                    if (event.startDate === event.endDate) {
+                      return format(start, 'd MMMM yyyy', { locale: fr });
+                    } else if (sameMonth) {
+                      return `${format(start, 'd', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                    } else if (sameYear) {
+                      return `${format(start, 'd MMMM', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                    } else {
+                      return `${format(start, 'd MMMM yyyy', { locale: fr })} – ${format(end, 'd MMMM yyyy', { locale: fr })}`;
+                    }
+                  })()}
+                </span>
+              </div>
+              {getDateBadge(event.startDate) && !isOngoing && (
                 <Badge variant="outline" className="text-xs">
                   {getDateBadge(event.startDate)}
                 </Badge>
               )}
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-              <MapPin className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+              <MapPin className="h-4 w-4 flex-shrink-0" />
               <span>{event.city}, {event.region}</span>
             </div>
 
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+            <p className="text-sm text-muted-foreground/90 line-clamp-2 mb-4 leading-relaxed">
               {event.description}
             </p>
 
-            <Button variant="outline" size="sm">
-              En savoir plus
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="hover:bg-primary/10 hover:border-primary transition-all"
+            >
+              En savoir plus →
             </Button>
           </div>
         </div>
