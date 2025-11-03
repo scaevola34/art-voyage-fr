@@ -19,7 +19,7 @@ export const eventSchema = z.object({
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { 
     message: "Format de date invalide (YYYY-MM-DD)" 
   }),
-  locationId: z.string().optional(),
+  locationId: z.string().nullable().optional(),
   city: z.string()
     .min(2, { message: "La ville doit contenir au moins 2 caractères" })
     .max(100, { message: "La ville ne peut pas dépasser 100 caractères" }),
@@ -28,9 +28,9 @@ export const eventSchema = z.object({
   description: z.string()
     .min(10, { message: "La description doit contenir au moins 10 caractères" })
     .max(2000, { message: "La description ne peut pas dépasser 2000 caractères" }),
-  image: z.string().url({ message: "URL d'image invalide" }).optional(),
+  image: z.string().url({ message: "URL d'image invalide" }).nullable().optional(),
   website: z.string().url({ message: "URL invalide" }).optional(),
-  price: z.string().max(50).optional(),
+  price: z.string().max(50).nullable().optional(),
   featured: z.boolean().optional(),
 }).refine(
   (data) => {

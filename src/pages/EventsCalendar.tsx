@@ -1,16 +1,18 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar as CalendarIcon, List, MapPin, ExternalLink, Share2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { Event, EventType, getEventTypeName, getEventTypeColor, validateEvents } from '@/domain/events';
 import { locations } from '@/data/locations';
 import { frenchRegions } from '@/data/regions';
-import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays, isAfter, isBefore, startOfDay } from 'date-fns';
+import { format, isSameDay, isToday, isTomorrow, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, parseISO, differenceInDays, isPast, addDays, isAfter, isBefore, startOfDay, isWithinInterval } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getEvents } from '@/lib/supabase/queries';
 import { useToast } from '@/hooks/use-toast';
@@ -19,6 +21,7 @@ import { getPageSEO } from '@/config/seo';
 import { generateEventSchema } from '@/lib/seo/structuredData';
 import { getEventsBreadcrumbs } from '@/lib/seo/breadcrumbs';
 import { LazyImage } from '@/components/LazyImage';
+import { cn } from '@/lib/utils';
 
 const EventsCalendar = () => {
   const { toast } = useToast();
@@ -30,6 +33,7 @@ const EventsCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined });
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -81,9 +85,29 @@ const EventsCalendar = () => {
       const isPastEvent = isPast(parseISO(event.endDate));
       const matchesPastFilter = showPastEvents ? isPastEvent : !isPastEvent;
       
-      return matchesType && matchesRegion && matchesPastFilter;
+      // Date range filter
+      let matchesDateRange = true;
+      if (dateRange.from || dateRange.to) {
+        const eventStart = parseISO(event.startDate);
+        const eventEnd = parseISO(event.endDate);
+        
+        if (dateRange.from && dateRange.to) {
+          // Both dates selected - event must overlap with range
+          matchesDateRange = isWithinInterval(eventStart, { start: dateRange.from, end: dateRange.to }) ||
+                            isWithinInterval(eventEnd, { start: dateRange.from, end: dateRange.to }) ||
+                            (eventStart <= dateRange.from && eventEnd >= dateRange.to);
+        } else if (dateRange.from) {
+          // Only start date - show events from that date onwards
+          matchesDateRange = eventEnd >= dateRange.from;
+        } else if (dateRange.to) {
+          // Only end date - show events up to that date
+          matchesDateRange = eventStart <= dateRange.to;
+        }
+      }
+      
+      return matchesType && matchesRegion && matchesPastFilter && matchesDateRange;
     }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-  }, [validatedEvents, selectedType, selectedRegion, showPastEvents]);
+  }, [validatedEvents, selectedType, selectedRegion, showPastEvents, dateRange]);
 
   const monthDays = useMemo(() => {
     const start = startOfMonth(currentMonth);
@@ -193,6 +217,51 @@ const EventsCalendar = () => {
                   </SelectContent>
                 </Select>
 
+                {/* Date Range Picker */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full sm:w-[280px] justify-start text-left font-normal",
+                        !dateRange.from && !dateRange.to && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateRange.from ? (
+                        dateRange.to ? (
+                          <>
+                            {format(dateRange.from, "d MMM", { locale: fr })} - {format(dateRange.to, "d MMM yyyy", { locale: fr })}
+                          </>
+                        ) : (
+                          format(dateRange.from, "d MMM yyyy", { locale: fr })
+                        )
+                      ) : (
+                        <span>Filtrer par date</span>
+                      )}
+                      {(dateRange.from || dateRange.to) && (
+                        <X 
+                          className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDateRange({ from: undefined, to: undefined });
+                          }}
+                        />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="range"
+                      selected={{ from: dateRange.from, to: dateRange.to }}
+                      onSelect={(range) => setDateRange({ from: range?.from, to: range?.to })}
+                      numberOfMonths={2}
+                      locale={fr}
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+
                 <Button
                   variant={showPastEvents ? "default" : "outline"}
                   size="sm"
@@ -208,8 +277,9 @@ const EventsCalendar = () => {
                     setSelectedRegion('all');
                     setShowPastEvents(false);
                     setSelectedDate(null);
+                    setDateRange({ from: undefined, to: undefined });
                   }}
-                  disabled={selectedType === 'all' && selectedRegion === 'all' && !showPastEvents}
+                  disabled={selectedType === 'all' && selectedRegion === 'all' && !showPastEvents && !dateRange.from && !dateRange.to}
                   className="px-4 py-2 rounded-md border transition-all whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed border-primary/30 hover:border-primary hover:bg-primary/10 disabled:hover:border-primary/30 disabled:hover:bg-transparent w-full sm:w-auto"
                 >
                   Réinitialiser
@@ -293,18 +363,33 @@ const EventsCalendar = () => {
                           <div className="text-xs text-muted-foreground text-center py-4">
                             Aucun événement
                           </div>
-                        ) : (
-                          dayEvents.map(event => (
-                            <button
-                              key={event.id}
-                              onClick={() => setSelectedEvent(event)}
-                              className={`w-full text-left text-xs p-2 rounded transition-all hover:scale-105 ${getEventTypeColor(event.type)}`}
-                            >
-                              <div className="font-medium line-clamp-2">{event.title}</div>
-                              <div className="text-xs opacity-75 mt-1">{event.city}</div>
-                            </button>
-                          ))
-                        )}
+                         ) : (
+                           dayEvents.map(event => {
+                             const getWeekEventStyle = (type: EventType) => {
+                               switch (type) {
+                                 case 'festival':
+                                   return 'bg-muted/80 border-l-2 border-festival hover:bg-muted';
+                                 case 'vernissage':
+                                   return 'bg-muted/80 border-l-2 border-accent hover:bg-muted';
+                                 case 'atelier':
+                                   return 'bg-muted/80 border-l-2 border-gallery hover:bg-muted';
+                                 case 'autre':
+                                   return 'bg-muted/80 border-l-2 border-secondary hover:bg-muted';
+                               }
+                             };
+                             
+                             return (
+                               <button
+                                 key={event.id}
+                                 onClick={() => setSelectedEvent(event)}
+                                 className={`w-full text-left text-xs p-2 rounded transition-all hover:scale-105 ${getWeekEventStyle(event.type)}`}
+                               >
+                                 <div className="font-medium line-clamp-2">{event.title}</div>
+                                 <div className="text-xs opacity-75 mt-1">{event.city}</div>
+                               </button>
+                             );
+                           })
+                         )}
                       </div>
                     </div>
                   );
@@ -354,28 +439,49 @@ const EventsCalendar = () => {
                   return (
                     <button
                       key={day.toString()}
-                      onClick={() => dayEvents.length > 0 && setSelectedDate(day)}
+                      onClick={() => {
+                        if (dayEvents.length > 0) {
+                          setSelectedDate(day);
+                          setViewMode('list');
+                        }
+                      }}
                       className={`
                         min-h-[80px] p-2 border rounded-lg text-left transition-all
                         ${isCurrentDay ? 'bg-primary/10 border-primary' : 'border-border hover:border-primary/50'}
                         ${!isSameMonth(day, currentMonth) ? 'opacity-30' : ''}
-                        ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-accent/50' : 'cursor-default'}
+                        ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-muted/50' : 'cursor-default'}
                       `}
                     >
                       <div className={`text-sm font-medium mb-1 ${isCurrentDay ? 'text-primary' : ''}`}>
                         {format(day, 'd')}
                       </div>
                       <div className="flex flex-col gap-1">
-                        {dayEvents.slice(0, 2).map(event => (
-                          <div
-                            key={event.id}
-                            className={`text-xs px-1 py-0.5 rounded ${getEventTypeColor(event.type)}`}
-                          >
-                            {event.title.length > 12 ? event.title.substring(0, 12) + '...' : event.title}
-                          </div>
-                        ))}
+                        {dayEvents.slice(0, 2).map(event => {
+                          // Better event colors for calendar visibility
+                          const getCalendarEventStyle = (type: EventType) => {
+                            switch (type) {
+                              case 'festival':
+                                return 'bg-muted/80 border-l-2 border-festival text-foreground';
+                              case 'vernissage':
+                                return 'bg-muted/80 border-l-2 border-accent text-foreground';
+                              case 'atelier':
+                                return 'bg-muted/80 border-l-2 border-gallery text-foreground';
+                              case 'autre':
+                                return 'bg-muted/80 border-l-2 border-secondary text-foreground';
+                            }
+                          };
+                          
+                          return (
+                            <div
+                              key={event.id}
+                              className={`text-xs px-2 py-0.5 rounded ${getCalendarEventStyle(event.type)}`}
+                            >
+                              {event.title.length > 12 ? event.title.substring(0, 12) + '...' : event.title}
+                            </div>
+                          );
+                        })}
                         {dayEvents.length > 2 && (
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-muted-foreground pl-1">
                             +{dayEvents.length - 2} autre{dayEvents.length - 2 > 1 ? 's' : ''}
                           </div>
                         )}
@@ -413,26 +519,31 @@ const EventsCalendar = () => {
         {viewMode === 'list' && (
           <div className="space-y-5">
             {filteredEvents.length === 0 ? (
-              <Card className="shadow-card border-2 border-dashed">
+              <Card className="shadow-card border-2 border-dashed animate-fade-in">
                 <CardContent className="p-12 text-center">
                   <CalendarIcon className="h-16 w-16 mx-auto mb-6 text-muted-foreground/50" />
                   <h3 className="text-2xl font-semibold mb-3">Aucun événement trouvé</h3>
                   <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                     {showPastEvents 
                       ? "Aucun événement passé ne correspond à vos critères. Consultez les événements à venir."
-                      : "Aucun événement à venir ne correspond à vos critères. Essayez d'élargir votre recherche ou suggérez un nouvel événement."}
+                      : selectedType !== 'all' || selectedRegion !== 'all' || dateRange.from || dateRange.to
+                      ? "Aucun événement ne correspond à vos critères. Essayez de modifier vos filtres."
+                      : "Aucun événement à venir disponible pour le moment."}
                   </p>
                   <div className="flex gap-3 justify-center flex-wrap">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setSelectedType('all');
-                        setSelectedRegion('all');
-                        setShowPastEvents(false);
-                      }}
-                    >
-                      Voir tous les événements
-                    </Button>
+                    {(selectedType !== 'all' || selectedRegion !== 'all' || dateRange.from || dateRange.to || showPastEvents) && (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedType('all');
+                          setSelectedRegion('all');
+                          setShowPastEvents(false);
+                          setDateRange({ from: undefined, to: undefined });
+                        }}
+                      >
+                        Réinitialiser les filtres
+                      </Button>
+                    )}
                     <Link to="/suggest">
                       <Button>Suggérer un événement</Button>
                     </Link>
