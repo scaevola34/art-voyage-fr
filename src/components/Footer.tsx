@@ -22,7 +22,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link 
-                  to="/map" 
+                  to="/carte" 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   Explorer la carte
@@ -38,7 +38,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  to="/about" 
+                  to="/a-propos" 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   À propos
@@ -46,7 +46,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  to="/suggest" 
+                  to="/suggerer-un-lieu" 
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   Suggérer un lieu

@@ -9,16 +9,16 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const isMapPage = location.pathname === '/map';
+  const isMapPage = location.pathname === '/carte';
 
   const isActive = (path: string) => location.pathname === path;
 
   const navLinks = [
     { path: '/', label: 'Accueil' },
-    { path: '/map', label: 'Carte' },
+    { path: '/carte', label: 'Carte' },
     { path: '/agenda', label: 'Agenda' },
-    { path: '/about', label: 'À propos' },
-    { path: '/suggest', label: 'Suggérer un lieu' },
+    { path: '/a-propos', label: 'À propos' },
+    { path: '/suggerer-un-lieu', label: 'Suggérer un lieu' },
   ];
 
   return (

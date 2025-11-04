@@ -27,7 +27,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const isMapPage = location.pathname === '/map';
+  const isMapPage = location.pathname === '/carte';
 
   return (
     <>
@@ -43,10 +43,10 @@ function AppContent() {
         }>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/map" element={<MapPage />} />
+            <Route path="/carte" element={<MapPage />} />
             <Route path="/agenda" element={<EventsCalendar />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/suggest" element={<SuggestLocation />} />
+            <Route path="/a-propos" element={<About />} />
+            <Route path="/suggerer-un-lieu" element={<SuggestLocation />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/queue" element={<AdminQueue />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />

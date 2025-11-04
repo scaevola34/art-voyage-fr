@@ -58,7 +58,7 @@ const Home = memo(() => {
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Découvrez les galeries, associations et festivals de street art à travers toute la France sur une carte interactive.
             </p>
-            <Link to="/map">
+            <Link to="/carte">
               <Button 
                 size="lg" 
                 className="text-lg px-8 py-6 shadow-glow-gallery hover:shadow-glow-gallery/70 transition-all animate-bounce-subtle"
@@ -128,12 +128,12 @@ const Home = memo(() => {
                 Explorez {stats.total} lieux dédiés au street art répartis dans toute la France. Galeries, associations, festivals : tout y est !
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/map">
+                <Link to="/carte">
                   <Button size="lg" className="w-full sm:w-auto">
                     Voir la carte
                   </Button>
                 </Link>
-                <Link to="/suggest">
+                <Link to="/suggerer-un-lieu">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto">
                     Suggérer un lieu
                   </Button>

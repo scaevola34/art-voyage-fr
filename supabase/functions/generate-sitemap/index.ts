@@ -117,8 +117,8 @@ function generateSitemap(locations: Location[], events: Event[]): string {
     xml += '  </url>\n';
   });
 
-  // Add regional map pages
-  const regions = [...new Set(locations.map((loc) => loc.region))];
+  // Add regional map pages (only for regions with locations)
+  const regions = [...new Set(locations.map((loc) => loc.region).filter(Boolean))];
   regions.forEach((region) => {
     xml += '  <url>\n';
     xml += `    <loc>${baseUrl}/carte?region=${encodeURIComponent(region)}</loc>\n`;
@@ -128,8 +128,9 @@ function generateSitemap(locations: Location[], events: Event[]): string {
     xml += '  </url>\n';
   });
 
-  // Add event pages
-  events.forEach((event) => {
+  // Add event pages (only future and ongoing events)
+  const currentDate = new Date().toISOString().split('T')[0];
+  events.filter((event) => event.start_date >= currentDate).forEach((event) => {
     const lastmod = new Date(event.updated_at).toISOString().split('T')[0];
     xml += '  <url>\n';
     xml += `    <loc>${baseUrl}/agenda?event=${event.id}</loc>\n`;

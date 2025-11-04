@@ -1,4 +1,21 @@
 {
+  "redirects": [
+    {
+      "source": "/map",
+      "destination": "/carte",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/a-propos",
+      "permanent": true
+    },
+    {
+      "source": "/suggest",
+      "destination": "/suggerer-un-lieu",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

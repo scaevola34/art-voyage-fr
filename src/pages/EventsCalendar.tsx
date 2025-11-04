@@ -544,7 +544,7 @@ const EventsCalendar = () => {
                         Réinitialiser les filtres
                       </Button>
                     )}
-                    <Link to="/suggest">
+                    <Link to="/suggerer-un-lieu">
                       <Button>Suggérer un événement</Button>
                     </Link>
                   </div>
