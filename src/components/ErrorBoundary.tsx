@@ -18,16 +18,12 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
-    if (import.meta.env.DEV) {
-      console.error('ErrorBoundary caught error:', error);
-    }
+    console.error('ErrorBoundary caught error:', error);
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    if (import.meta.env.DEV) {
-      console.error('Error details:', error, errorInfo);
-    }
+    console.error('Error details:', error, errorInfo);
   }
 
   render() {
