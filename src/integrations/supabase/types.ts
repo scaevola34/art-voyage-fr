@@ -168,10 +168,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_rate_limits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_rate_limits: { Args: never; Returns: undefined }
     }
     Enums: {
       event_type: "festival" | "vernissage" | "atelier" | "autre"
