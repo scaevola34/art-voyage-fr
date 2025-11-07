@@ -44,10 +44,7 @@ export default function Admin() {
   const [editEventForm, setEditEventForm] = useState<Partial<Event>>({});
   
   // Quick add states
-  const [quickAddForm, setQuickAddForm] = useState<Partial<Location>>({
-    type: 'gallery',
-    region: 'Île-de-France'
-  });
+  const [quickAddForm, setQuickAddForm] = useState<Partial<Location>>({});
   
   // Import states
   const [importMethod, setImportMethod] = useState<'json' | 'csv' | 'paste'>('json');
@@ -175,7 +172,7 @@ export default function Admin() {
       });
 
       if (continueAdding) {
-        setQuickAddForm({ type: 'gallery', region: 'Île-de-France' });
+        setQuickAddForm({});
       }
     } catch (error: any) {
       toast({
@@ -710,11 +707,11 @@ export default function Admin() {
                     <div>
                       <Label>Type *</Label>
                       <Select
-                        value={quickAddForm.type}
+                        value={quickAddForm.type || ''}
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, type: v as LocationType })}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Sélectionner un type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="gallery">Galerie</SelectItem>
@@ -755,11 +752,11 @@ export default function Admin() {
                     <div>
                       <Label>Région *</Label>
                       <Select
-                        value={quickAddForm.region}
+                        value={quickAddForm.region || ''}
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, region: v })}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Sélectionner une région" />
                         </SelectTrigger>
                         <SelectContent>
                           {frenchRegions.map((region) => (
@@ -1031,11 +1028,11 @@ export default function Admin() {
                     <div>
                       <Label>Type *</Label>
                       <Select
-                        value={(quickAddForm as any).eventType || 'festival'}
+                        value={(quickAddForm as any).eventType || ''}
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventType: v } as any)}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Sélectionner un type" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="festival">Festival</SelectItem>
@@ -1076,11 +1073,11 @@ export default function Admin() {
                     <div>
                       <Label>Région *</Label>
                       <Select
-                        value={(quickAddForm as any).eventRegion || 'Île-de-France'}
+                        value={(quickAddForm as any).eventRegion || ''}
                         onValueChange={(v) => setQuickAddForm({ ...quickAddForm, eventRegion: v } as any)}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Sélectionner une région" />
                         </SelectTrigger>
                         <SelectContent>
                           {frenchRegions.map((region) => (
@@ -1151,11 +1148,8 @@ export default function Admin() {
                       <Button
                         onClick={async () => {
                           const form = quickAddForm as any;
-                          // Set default values for fields that have UI defaults
-                          const eventType = form.eventType || 'festival';
-                          const eventRegion = form.eventRegion || 'Île-de-France';
                           
-                          if (!form.eventTitle || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventDescription) {
+                          if (!form.eventTitle || !form.eventType || !form.eventStartDate || !form.eventEndDate || !form.eventCity || !form.eventRegion || !form.eventDescription) {
                             toast({ title: '❌ Erreur', description: 'Remplissez les champs requis (*)', variant: 'destructive' });
                             return;
                           }
@@ -1163,11 +1157,11 @@ export default function Admin() {
                           try {
                             const newEvent = await createEvent({
                               title: form.eventTitle,
-                              type: eventType,
+                              type: form.eventType,
                               startDate: form.eventStartDate,
                               endDate: form.eventEndDate,
                               city: form.eventCity,
-                              region: eventRegion,
+                              region: form.eventRegion,
                               description: form.eventDescription,
                               locationId: form.eventLocationId,
                               price: form.eventPrice,
