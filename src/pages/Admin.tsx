@@ -854,12 +854,9 @@ export default function Admin() {
                 </div>
 
                 <div className="flex gap-4 mt-6">
-                  <Button onClick={() => handleQuickAdd(true)} variant="outline">
+                  <Button onClick={() => handleQuickAdd(true)}>
                     <Plus className="mr-2 h-4 w-4" />
                     Ajouter et continuer
-                  </Button>
-                  <Button onClick={() => handleQuickAdd(false)}>
-                    Ajouter et voir
                   </Button>
                 </div>
               </CardContent>
