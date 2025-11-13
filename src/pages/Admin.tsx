@@ -121,8 +121,8 @@ export default function Admin() {
       const newEdition = await createEvent({
         title: newTitle,
         type: event.type,
-        startDate: '', // Clear dates - user must fill them
-        endDate: '',
+        startDate: null as any, // Clear dates - user must fill them
+        endDate: null as any,
         city: event.city,
         region: event.region,
         description: event.description,

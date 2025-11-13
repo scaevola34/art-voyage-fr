@@ -79,31 +79,36 @@ const EventsCalendar = () => {
   };
 
   const filteredEvents = useMemo(() => {
-    // First, filter out older editions of events (only show latest edition)
-    const latestEditions = validatedEvents.filter(event => {
+    // First, filter out events without dates (draft mode)
+    const eventsWithDates = validatedEvents.filter(event => 
+      event.startDate && event.endDate
+    );
+    
+    // Then, filter out older editions of events (only show latest edition)
+    const latestEditions = eventsWithDates.filter(event => {
       // If this event has a parent, check if there's a newer edition
       if (event.parentEventId) {
         // Find if there's any event with this event as parent and a later end date
-        const hasNewerEdition = validatedEvents.some(
+        const hasNewerEdition = eventsWithDates.some(
           other => other.parentEventId === event.parentEventId && 
-          parseISO(other.endDate) > parseISO(event.endDate)
+          parseISO(other.endDate!) > parseISO(event.endDate!)
         );
         return !hasNewerEdition;
       }
       
       // If this event is a parent, check if there are child editions
-      const childEditions = validatedEvents.filter(
+      const childEditions = eventsWithDates.filter(
         other => other.parentEventId === event.id
       );
       
       // If there are child editions, show only the latest child
       if (childEditions.length > 0) {
         const latestChild = childEditions.reduce((latest, current) => 
-          parseISO(current.endDate) > parseISO(latest.endDate) ? current : latest
+          parseISO(current.endDate!) > parseISO(latest.endDate!) ? current : latest
         );
         // Only hide this parent if we're not showing past events
         // or if the latest child is in the future
-        return showPastEvents || isPast(parseISO(latestChild.endDate));
+        return showPastEvents || isPast(parseISO(latestChild.endDate!));
       }
       
       return true;
@@ -112,14 +117,14 @@ const EventsCalendar = () => {
     return latestEditions.filter(event => {
       const matchesType = selectedType === 'all' || event.type === selectedType;
       const matchesRegion = selectedRegion === 'all' || event.region === selectedRegion;
-      const isPastEvent = isPast(parseISO(event.endDate));
+      const isPastEvent = isPast(parseISO(event.endDate!));
       const matchesPastFilter = showPastEvents ? isPastEvent : !isPastEvent;
       
       // Date range filter
       let matchesDateRange = true;
       if (dateRange.from || dateRange.to) {
-        const eventStart = parseISO(event.startDate);
-        const eventEnd = parseISO(event.endDate);
+        const eventStart = parseISO(event.startDate!);
+        const eventEnd = parseISO(event.endDate!);
         
         if (dateRange.from && dateRange.to) {
           // Both dates selected - event must overlap with range
@@ -136,7 +141,7 @@ const EventsCalendar = () => {
       }
       
       return matchesType && matchesRegion && matchesPastFilter && matchesDateRange;
-    }).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    }).sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
   }, [validatedEvents, selectedType, selectedRegion, showPastEvents, dateRange]);
 
   const monthDays = useMemo(() => {
@@ -153,8 +158,8 @@ const EventsCalendar = () => {
 
   const eventsOnDate = (date: Date) => {
     return filteredEvents.filter(event => {
-      const start = parseISO(event.startDate);
-      const end = parseISO(event.endDate);
+      const start = parseISO(event.startDate!);
+      const end = parseISO(event.endDate!);
       return date >= start && date <= end;
     });
   };
@@ -614,8 +619,8 @@ const EventsCalendar = () => {
                   {selectedEvent.featured && (
                     <Badge variant="secondary">⭐ À la une</Badge>
                   )}
-                  {getDateBadge(selectedEvent.startDate) && (
-                    <Badge variant="outline">{getDateBadge(selectedEvent.startDate)}</Badge>
+                  {getDateBadge(selectedEvent.startDate!) && (
+                    <Badge variant="outline">{getDateBadge(selectedEvent.startDate!)}</Badge>
                   )}
                 </div>
 
@@ -624,8 +629,8 @@ const EventsCalendar = () => {
                     <div className="text-muted-foreground mb-1">Dates</div>
                     <div className="font-medium">
                       {(() => {
-                        const start = parseISO(selectedEvent.startDate);
-                        const end = parseISO(selectedEvent.endDate);
+                        const start = parseISO(selectedEvent.startDate!);
+                        const end = parseISO(selectedEvent.endDate!);
                         const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
                         const sameYear = start.getFullYear() === end.getFullYear();
                         
@@ -640,9 +645,9 @@ const EventsCalendar = () => {
                         }
                       })()}
                     </div>
-                    {!isPast(parseISO(selectedEvent.endDate)) && (
+                    {!isPast(parseISO(selectedEvent.endDate!)) && (
                       <div className="text-xs text-muted-foreground mt-1">
-                        Dans {differenceInDays(parseISO(selectedEvent.startDate), new Date())} jours
+                        Dans {differenceInDays(parseISO(selectedEvent.startDate!), new Date())} jours
                       </div>
                     )}
                   </div>
@@ -738,8 +743,8 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
 
   // Determine event status
   const now = startOfDay(new Date());
-  const startDate = parseISO(event.startDate);
-  const endDate = parseISO(event.endDate);
+  const startDate = parseISO(event.startDate!);
+  const endDate = parseISO(event.endDate!);
   const isUpcoming = isAfter(startDate, now);
   const isOngoing = !isAfter(startDate, now) && !isBefore(endDate, now);
   const isPastEvent = isBefore(endDate, now);
@@ -793,8 +798,8 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
                 <CalendarIcon className="h-4 w-4 flex-shrink-0" />
                 <span>
                   {(() => {
-                    const start = parseISO(event.startDate);
-                    const end = parseISO(event.endDate);
+                    const start = parseISO(event.startDate!);
+                    const end = parseISO(event.endDate!);
                     const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
                     const sameYear = start.getFullYear() === end.getFullYear();
                     
@@ -810,9 +815,9 @@ const EventCard = ({ event, onClick }: { event: Event; onClick: () => void }) =>
                   })()}
                 </span>
               </div>
-              {getDateBadge(event.startDate) && !isOngoing && (
+              {getDateBadge(event.startDate!) && !isOngoing && (
                 <Badge variant="outline" className="text-xs">
-                  {getDateBadge(event.startDate)}
+                  {getDateBadge(event.startDate!)}
                 </Badge>
               )}
             </div>
