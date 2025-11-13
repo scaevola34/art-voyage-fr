@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle, RefreshCw, Copy } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { frenchRegions } from '@/data/regions';
 import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
 import { MissingPlacesDetector } from '@/components/admin/MissingPlacesDetector';
@@ -98,6 +99,59 @@ export default function Admin() {
       loadData();
     }
   }, [isAuthenticated]);
+
+  // Create new edition of an event
+  const handleCreateNewEdition = async (event: Event) => {
+    try {
+      // Extract year from title and increment it
+      const currentYear = new Date().getFullYear();
+      const yearMatch = event.title.match(/\b(\d{4})\b/);
+      let newTitle = event.title;
+      
+      if (yearMatch) {
+        const oldYear = parseInt(yearMatch[1]);
+        const newYear = oldYear + 1;
+        newTitle = event.title.replace(oldYear.toString(), newYear.toString());
+      } else {
+        // If no year found, append next year
+        newTitle = `${event.title} ${currentYear + 1}`;
+      }
+
+      // Create new edition with cleared dates and parent reference
+      const newEdition = await createEvent({
+        title: newTitle,
+        type: event.type,
+        startDate: '', // Clear dates - user must fill them
+        endDate: '',
+        city: event.city,
+        region: event.region,
+        description: event.description,
+        locationId: event.locationId,
+        price: event.price,
+        website: event.website,
+        image: event.image,
+        featured: event.featured,
+        parentEventId: event.id, // Link to parent event
+      });
+
+      setEvents([...events, newEdition]);
+      
+      // Open edit dialog for the new edition so user can set dates
+      setEditingEvent(newEdition);
+      setEditEventForm(newEdition);
+      
+      toast({ 
+        title: '✅ Nouvelle édition créée', 
+        description: 'Veuillez définir les dates de l\'événement' 
+      });
+    } catch (error: any) {
+      toast({
+        title: '❌ Erreur',
+        description: error.message || 'Impossible de créer la nouvelle édition',
+        variant: 'destructive',
+      });
+    }
+  };
 
   // Filtered and sorted locations
   const filteredLocations = useMemo(() => {
@@ -1252,6 +1306,23 @@ export default function Admin() {
                                       >
                                         <Edit2 className="h-4 w-4" />
                                       </Button>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => handleCreateNewEdition(event)}
+                                            >
+                                              <Plus className="h-4 w-4 mr-1" />
+                                              Nouvelle édition
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Créer l'édition de l'année prochaine</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
                                       <Button
                                         variant="ghost"
                                         size="sm"

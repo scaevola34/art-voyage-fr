@@ -32,6 +32,7 @@ export const eventSchema = z.object({
   website: z.string().url({ message: "URL invalide" }).optional(),
   price: z.string().max(50).nullable().optional(),
   featured: z.boolean().optional(),
+  parentEventId: z.string().nullable().optional(),
 }).refine(
   (data) => {
     const start = new Date(data.startDate);

@@ -99,6 +99,7 @@ const EventBaseSchema = z.object({
   website: z.string().url().nullable().optional(),
   price: z.string().nullable().optional(),
   featured: z.boolean().default(false),
+  parent_event_id: z.string().uuid().nullable().optional(),
   status: ContentStatusSchema.default('published'),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
@@ -124,6 +125,7 @@ export const EventInsertSchema = EventBaseSchema.omit({
   website: true,
   price: true,
   location_id: true,
+  parent_event_id: true,
 }).refine(
   (data) => {
     if (data.start_date && data.end_date) {

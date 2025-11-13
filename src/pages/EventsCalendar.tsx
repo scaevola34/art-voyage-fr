@@ -79,7 +79,37 @@ const EventsCalendar = () => {
   };
 
   const filteredEvents = useMemo(() => {
-    return validatedEvents.filter(event => {
+    // First, filter out older editions of events (only show latest edition)
+    const latestEditions = validatedEvents.filter(event => {
+      // If this event has a parent, check if there's a newer edition
+      if (event.parentEventId) {
+        // Find if there's any event with this event as parent and a later end date
+        const hasNewerEdition = validatedEvents.some(
+          other => other.parentEventId === event.parentEventId && 
+          parseISO(other.endDate) > parseISO(event.endDate)
+        );
+        return !hasNewerEdition;
+      }
+      
+      // If this event is a parent, check if there are child editions
+      const childEditions = validatedEvents.filter(
+        other => other.parentEventId === event.id
+      );
+      
+      // If there are child editions, show only the latest child
+      if (childEditions.length > 0) {
+        const latestChild = childEditions.reduce((latest, current) => 
+          parseISO(current.endDate) > parseISO(latest.endDate) ? current : latest
+        );
+        // Only hide this parent if we're not showing past events
+        // or if the latest child is in the future
+        return showPastEvents || isPast(parseISO(latestChild.endDate));
+      }
+      
+      return true;
+    });
+    
+    return latestEditions.filter(event => {
       const matchesType = selectedType === 'all' || event.type === selectedType;
       const matchesRegion = selectedRegion === 'all' || event.region === selectedRegion;
       const isPastEvent = isPast(parseISO(event.endDate));
