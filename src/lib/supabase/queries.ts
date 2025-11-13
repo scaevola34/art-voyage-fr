@@ -232,6 +232,7 @@ export async function getEvents(filters?: EventFilters) {
     website: event.website,
     price: event.price,
     featured: event.featured,
+    parentEventId: event.parent_event_id,
   })) as Event[];
 }
 
@@ -251,6 +252,7 @@ export async function createEvent(event: Omit<Event, 'id'>) {
       website: event.website,
       price: event.price,
       featured: event.featured,
+      parent_event_id: event.parentEventId,
     })
     .select()
     .single();
@@ -272,6 +274,7 @@ export async function createEvent(event: Omit<Event, 'id'>) {
     website: data.website,
     price: data.price,
     featured: data.featured,
+    parentEventId: data.parent_event_id,
   } as Event;
 }
 
@@ -291,6 +294,7 @@ export async function updateEvent(id: string, updates: Partial<Event>) {
       website: updates.website,
       price: updates.price,
       featured: updates.featured,
+      parent_event_id: updates.parentEventId,
     })
     .eq('id', id)
     .select()
@@ -313,6 +317,7 @@ export async function updateEvent(id: string, updates: Partial<Event>) {
     website: data.website,
     price: data.price,
     featured: data.featured,
+    parentEventId: data.parent_event_id,
   } as Event;
 }
 

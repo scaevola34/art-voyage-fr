@@ -14,6 +14,7 @@ export interface Event {
   website?: string;
   price?: string;
   featured?: boolean;
+  parentEventId?: string;
 }
 
 export const events: Event[] = [
