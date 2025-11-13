@@ -15,10 +15,10 @@ export const eventSchema = z.object({
   type: EventTypeEnum,
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { 
     message: "Format de date invalide (YYYY-MM-DD)" 
-  }),
+  }).nullable(),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { 
     message: "Format de date invalide (YYYY-MM-DD)" 
-  }),
+  }).nullable(),
   locationId: z.string().nullable().optional(),
   city: z.string()
     .min(2, { message: "La ville doit contenir au moins 2 caractères" })
@@ -35,6 +35,10 @@ export const eventSchema = z.object({
   parentEventId: z.string().nullable().optional(),
 }).refine(
   (data) => {
+    // Skip validation if dates are null (draft mode)
+    if (data.startDate === null || data.endDate === null) {
+      return true;
+    }
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
     return end >= start;
@@ -92,6 +96,8 @@ export const isEventInRange = (
   startDate: Date,
   endDate: Date
 ): boolean => {
+  if (!event.startDate || !event.endDate) return false;
+  
   const eventStart = new Date(event.startDate);
   const eventEnd = new Date(event.endDate);
   
@@ -103,6 +109,8 @@ export const isEventInRange = (
 };
 
 export const isEventOnDate = (event: Event, date: Date): boolean => {
+  if (!event.startDate || !event.endDate) return false;
+  
   const eventStart = new Date(event.startDate);
   const eventEnd = new Date(event.endDate);
   
@@ -110,6 +118,8 @@ export const isEventOnDate = (event: Event, date: Date): boolean => {
 };
 
 export const getEventDuration = (event: Event): number => {
+  if (!event.startDate || !event.endDate) return 0;
+  
   const start = new Date(event.startDate);
   const end = new Date(event.endDate);
   return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
