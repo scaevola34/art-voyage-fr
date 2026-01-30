@@ -1,5 +1,6 @@
 import { useState, memo, Suspense, lazy, useEffect, useCallback, useMemo } from 'react';
 import { LocationDrawer } from '@/components/map/LocationDrawer';
+import { LocationListDrawer } from '@/components/map/LocationListDrawer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { locations as fallbackLocations, Location, LocationType } from '@/data/locations';
 import { useSearchParams } from 'react-router-dom';
@@ -16,6 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { frenchRegions } from '@/data/regions';
 import { SEO } from '@/components/SEO';
 import { getPageSEO } from '@/config/seo';
@@ -24,6 +26,8 @@ import { getMapBreadcrumbs } from '@/lib/seo/breadcrumbs';
 import { LocationListSkeleton, MapSkeleton } from '@/components/LoadingSkeleton';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { typeConfig } from '@/lib/constants';
+import { PanelLeftClose, PanelLeft } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Map = lazy(() => import('@/components/Map'));
 
@@ -36,6 +40,7 @@ const MapPage = memo(() => {
   const [filteredLocations, setFilteredLocations] = useState<Location[]>(fallbackLocations);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoadingLocations, setIsLoadingLocations] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     types: [],
     region: 'all',
@@ -309,8 +314,33 @@ const MapPage = memo(() => {
         </div>
 
         <div className="flex flex-1 overflow-hidden mt-[156px]">
-          {/* Locations list sidebar */}
-          <aside className="w-80 border-r border-border bg-card hidden md:flex md:flex-col">
+          {/* Sidebar Toggle Button - Desktop only */}
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn(
+              "hidden lg:flex absolute top-[172px] z-20 transition-all duration-300",
+              "bg-card border-border hover:bg-muted shadow-lg",
+              isSidebarOpen ? "left-[316px]" : "left-4"
+            )}
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label={isSidebarOpen ? "Masquer la liste" : "Afficher la liste"}
+            aria-expanded={isSidebarOpen}
+          >
+            {isSidebarOpen ? (
+              <PanelLeftClose className="h-4 w-4" />
+            ) : (
+              <PanelLeft className="h-4 w-4" />
+            )}
+          </Button>
+
+          {/* Locations list sidebar - Desktop only (lg: 1024px+) */}
+          <aside 
+            className={cn(
+              "w-80 border-r border-border bg-card hidden lg:flex lg:flex-col transition-all duration-300",
+              !isSidebarOpen && "lg:hidden"
+            )}
+          >
             {/* Fixed counter at top of sidebar */}
             <div className="px-4 py-3 border-b border-border bg-card/95 backdrop-blur-sm">
               <div className="text-sm font-medium text-primary">
@@ -332,9 +362,10 @@ const MapPage = memo(() => {
                     filteredLocations.map((location) => (
                       <Card
                         key={location.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
-                          selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
-                        }`}
+                        className={cn(
+                          "cursor-pointer transition-all hover:shadow-lg",
+                          selectedLocation?.id === location.id && "ring-2 ring-primary"
+                        )}
                         onClick={() => handleLocationSelect(location)}
                       >
                         <CardContent className="p-3">
@@ -376,6 +407,15 @@ const MapPage = memo(() => {
           </main>
         </div>
 
+        {/* Mobile/Tablet bottom drawer for location list */}
+        <LocationListDrawer
+          locations={filteredLocations}
+          selectedLocation={selectedLocation}
+          onLocationSelect={handleLocationSelect}
+          isLoading={isLoadingLocations}
+        />
+
+        {/* Location details drawer */}
         <LocationDrawer location={selectedLocation} onClose={handleCloseDrawer} />
       </div>
     </ErrorBoundary>
