@@ -19,14 +19,15 @@ export type Database = {
           city: string
           created_at: string
           description: string
-          end_date: string
+          end_date: string | null
           featured: boolean | null
           id: string
           image: string | null
           location_id: string | null
+          parent_event_id: string | null
           price: string | null
           region: string
-          start_date: string
+          start_date: string | null
           title: string
           type: Database["public"]["Enums"]["event_type"]
           updated_at: string
@@ -36,14 +37,15 @@ export type Database = {
           city: string
           created_at?: string
           description: string
-          end_date: string
+          end_date?: string | null
           featured?: boolean | null
           id?: string
           image?: string | null
           location_id?: string | null
+          parent_event_id?: string | null
           price?: string | null
           region: string
-          start_date: string
+          start_date?: string | null
           title: string
           type: Database["public"]["Enums"]["event_type"]
           updated_at?: string
@@ -53,14 +55,15 @@ export type Database = {
           city?: string
           created_at?: string
           description?: string
-          end_date?: string
+          end_date?: string | null
           featured?: boolean | null
           id?: string
           image?: string | null
           location_id?: string | null
+          parent_event_id?: string | null
           price?: string | null
           region?: string
-          start_date?: string
+          start_date?: string | null
           title?: string
           type?: Database["public"]["Enums"]["event_type"]
           updated_at?: string
@@ -72,6 +75,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]
