@@ -52,6 +52,14 @@ export default function Footer() {
                   Suggérer un lieu
                 </Link>
               </li>
+              <li>
+                <Link 
+                  to="/partenaires" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Partenaires
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -17,6 +17,7 @@ export default function Header() {
     { path: '/', label: 'Accueil' },
     { path: '/carte', label: 'Carte' },
     { path: '/agenda', label: 'Agenda' },
+    { path: '/partenaires', label: 'Partenaires' },
     { path: '/a-propos', label: 'À propos' },
     { path: '/suggerer-un-lieu', label: 'Suggérer un lieu' },
   ];

@@ -55,9 +55,6 @@ const Partenaires = () => {
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-primary/20 via-background to-background py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center space-y-6 animate-fade-in">
-            <Badge variant="secondary" className="mb-4">
-              Page en préparation
-            </Badge>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground">
               Nos Partenaires
             </h1>
@@ -157,14 +154,14 @@ const Partenaires = () => {
           <div className="h-px bg-border" />
         </div>
 
-        {/* Future Section (Hidden Placeholder) */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 opacity-40">
+        {/* Cultural & Technical Partners Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto text-center space-y-4">
             <h2 className="text-3xl font-bold text-foreground">
               Partenaires culturels & techniques
             </h2>
             <p className="text-muted-foreground">
-              Cette section sera dévoilée prochainement.
+              D'autres partenariats arrivent bientôt. Restez connectés !
             </p>
           </div>
         </section>
