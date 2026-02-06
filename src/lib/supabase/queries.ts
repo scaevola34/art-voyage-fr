@@ -182,6 +182,64 @@ export async function bulkDeleteLocations(ids: string[]) {
   if (error) throw error;
 }
 
+/**
+ * Delete ALL locations and replace with new data
+ * Used for bulk import that should replace entire database
+ */
+export async function bulkReplaceLocations(newLocations: Omit<Location, 'id'>[]) {
+  // Step 1: Delete all existing locations
+  const { error: deleteError } = await supabase
+    .from('locations')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows
+
+  if (deleteError) throw deleteError;
+
+  // Step 2: Insert all new locations
+  if (newLocations.length === 0) {
+    return [];
+  }
+
+  const insertData = newLocations.map(location => ({
+    name: location.name,
+    type: location.type,
+    description: location.description || '',
+    address: location.address || '',
+    city: location.city,
+    region: location.region,
+    coordinates: location.coordinates,
+    image: location.image,
+    website: location.website,
+    instagram: location.instagram,
+    opening_hours: location.openingHours,
+    email: location.email,
+  }));
+
+  const { data, error: insertError } = await supabase
+    .from('locations')
+    .insert(insertData)
+    .select();
+
+  if (insertError) throw insertError;
+
+  // Transform database format to app format
+  return (data || []).map(loc => ({
+    id: loc.id,
+    name: loc.name,
+    type: loc.type as LocationType,
+    description: loc.description || '',
+    address: loc.address || '',
+    city: loc.city,
+    region: loc.region,
+    coordinates: loc.coordinates as { lat: number; lng: number },
+    image: loc.image,
+    website: loc.website,
+    instagram: loc.instagram,
+    openingHours: loc.opening_hours,
+    email: loc.email,
+  })) as Location[];
+}
+
 // ==================== EVENTS ====================
 
 export interface EventFilters {
