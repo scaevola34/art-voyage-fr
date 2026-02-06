@@ -16,7 +16,7 @@ import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, Check
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { frenchRegions } from '@/data/regions';
 import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, bulkReplaceLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
-import { MissingPlacesDetector } from '@/components/admin/MissingPlacesDetector';
+// MissingPlacesDetector removed - no longer needed
 
 const ADMIN_PASSWORD = 'streetart2025';
 
@@ -439,17 +439,21 @@ export default function Admin() {
     
     try {
       // Call bulk replace function - deletes all and inserts new
-      const newLocations = await bulkReplaceLocations(importPreview);
+      await bulkReplaceLocations(importPreview);
       
-      setLocations(newLocations);
+      // Reload all data from database to ensure complete synchronization
+      await loadData();
       
       toast({
         title: '✅ Import réussi',
-        description: `${newLocations.length} lieux importés. Toutes les données précédentes ont été remplacées.`
+        description: `${importPreview.length} lieux importés. Toutes les données précédentes ont été remplacées.`
       });
       
+      // Reset import state
       setImportPreview([]);
       setImportData('');
+      setCurrentPage(1);
+      setSelectedIds([]);
     } catch (error: any) {
       console.error('Import failed:', error);
       toast({
@@ -566,12 +570,6 @@ export default function Admin() {
 
           {/* TAB: Liste des lieux */}
           <TabsContent value="list" className="space-y-4">
-            {/* Missing Places Detector */}
-            <MissingPlacesDetector 
-              onPlaceAdded={(newLocation) => {
-                setLocations([...locations, newLocation]);
-              }}
-            />
             <Card>
               <CardHeader>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
