@@ -15,7 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { LogOut, Search, Download, Upload, Trash2, Edit2, Plus, BarChart3, CheckCircle, AlertCircle, RefreshCw, Copy } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { frenchRegions } from '@/data/regions';
-import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
+import { getLocations, createLocation, updateLocation, deleteLocation, bulkDeleteLocations, bulkReplaceLocations, getEvents, createEvent, updateEvent, deleteEvent } from '@/lib/supabase/queries';
 import { MissingPlacesDetector } from '@/components/admin/MissingPlacesDetector';
 
 const ADMIN_PASSWORD = 'streetart2025';
@@ -47,11 +47,10 @@ export default function Admin() {
   // Quick add states
   const [quickAddForm, setQuickAddForm] = useState<Partial<Location>>({});
   
-  // Import states
-  const [importMethod, setImportMethod] = useState<'json' | 'csv' | 'paste'>('json');
+  // Import states - simplified for JSON replace
   const [importData, setImportData] = useState('');
   const [importPreview, setImportPreview] = useState<Location[]>([]);
-  const [duplicateAction, setDuplicateAction] = useState<'skip' | 'merge'>('skip');
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -357,24 +356,14 @@ export default function Admin() {
     toast({ title: '📥 Exporté', description: 'Backup téléchargé avec succès' });
   };
 
-  // Import validation
+  // Import validation - simplified for replacement mode
   const validateImportData = (data: any[]): { valid: Location[], errors: string[] } => {
     const valid: Location[] = [];
     const errors: string[] = [];
 
     data.forEach((item, index) => {
       if (!item.name || !item.type || !item.city || !item.region || !item.coordinates?.lat || !item.coordinates?.lng) {
-        errors.push(`Ligne ${index + 1}: Champs requis manquants`);
-        return;
-      }
-
-      // Check for duplicates
-      const isDuplicate = locations.some(loc => 
-        loc.name === item.name && loc.city === item.city
-      );
-
-      if (isDuplicate && duplicateAction === 'skip') {
-        errors.push(`Ligne ${index + 1}: Doublon ignoré - ${item.name}, ${item.city}`);
+        errors.push(`Ligne ${index + 1}: Champs requis manquants (name, type, city, region, coordinates)`);
         return;
       }
 
@@ -398,31 +387,18 @@ export default function Admin() {
     return { valid, errors };
   };
 
-  // Handle import preview
+  // Handle import preview - simplified JSON only
   const handleImportPreview = () => {
     try {
-      let data: any[] = [];
+      const data = JSON.parse(importData);
 
-      if (importMethod === 'json' || importMethod === 'paste') {
-        data = JSON.parse(importData);
-      } else if (importMethod === 'csv') {
-        // Simple CSV parsing
-        const lines = importData.split('\n');
-        const headers = lines[0].split(',').map(h => h.trim());
-        
-        data = lines.slice(1).map(line => {
-          const values = line.split(',').map(v => v.trim());
-          const obj: any = {};
-          headers.forEach((header, i) => {
-            if (header === 'lat' || header === 'lng') {
-              if (!obj.coordinates) obj.coordinates = {};
-              obj.coordinates[header] = parseFloat(values[i]);
-            } else {
-              obj[header] = values[i];
-            }
-          });
-          return obj;
+      if (!Array.isArray(data)) {
+        toast({
+          title: '❌ Erreur de format',
+          description: 'Le JSON doit être un tableau de lieux',
+          variant: 'destructive'
         });
+        return;
       }
 
       const { valid, errors } = validateImportData(data);
@@ -433,6 +409,7 @@ export default function Admin() {
           title: '⚠️ Avertissements',
           description: `${errors.length} erreurs détectées. ${valid.length} lieux valides.`,
         });
+        console.log('Import errors:', errors);
       } else {
         toast({
           title: '✅ Validation réussie',
@@ -442,20 +419,47 @@ export default function Admin() {
     } catch (error) {
       toast({
         title: '❌ Erreur de parsing',
-        description: 'Format invalide. Vérifiez votre JSON/CSV.',
+        description: 'Format JSON invalide. Vérifiez votre fichier.',
         variant: 'destructive'
       });
     }
   };
 
-  const handleImportConfirm = () => {
-    setLocations([...locations, ...importPreview]);
-    toast({
-      title: '✅ Importé',
-      description: `${importPreview.length} lieux ajoutés avec succès`
-    });
-    setImportPreview([]);
-    setImportData('');
+  // Handle import confirm - REPLACE all data
+  const handleImportConfirm = async () => {
+    if (importPreview.length === 0) return;
+    
+    const confirmed = confirm(
+      `⚠️ ATTENTION: Cette action va SUPPRIMER tous les ${locations.length} lieux existants et les remplacer par ${importPreview.length} nouveaux lieux.\n\nCette action est irréversible. Continuer ?`
+    );
+    
+    if (!confirmed) return;
+
+    setIsImporting(true);
+    
+    try {
+      // Call bulk replace function - deletes all and inserts new
+      const newLocations = await bulkReplaceLocations(importPreview);
+      
+      setLocations(newLocations);
+      
+      toast({
+        title: '✅ Import réussi',
+        description: `${newLocations.length} lieux importés. Toutes les données précédentes ont été remplacées.`
+      });
+      
+      setImportPreview([]);
+      setImportData('');
+    } catch (error: any) {
+      console.error('Import failed:', error);
+      toast({
+        title: '❌ Erreur d\'import',
+        description: error.message || 'L\'import a échoué. Les données n\'ont pas été modifiées.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   // Statistics
@@ -917,120 +921,165 @@ export default function Admin() {
             </Card>
           </TabsContent>
 
-          {/* TAB: Import massif */}
+          {/* TAB: Import massif - Simplified */}
           <TabsContent value="import" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Import massif</CardTitle>
-                <CardDescription>Importez plusieurs lieux en une fois</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  Import massif JSON
+                </CardTitle>
+                <CardDescription>
+                  ⚠️ L'import va <strong>REMPLACER</strong> toutes les données existantes par le nouveau fichier JSON.
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Method selector */}
-                <div className="flex gap-4">
-                  <Button
-                    variant={importMethod === 'json' ? 'default' : 'outline'}
-                    onClick={() => setImportMethod('json')}
-                  >
-                    📄 Fichier JSON
-                  </Button>
-                  <Button
-                    variant={importMethod === 'csv' ? 'default' : 'outline'}
-                    onClick={() => setImportMethod('csv')}
-                  >
-                    📊 Fichier CSV
-                  </Button>
-                  <Button
-                    variant={importMethod === 'paste' ? 'default' : 'outline'}
-                    onClick={() => setImportMethod('paste')}
-                  >
-                    📋 Coller JSON
-                  </Button>
-                </div>
+                {/* Current data info */}
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Base actuelle : <strong>{locations.length} lieux</strong>. 
+                    L'import supprimera ces données et les remplacera par le nouveau fichier.
+                  </AlertDescription>
+                </Alert>
 
-                {/* Duplicate handling */}
-                <div>
-                  <Label>Gestion des doublons</Label>
-                  <Select value={duplicateAction} onValueChange={(v) => setDuplicateAction(v as any)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="skip">Ignorer les doublons</SelectItem>
-                      <SelectItem value="merge">Fusionner avec l'existant</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Import area */}
-                {(importMethod === 'json' || importMethod === 'csv') && (
-                  <div>
-                    <Label>Sélectionner un fichier</Label>
-                    <Input
-                      type="file"
-                      accept={importMethod === 'json' ? '.json' : '.csv'}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onload = (event) => {
-                            setImportData(event.target?.result as string);
-                          };
-                          reader.readAsText(file);
-                        }
-                      }}
-                    />
-                  </div>
-                )}
-
-                {importMethod === 'paste' && (
-                  <div>
-                    <Label>Collez votre JSON ici</Label>
-                    <Textarea
-                      value={importData}
-                      onChange={(e) => setImportData(e.target.value)}
-                      placeholder='[{"name": "...", "type": "gallery", ...}]'
-                      rows={10}
-                      className="font-mono text-sm"
-                    />
-                  </div>
-                )}
-
-                <div className="flex gap-4">
-                  <Button onClick={handleImportPreview} disabled={!importData}>
-                    Prévisualiser
-                  </Button>
-                  {importPreview.length > 0 && (
-                    <Button onClick={handleImportConfirm} variant="default">
-                      <Upload className="mr-2 h-4 w-4" />
-                      Importer {importPreview.length} lieux
-                    </Button>
+                {/* File upload */}
+                <div className="space-y-2">
+                  <Label htmlFor="json-file">1. Sélectionner un fichier JSON</Label>
+                  <Input
+                    id="json-file"
+                    type="file"
+                    accept=".json"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setImportData(event.target?.result as string);
+                          setImportPreview([]); // Reset preview when new file selected
+                        };
+                        reader.readAsText(file);
+                        toast({
+                          title: '📄 Fichier chargé',
+                          description: `${file.name} prêt pour prévisualisation`,
+                        });
+                      }
+                    }}
+                  />
+                  {importData && (
+                    <p className="text-sm text-muted-foreground">
+                      ✅ Fichier chargé ({Math.round(importData.length / 1024)} KB)
+                    </p>
                   )}
+                </div>
+
+                {/* Preview button */}
+                <div className="space-y-2">
+                  <Label>2. Prévisualiser le contenu</Label>
+                  <Button 
+                    onClick={handleImportPreview} 
+                    disabled={!importData}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Prévisualiser le JSON
+                  </Button>
                 </div>
 
                 {/* Preview table */}
                 {importPreview.length > 0 && (
-                  <div className="border rounded-lg overflow-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nom</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Ville</TableHead>
-                          <TableHead>Région</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {importPreview.map((loc, i) => (
-                          <TableRow key={i}>
-                            <TableCell className="font-medium">{loc.name}</TableCell>
-                            <TableCell>{loc.type}</TableCell>
-                            <TableCell>{loc.city}</TableCell>
-                            <TableCell>{loc.region}</TableCell>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label>Aperçu ({importPreview.length} lieux détectés)</Label>
+                      <span className="text-sm text-muted-foreground">
+                        Affichage des 10 premiers
+                      </span>
+                    </div>
+                    <div className="border rounded-lg overflow-auto max-h-[300px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Nom</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Ville</TableHead>
+                            <TableHead>Région</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {importPreview.slice(0, 10).map((loc, i) => (
+                            <TableRow key={i}>
+                              <TableCell className="font-medium">{loc.name}</TableCell>
+                              <TableCell>
+                                <span className={`px-2 py-1 rounded text-xs ${
+                                  loc.type === 'gallery' ? 'bg-primary/20 text-primary' :
+                                  loc.type === 'museum' ? 'bg-museum/20 text-museum' :
+                                  loc.type === 'association' ? 'bg-association/20 text-association' :
+                                  'bg-festival/20 text-festival'
+                                }`}>
+                                  {loc.type}
+                                </span>
+                              </TableCell>
+                              <TableCell>{loc.city}</TableCell>
+                              <TableCell>{loc.region}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    {importPreview.length > 10 && (
+                      <p className="text-sm text-muted-foreground text-center">
+                        ... et {importPreview.length - 10} autres lieux
+                      </p>
+                    )}
                   </div>
+                )}
+
+                {/* Confirm import */}
+                {importPreview.length > 0 && (
+                  <div className="space-y-2 pt-4 border-t">
+                    <Label>3. Confirmer l'import</Label>
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Cette action va <strong>supprimer définitivement</strong> les {locations.length} lieux existants 
+                        et les remplacer par {importPreview.length} nouveaux lieux.
+                      </AlertDescription>
+                    </Alert>
+                    <Button 
+                      onClick={handleImportConfirm} 
+                      variant="destructive"
+                      className="w-full"
+                      disabled={isImporting}
+                    >
+                      {isImporting ? (
+                        <>
+                          <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                          Import en cours...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="mr-2 h-4 w-4" />
+                          🔄 Remplacer toutes les données ({importPreview.length} lieux)
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Reset button */}
+                {(importData || importPreview.length > 0) && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => {
+                      setImportData('');
+                      setImportPreview([]);
+                    }}
+                    className="w-full"
+                  >
+                    Annuler et recommencer
+                  </Button>
                 )}
               </CardContent>
             </Card>
