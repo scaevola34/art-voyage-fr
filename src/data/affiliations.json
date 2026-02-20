@@ -1,0 +1,182 @@
+{
+  "aires_urbaines": {
+    "clichy": "paris",
+    "pantin": "paris",
+    "saint-ouen-sur-seine": "paris",
+    "montévrain": "paris",
+    "fontainebleau": "paris",
+    "montlignon": "paris",
+    "villeurbanne": "lyon",
+    "vénissieux": "lyon",
+    "grenoble": "lyon",
+    "annecy": "lyon",
+    "aix-en-provence": "marseille",
+    "aubagne": "marseille",
+    "cannes": "nice",
+    "antibes": "nice",
+    "eze-village": "nice",
+    "villeneuve-d-ascq": "lille",
+    "amiens": "lille",
+    "bègles": "bordeaux",
+    "bayonne": "bordeaux",
+    "biarritz": "bordeaux",
+    "blagnac": "toulouse",
+    "bezannes": "reims",
+    "mulhouse": "strasbourg",
+    "colmar": "strasbourg",
+    "neuf-brisach": "strasbourg",
+    "saint-pierre": "la-réunion",
+    "le-gosier": "guadeloupe",
+    "pointe-à-pitre": "guadeloupe"
+  },
+  "paris": {
+    "links": [
+      {
+        "label": "Visites street art à Paris",
+        "url": "https://www.getyourguide.com/fr-fr/paris-l16/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      },
+      {
+        "label": "Séjourner près du lieu",
+        "url": "https://www.airbnb.fr/s/Paris",
+        "partner": "Airbnb",
+        "emoji": "🏠",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "lyon": {
+    "links": [
+      {
+        "label": "Visites street art à Lyon",
+        "url": "https://www.getyourguide.com/fr-fr/lyon-l295/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "marseille": {
+    "links": [
+      {
+        "label": "Visites street art à Marseille",
+        "url": "https://www.getyourguide.com/fr-fr/marseille-l292/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "lille": {
+    "links": [
+      {
+        "label": "Visites street art à Lille",
+        "url": "https://www.getyourguide.com/fr-fr/lille-l643/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "bordeaux": {
+    "links": [
+      {
+        "label": "Visites street art à Bordeaux",
+        "url": "https://www.getyourguide.com/fr-fr/bordeaux-l287/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "montpellier": {
+    "links": [
+      {
+        "label": "Visites street art à Montpellier",
+        "url": "https://www.getyourguide.com/fr-fr/montpellier-l2573/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "nice": {
+    "links": [
+      {
+        "label": "Visites street art à Nice",
+        "url": "https://www.getyourguide.com/fr-fr/nice-l132/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "reims": {
+    "links": [
+      {
+        "label": "Visites & activités à Reims",
+        "url": "https://www.getyourguide.com/fr-fr/reims-l365/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "strasbourg": {
+    "links": [
+      {
+        "label": "Visites & activités à Strasbourg",
+        "url": "https://www.getyourguide.com/fr-fr/strasbourg-l293/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "toulouse": {
+    "links": [
+      {
+        "label": "Visites & activités à Toulouse",
+        "url": "https://www.getyourguide.com/fr-fr/toulouse-l288/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "la-réunion": {
+    "links": [
+      {
+        "label": "Visites & activités à La Réunion",
+        "url": "https://www.getyourguide.com/fr-fr/ile-de-la-reunion-l97455/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "guadeloupe": {
+    "links": [
+      {
+        "label": "Visites & activités en Guadeloupe",
+        "url": "https://www.getyourguide.com/fr-fr/guadeloupe-l169108/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
+        "partner": "GetYourGuide",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  },
+  "default": {
+    "links": [
+      {
+        "label": "Matériel Montana Colors",
+        "url": "https://www.montana-cans.com/fr",
+        "partner": "Montana",
+        "emoji": "🎨",
+        "types": ["gallery", "museum"]
+      }
+    ]
+  }
+}

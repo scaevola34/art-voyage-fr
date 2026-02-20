@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { memo } from 'react';
 import { typeConfig } from '@/lib/constants';
+import AffiliationBlock from '@/components/AffiliationBlock';
 
 interface LocationPopupProps {
   location: Location;
@@ -153,9 +154,15 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
             )}
           </div>
 
+          {/* Affiliations */}
+          <AffiliationBlock
+            locationType={location.type}
+            locationCity={location.city}
+            locationId={location.id}
+          />
+
           {/* Separator */}
           <div className="border-t border-gray-700" />
-
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">

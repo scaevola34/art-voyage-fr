@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { typeConfig } from '@/lib/constants';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import AffiliationBlock from '@/components/AffiliationBlock';
 
 interface LocationDrawerProps {
   location: Location | null;
@@ -221,6 +222,13 @@ export const LocationDrawer = memo(function LocationDrawer({
                 </div>
               )}
             </div>
+
+            {/* Affiliations */}
+            <AffiliationBlock
+              locationType={location.type}
+              locationCity={location.city}
+              locationId={location.id}
+            />
 
             {/* Separator */}
             <div className="border-t border-gray-700" />
