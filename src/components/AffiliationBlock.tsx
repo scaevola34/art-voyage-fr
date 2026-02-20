@@ -6,6 +6,7 @@ import { analytics } from '@/lib/analytics/events';
 interface AffiliationBlockProps {
   locationType: LocationType;
   locationCity: string;
+  locationRegion: string;
   locationId: string;
 }
 
@@ -21,36 +22,58 @@ interface AffiliationLink {
 const ELIGIBLE_TYPES: LocationType[] = ['gallery', 'museum'];
 
 /**
- * Resolves city → config key using 3-level geo logic:
- * 1. Exact city match, 2. Urban area mapping, 3. Default fallback
+ * Normalizes a city string: strips postal code, lowercases, removes accents, converts spaces to hyphens.
  */
-function resolveConfigKey(city: string): string {
-  const normalized = city.toLowerCase().trim();
+function normalizeCitySlug(city: string): string {
+  return city
+    .replace(/^\d{5}\s*/, '')          // strip leading postal code
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')   // strip accents
+    .trim()
+    .replace(/\s+/g, '-');             // spaces → hyphens
+}
+
+/**
+ * Resolves city/region → config key using 4-level geo logic:
+ * 1. Exact city match, 2. Urban area mapping, 3. Region, 4. Default
+ */
+function resolveConfigKey(city: string, region: string): string {
+  const citySlug = normalizeCitySlug(city);
   const data = affiliationsData as Record<string, any>;
 
   // 1. Direct city match
-  if (data[normalized]?.links) return normalized;
+  if (data[citySlug]?.links) return citySlug;
 
   // 2. Urban area mapping
   const aires = data.aires_urbaines as Record<string, string> | undefined;
-  if (aires && aires[normalized]) {
-    const metro = aires[normalized];
+  if (aires && aires[citySlug]) {
+    const metro = aires[citySlug];
     if (data[metro]?.links) return metro;
   }
 
-  // 3. Default
+  // 3. Region match
+  const regionKey = region.trim();
+  const regions = data.regions as Record<string, string> | undefined;
+  if (regions && regions[regionKey]) {
+    const regionTarget = regions[regionKey];
+    if (data[regionTarget]?.links) return regionTarget;
+  }
+
+  // 4. Default
   return 'default';
 }
 
 const AffiliationBlock = memo(function AffiliationBlock({
   locationType,
   locationCity,
+  locationRegion,
   locationId,
 }: AffiliationBlockProps) {
   // Rule 1: Only show for eligible types
   if (!ELIGIBLE_TYPES.includes(locationType)) return null;
 
-  const configKey = resolveConfigKey(locationCity);
+  const configKey = resolveConfigKey(locationCity, locationRegion);
   const data = affiliationsData as Record<string, any>;
   const config = data[configKey];
   if (!config?.links) return null;
