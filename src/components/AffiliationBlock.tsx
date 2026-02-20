@@ -35,33 +35,32 @@ function normalizeCitySlug(city: string): string {
 }
 
 /**
- * Resolves city/region → config key using 4-level geo logic:
- * 1. Exact city match, 2. Urban area mapping, 3. Region, 4. Default
+ * Resolves city/region → affiliate links using 4-level geo logic:
+ * 1. Exact city match, 2. Urban area mapping, 3. Region (with inline links), 4. Default
  */
-function resolveConfigKey(city: string, region: string): string {
+function resolveLinks(city: string, region: string): AffiliationLink[] {
   const citySlug = normalizeCitySlug(city);
   const data = affiliationsData as Record<string, any>;
 
   // 1. Direct city match
-  if (data[citySlug]?.links) return citySlug;
+  if (data[citySlug]?.links) return data[citySlug].links;
 
   // 2. Urban area mapping
   const aires = data.aires_urbaines as Record<string, string> | undefined;
   if (aires && aires[citySlug]) {
     const metro = aires[citySlug];
-    if (data[metro]?.links) return metro;
+    if (data[metro]?.links) return data[metro].links;
   }
 
-  // 3. Region match
+  // 3. Region match — regions now contain links directly
   const regionKey = region.trim();
-  const regions = data.regions as Record<string, string> | undefined;
-  if (regions && regions[regionKey]) {
-    const regionTarget = regions[regionKey];
-    if (data[regionTarget]?.links) return regionTarget;
+  const regions = data.regions as Record<string, any> | undefined;
+  if (regions && regions[regionKey]?.links) {
+    return regions[regionKey].links;
   }
 
   // 4. Default
-  return 'default';
+  return data.default?.links || [];
 }
 
 const AffiliationBlock = memo(function AffiliationBlock({
@@ -73,13 +72,10 @@ const AffiliationBlock = memo(function AffiliationBlock({
   // Rule 1: Only show for eligible types
   if (!ELIGIBLE_TYPES.includes(locationType)) return null;
 
-  const configKey = resolveConfigKey(locationCity, locationRegion);
-  const data = affiliationsData as Record<string, any>;
-  const config = data[configKey];
-  if (!config?.links) return null;
+  const allLinks = resolveLinks(locationCity, locationRegion);
 
   // Rule 3: Filter links by location type
-  const filteredLinks = (config.links as AffiliationLink[]).filter((link) =>
+  const filteredLinks = (allLinks as AffiliationLink[]).filter((link) =>
     link.types.includes(locationType)
   );
 
