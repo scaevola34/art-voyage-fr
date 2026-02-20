@@ -168,6 +168,22 @@
       }
     ]
   },
+  "regions": {
+    "Île-de-France": "paris",
+    "Auvergne-Rhône-Alpes": "lyon",
+    "Provence-Alpes-Côte d'Azur": "marseille",
+    "Hauts-de-France": "lille",
+    "Nouvelle-Aquitaine": "bordeaux",
+    "Occitanie": "toulouse",
+    "Grand Est": "strasbourg",
+    "Bretagne": "default",
+    "Normandie": "default",
+    "Pays de la Loire": "default",
+    "Centre-Val de Loire": "default",
+    "Bourgogne-Franche-Comté": "default",
+    "Corse": "default",
+    "Outre-Mer": "default"
+  },
   "default": {
     "links": [
       {

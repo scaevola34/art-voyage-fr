@@ -227,6 +227,7 @@ export const LocationDrawer = memo(function LocationDrawer({
             <AffiliationBlock
               locationType={location.type}
               locationCity={location.city}
+              locationRegion={location.region}
               locationId={location.id}
             />
 

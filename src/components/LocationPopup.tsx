@@ -158,6 +158,7 @@ const LocationPopup = memo(function LocationPopup({ location, onClose }: Locatio
           <AffiliationBlock
             locationType={location.type}
             locationCity={location.city}
+            locationRegion={location.region}
             locationId={location.id}
           />
 
