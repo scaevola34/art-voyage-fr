@@ -3,196 +3,88 @@
     "clichy": "paris",
     "pantin": "paris",
     "saint-ouen-sur-seine": "paris",
-    "montévrain": "paris",
-    "fontainebleau": "paris",
+    "montevrain": "paris",
     "montlignon": "paris",
+    "fontainebleau": "fontainebleau",
     "villeurbanne": "lyon",
-    "vénissieux": "lyon",
-    "grenoble": "lyon",
-    "annecy": "lyon",
-    "aix-en-provence": "marseille",
+    "venissieux": "lyon",
+    "annecy": "annecy",
+    "aix-en-provence": "aix-en-provence",
     "aubagne": "marseille",
-    "cannes": "nice",
-    "antibes": "nice",
-    "eze-village": "nice",
+    "cannes": "cannes",
+    "antibes": "antibes",
+    "eze-village": "eze",
     "villeneuve-d-ascq": "lille",
-    "amiens": "lille",
-    "bègles": "bordeaux",
-    "bayonne": "bordeaux",
-    "biarritz": "bordeaux",
+    "amiens": "amiens",
+    "begles": "bordeaux",
+    "bayonne": "bayonne",
+    "biarritz": "biarritz",
     "blagnac": "toulouse",
     "bezannes": "reims",
-    "mulhouse": "strasbourg",
-    "colmar": "strasbourg",
+    "mulhouse": "mulhouse",
+    "colmar": "colmar",
     "neuf-brisach": "strasbourg",
-    "saint-pierre": "la-réunion",
+    "saint-pierre": "la-reunion",
     "le-gosier": "guadeloupe",
-    "pointe-à-pitre": "guadeloupe"
+    "pointe-a-pitre": "guadeloupe",
+    "honfleur": "honfleur",
+    "rouen": "rouen",
+    "uzes": "uzes",
+    "lorient": "lorient",
+    "brest": "brest",
+    "rennes": "rennes",
+    "landerneau": "bretagne",
+    "morlaix": "bretagne",
+    "pont-aven": "bretagne",
+    "grenoble": "grenoble"
   },
-  "paris": {
-    "links": [
-      {
-        "label": "Visites street art à Paris",
-        "url": "https://www.getyourguide.com/fr-fr/paris-l16/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      },
-      {
-        "label": "Séjourner près du lieu",
-        "url": "https://www.airbnb.fr/s/Paris",
-        "partner": "Airbnb",
-        "emoji": "🏠",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "lyon": {
-    "links": [
-      {
-        "label": "Visites street art à Lyon",
-        "url": "https://www.getyourguide.com/fr-fr/lyon-l295/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "marseille": {
-    "links": [
-      {
-        "label": "Visites street art à Marseille",
-        "url": "https://www.getyourguide.com/fr-fr/marseille-l292/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "lille": {
-    "links": [
-      {
-        "label": "Visites street art à Lille",
-        "url": "https://www.getyourguide.com/fr-fr/lille-l643/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "bordeaux": {
-    "links": [
-      {
-        "label": "Visites street art à Bordeaux",
-        "url": "https://www.getyourguide.com/fr-fr/bordeaux-l287/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "montpellier": {
-    "links": [
-      {
-        "label": "Visites street art à Montpellier",
-        "url": "https://www.getyourguide.com/fr-fr/montpellier-l2573/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "nice": {
-    "links": [
-      {
-        "label": "Visites street art à Nice",
-        "url": "https://www.getyourguide.com/fr-fr/nice-l132/street-art-tc184/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "reims": {
-    "links": [
-      {
-        "label": "Visites & activités à Reims",
-        "url": "https://www.getyourguide.com/fr-fr/reims-l365/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "strasbourg": {
-    "links": [
-      {
-        "label": "Visites & activités à Strasbourg",
-        "url": "https://www.getyourguide.com/fr-fr/strasbourg-l293/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "toulouse": {
-    "links": [
-      {
-        "label": "Visites & activités à Toulouse",
-        "url": "https://www.getyourguide.com/fr-fr/toulouse-l288/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "la-réunion": {
-    "links": [
-      {
-        "label": "Visites & activités à La Réunion",
-        "url": "https://www.getyourguide.com/fr-fr/ile-de-la-reunion-l97455/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
-  "guadeloupe": {
-    "links": [
-      {
-        "label": "Visites & activités en Guadeloupe",
-        "url": "https://www.getyourguide.com/fr-fr/guadeloupe-l169108/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap",
-        "partner": "GetYourGuide",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
-  },
+  "paris": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+paris&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "lyon": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+Lyon&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "marseille": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+Marseille&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "lille": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/fr-fr/lille-l643/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "bordeaux": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bordeaux&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "montpellier": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+montpellier&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "nice": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+nice&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "reims": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Reims&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "strasbourg": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Strasbourg&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "toulouse": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Toulouse&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "grenoble": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Grenoble&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "aix-en-provence": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Aix+en+Provence&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "amiens": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/fr-fr/amiens-l100005/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "mulhouse": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Mulhouse&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "lorient": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Lorient&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "brest": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Brest&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "rennes": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Rennes&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "fontainebleau": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+fontainebleau&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "biarritz": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+biarritz&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "honfleur": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Honfleur+street+art&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "cannes": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Cannes+street+art&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "antibes": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Antibes+street+art&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "annecy": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Annecy+street+art&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "colmar": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Colmar+street+art&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "bayonne": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bayonne&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "eze": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+Eze&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "uzes": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Uz%C3%A8s&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "rouen": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Rouen&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "la-reunion": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/fr-fr/ile-de-la-reunion-l97455/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "guadeloupe": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/fr-fr/guadeloupe-l169108/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+  "bretagne": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bretagne&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
   "regions": {
-    "Île-de-France": "paris",
-    "Auvergne-Rhône-Alpes": "lyon",
-    "Provence-Alpes-Côte d'Azur": "marseille",
-    "Hauts-de-France": "lille",
-    "Nouvelle-Aquitaine": "bordeaux",
-    "Occitanie": "toulouse",
-    "Grand Est": "strasbourg",
-    "Bretagne": "default",
-    "Normandie": "default",
-    "Pays de la Loire": "default",
-    "Centre-Val de Loire": "default",
-    "Bourgogne-Franche-Comté": "default",
-    "Corse": "default",
-    "Outre-Mer": "default"
+    "Île-de-France": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+paris&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Occitanie": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Toulouse&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Provence-Alpes-Côte d'Azur": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+Marseille&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Grand Est": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Strasbourg&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Auvergne-Rhône-Alpes": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+Lyon&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Nouvelle-Aquitaine": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bordeaux&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Hauts-de-France": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/fr-fr/lille-l643/?partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Bretagne": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bretagne&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Normandie": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=Street+art+Rouen&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Bourgogne-Franche-Comté": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+bourgogne&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Centre-Val de Loire": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+tours&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Pays de la Loire": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+nantes&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] },
+    "Corse": { "links": [{ "label": "Visites guidées", "url": "https://www.getyourguide.com/s/?q=street+art+corse&searchSource=3&src=search_bar&partner_id=2BBPALZ&utm_medium=online_publisher&utm_source=urbanomap", "partner": "GetYourGuide", "emoji": "🎨", "types": ["gallery", "museum"] }] }
   },
   "default": {
-    "links": [
-      {
-        "label": "Matériel Montana Colors",
-        "url": "https://www.montana-cans.com/fr",
-        "partner": "Montana",
-        "emoji": "🎨",
-        "types": ["gallery", "museum"]
-      }
-    ]
+    "links": [{ "label": "Matériel Montana Colors", "url": "https://www.montana-cans.com/fr", "partner": "Montana", "emoji": "🎨", "types": ["gallery", "museum"] }]
   }
 }
