@@ -14,6 +14,7 @@ export interface MapFilters {
 
 export interface MapURLState extends MapViewState, MapFilters {
   locationId?: string;
+  locationSlug?: string;
 }
 
 const DEFAULT_STATE: MapURLState = {
@@ -32,10 +33,14 @@ const DEFAULT_STATE: MapURLState = {
 export function parseMapURLState(searchParams: URLSearchParams): Partial<MapURLState> {
   const state: Partial<MapURLState> = {};
 
-  // Parse location ID
+  // Parse location ID (supports both ?location=id and ?lieu=slug)
   const locationId = searchParams.get('location');
   if (locationId) {
     state.locationId = locationId;
+  }
+  const lieuSlug = searchParams.get('lieu');
+  if (lieuSlug) {
+    state.locationSlug = lieuSlug;
   }
 
   // Parse viewport

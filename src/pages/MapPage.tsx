@@ -115,9 +115,18 @@ const MapPage = memo(() => {
       });
     }
 
-    // Set location from URL
+    // Set location from URL (?location=id or ?lieu=slug)
     if (urlState.locationId) {
       const location = allLocations.find((loc) => loc.id === urlState.locationId);
+      if (location) {
+        setSelectedLocation(location);
+        setCenteredLocation(location);
+        setTimeout(() => setCenteredLocation(null), 2000);
+      }
+    } else if (urlState.locationSlug) {
+      const slugify = (name: string) =>
+        name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const location = allLocations.find((loc) => slugify(loc.name) === urlState.locationSlug);
       if (location) {
         setSelectedLocation(location);
         setCenteredLocation(location);
@@ -188,17 +197,11 @@ const MapPage = memo(() => {
 
   const handleCloseDrawer = useCallback(() => {
     setSelectedLocation(null);
-    
-    // Track drawer close
     trackEvent('drawer_closed');
 
-    // Remove location from URL
-    const urlState = parseMapURLState(searchParams);
-    updateURLState({
-      ...urlState,
-      locationId: undefined,
-    });
-  }, [searchParams, trackEvent]);
+    // Restore clean URL without lieu param
+    window.history.replaceState(null, '', '/carte');
+  }, [trackEvent]);
 
   const handleViewStateChange = useCallback((newViewState: { latitude: number; longitude: number; zoom: number }) => {
     setViewState(newViewState);
