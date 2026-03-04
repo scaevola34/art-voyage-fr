@@ -392,7 +392,6 @@ const MapComponent: React.FC<MapProps> = memo(
                   longitude={longitude}
                   latitude={latitude}
                   pointCount={pointCount}
-                  totalPoints={locations.length}
                   onClick={() => handleClusterClick(clusterId, longitude, latitude)}
                 />
               );
