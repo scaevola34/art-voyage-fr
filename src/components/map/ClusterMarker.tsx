@@ -1,12 +1,10 @@
 import { memo } from 'react';
 import { Marker } from 'react-map-gl';
-import { getClusterSize } from '@/lib/map/cluster';
 
 interface ClusterMarkerProps {
   longitude: number;
   latitude: number;
   pointCount: number;
-  totalPoints: number;
   onClick: () => void;
 }
 
@@ -14,14 +12,22 @@ interface ClusterMarkerProps {
  * Cluster marker component showing aggregated location count
  * Memoized to prevent unnecessary re-renders
  */
+/**
+ * Get cluster color and size based on point count
+ */
+function getClusterStyle(pointCount: number) {
+  if (pointCount > 50) return { size: 42, color: '#4840C0' };
+  if (pointCount >= 10) return { size: 32, color: '#5A52E0' };
+  return { size: 22, color: '#6C63FF' };
+}
+
 export const ClusterMarker = memo(function ClusterMarker({
   longitude,
   latitude,
   pointCount,
-  totalPoints,
   onClick,
 }: ClusterMarkerProps) {
-  const size = getClusterSize(pointCount, totalPoints);
+  const { size, color } = getClusterStyle(pointCount);
 
   return (
     <Marker
@@ -38,25 +44,26 @@ export const ClusterMarker = memo(function ClusterMarker({
           width: `${size}px`,
           height: `${size}px`,
           borderRadius: '50%',
-          backgroundColor: 'hsl(var(--primary))',
-          border: '3px solid rgba(255, 255, 255, 0.5)',
+          backgroundColor: color,
+          opacity: 0.9,
+          border: '3px solid rgba(255, 255, 255, 0.4)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'hsl(var(--primary-foreground))',
+          color: '#ffffff',
           fontWeight: '700',
-          fontSize: pointCount > 999 ? '12px' : '14px',
+          fontSize: '13px',
           cursor: 'pointer',
-          boxShadow: '0 0 20px hsl(var(--primary) / 0.6)',
+          boxShadow: `0 0 16px ${color}99`,
         }}
         aria-label={`Cluster de ${pointCount} lieux`}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.2)';
-          e.currentTarget.style.boxShadow = '0 0 30px hsl(var(--primary))';
+          e.currentTarget.style.transform = 'scale(1.15)';
+          e.currentTarget.style.boxShadow = `0 0 24px ${color}`;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = '0 0 20px hsl(var(--primary) / 0.6)';
+          e.currentTarget.style.boxShadow = `0 0 16px ${color}99`;
         }}
       >
         {pointCount > 999 ? '999+' : pointCount}
