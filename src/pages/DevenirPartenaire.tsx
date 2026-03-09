@@ -13,7 +13,8 @@ import { toast } from '@/hooks/use-toast';
 import { submitPartnerRequest } from '@/lib/gallery/queries';
 import { frenchRegions } from '@/data/regions';
 import { cn } from '@/lib/utils';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
+import { getPageSEO } from '@/config/seo';
 
 const schema = z.object({
   name: z.string().min(2, 'Nom requis').max(100),
