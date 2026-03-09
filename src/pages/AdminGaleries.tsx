@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from '@/hooks/use-toast';
 import { getAllPartners, updatePartnerStatus, type GalleryPartner } from '@/lib/gallery/queries';
 import { supabase } from '@/integrations/supabase/client';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const ADMIN_PASSWORD = 'streetart2025';
 const tierIcons: Record<string, any> = { starter: Star, pro: Zap, vitrine: Crown };
