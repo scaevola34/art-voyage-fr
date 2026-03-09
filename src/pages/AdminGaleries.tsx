@@ -86,7 +86,7 @@ export default function AdminGaleries() {
 
   return (
     <>
-      <config={{ title: 'Admin Galeries — Urbanomap', description: 'Gestion des galeries partenaires.', path: '/admin/galeries' }}es." />
+      <SEO config={{ title: 'Admin Galeries', description: 'Gestion partenaires', path: '/admin/galeries' }} />
       <div className="min-h-screen pt-20 pb-16 bg-background">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl font-bold text-foreground mb-6">Gestion des galeries partenaires</h1>

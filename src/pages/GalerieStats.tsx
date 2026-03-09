@@ -53,7 +53,7 @@ export default function GalerieStats() {
 
   return (
     <GalleryLayout>
-      <config={{ title: 'Statistiques — Espace Partenaire', description: 'Statistiques de visibilité.', path: '/galerie/stats' }}é." />
+      <SEO config={{ title: 'Statistiques', description: 'Stats galerie', path: '/galerie/stats' }} />
       <div className="space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h1 className="text-2xl font-bold text-foreground">Statistiques</h1>

@@ -109,7 +109,7 @@ export default function GalerieEvenements() {
 
   return (
     <GalleryLayout>
-      <config={{ title: 'Événements — Espace Partenaire', description: 'Gérez vos événements.', path: '/galerie/evenements' }}ns." />
+      <SEO config={{ title: 'Mes events', description: 'Events galerie', path: '/galerie/evenements' }} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Événements</h1>

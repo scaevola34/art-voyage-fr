@@ -123,7 +123,7 @@ export default function GalerieProfil() {
 
   return (
     <GalleryLayout>
-      <config={{ title: 'Mon profil — Espace Partenaire', description: 'Éditez le profil de votre galerie.', path: '/galerie/profil' }}ie." />
+      <SEO config={{ title: 'Mon profil', description: 'Profil galerie', path: '/galerie/profil' }} />
       <div className="space-y-6 max-w-3xl">
         <h1 className="text-2xl font-bold text-foreground">Mon profil</h1>
 
