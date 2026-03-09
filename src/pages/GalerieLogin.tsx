@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 export default function GalerieLogin() {
   const [email, setEmail] = useState('');
