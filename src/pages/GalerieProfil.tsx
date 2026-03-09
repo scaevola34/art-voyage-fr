@@ -10,7 +10,7 @@ import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { updateGalleryProfile, getGalleryPhotos, addGalleryPhoto, deleteGalleryPhoto, uploadGalleryPhoto, type GalleryPhoto } from '@/lib/gallery/queries';
 import { Upload, X, GripVertical } from 'lucide-react';
-import { SEO }EO } from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 

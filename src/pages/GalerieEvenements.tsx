@@ -14,7 +14,7 @@ import { toast } from '@/hooks/use-toast';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryEvents, createGalleryEvent, updateGalleryEvent, deleteGalleryEvent, type GalleryEvent } from '@/lib/gallery/queries';
-import { SEO }EO } from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const eventTypes = [
   { value: 'expo_solo', label: 'Exposition solo' },

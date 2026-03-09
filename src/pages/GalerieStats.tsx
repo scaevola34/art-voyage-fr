@@ -7,7 +7,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryStats, type GalleryStat } from '@/lib/gallery/queries';
-import { SEO }EO } from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 export default function GalerieStats() {
   const { gallery } = useGalleryAuth();
