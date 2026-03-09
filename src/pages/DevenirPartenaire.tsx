@@ -67,10 +67,21 @@ export default function DevenirPartenaire() {
 
   const selectedTier = watch('offer_tier');
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     try {
-      await submitPartnerRequest(data);
+      await submitPartnerRequest({
+        name: formData.name,
+        city: formData.city,
+        region: formData.region,
+        email: formData.email,
+        offer_tier: formData.offer_tier,
+        address: formData.address,
+        contact_name: formData.contact_name,
+        phone: formData.phone,
+        website_url: formData.website_url,
+        message: formData.message,
+      });
       setSubmitted(true);
       toast({ title: '✅ Demande envoyée !', description: 'On vous recontacte sous 48h.' });
     } catch (error: any) {
