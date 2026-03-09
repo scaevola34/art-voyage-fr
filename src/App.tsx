@@ -18,12 +18,20 @@ const About = lazy(() => import("./pages/About"));
 const SuggestLocation = lazy(() => import("./pages/SuggestLocation"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminQueue = lazy(() => import("./pages/AdminQueue"));
+const AdminGaleries = lazy(() => import("./pages/AdminGaleries"));
 const EventsCalendar = lazy(() => import("./pages/EventsCalendar"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const CGU = lazy(() => import("./pages/CGU"));
 const Partenaires = lazy(() => import("./pages/Partenaires"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const DevenirPartenaire = lazy(() => import("./pages/DevenirPartenaire"));
+const GalerieLogin = lazy(() => import("./pages/GalerieLogin"));
+const GalerieDashboard = lazy(() => import("./pages/GalerieDashboard"));
+const GalerieProfil = lazy(() => import("./pages/GalerieProfil"));
+const GalerieEvenements = lazy(() => import("./pages/GalerieEvenements"));
+const GalerieArtistes = lazy(() => import("./pages/GalerieArtistes"));
+const GalerieStats = lazy(() => import("./pages/GalerieStats"));
 
 const queryClient = new QueryClient();
 
@@ -51,6 +59,14 @@ function AppContent() {
             <Route path="/suggerer-un-lieu" element={<SuggestLocation />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/queue" element={<AdminQueue />} />
+            <Route path="/admin/galeries" element={<AdminGaleries />} />
+            <Route path="/devenir-partenaire" element={<DevenirPartenaire />} />
+            <Route path="/galerie/login" element={<GalerieLogin />} />
+            <Route path="/galerie/dashboard" element={<GalerieDashboard />} />
+            <Route path="/galerie/profil" element={<GalerieProfil />} />
+            <Route path="/galerie/evenements" element={<GalerieEvenements />} />
+            <Route path="/galerie/artistes" element={<GalerieArtistes />} />
+            <Route path="/galerie/stats" element={<GalerieStats />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/cgu" element={<CGU />} />
             <Route path="/partenaires" element={<Partenaires />} />

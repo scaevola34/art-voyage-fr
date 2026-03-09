@@ -86,6 +86,268 @@ export type Database = {
           },
         ]
       }
+      gallery_artists: {
+        Row: {
+          bio: string | null
+          created_at: string
+          gallery_id: string
+          id: string
+          name: string
+          photo_url: string | null
+          specialty: Database["public"]["Enums"]["artist_specialty"]
+          status: Database["public"]["Enums"]["gallery_artist_status"]
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          gallery_id: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          specialty?: Database["public"]["Enums"]["artist_specialty"]
+          status?: Database["public"]["Enums"]["gallery_artist_status"]
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          gallery_id?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          specialty?: Database["public"]["Enums"]["artist_specialty"]
+          status?: Database["public"]["Enums"]["gallery_artist_status"]
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_artists_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_events: {
+        Row: {
+          created_at: string
+          date_end: string | null
+          date_start: string | null
+          description: string | null
+          gallery_id: string
+          id: string
+          image_url: string | null
+          price: string | null
+          status: Database["public"]["Enums"]["gallery_event_status"]
+          title: string
+          type: Database["public"]["Enums"]["gallery_event_type"]
+          updated_at: string
+          vernissage_time: string | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          date_end?: string | null
+          date_start?: string | null
+          description?: string | null
+          gallery_id: string
+          id?: string
+          image_url?: string | null
+          price?: string | null
+          status?: Database["public"]["Enums"]["gallery_event_status"]
+          title: string
+          type?: Database["public"]["Enums"]["gallery_event_type"]
+          updated_at?: string
+          vernissage_time?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          date_end?: string | null
+          date_start?: string | null
+          description?: string | null
+          gallery_id?: string
+          id?: string
+          image_url?: string | null
+          price?: string | null
+          status?: Database["public"]["Enums"]["gallery_event_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["gallery_event_type"]
+          updated_at?: string
+          vernissage_time?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_events_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_partners: {
+        Row: {
+          address: string | null
+          affiliate_accepted: boolean | null
+          city: string
+          contact_name: string | null
+          created_at: string
+          description: string | null
+          email: string
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          location_id: string | null
+          message: string | null
+          name: string
+          offer_tier: Database["public"]["Enums"]["gallery_offer_tier"]
+          opening_hours: Json | null
+          phone: string | null
+          postal_code: string | null
+          region: string
+          status: Database["public"]["Enums"]["gallery_partner_status"]
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          affiliate_accepted?: boolean | null
+          city: string
+          contact_name?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          location_id?: string | null
+          message?: string | null
+          name: string
+          offer_tier?: Database["public"]["Enums"]["gallery_offer_tier"]
+          opening_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          region: string
+          status?: Database["public"]["Enums"]["gallery_partner_status"]
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          affiliate_accepted?: boolean | null
+          city?: string
+          contact_name?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          location_id?: string | null
+          message?: string | null
+          name?: string
+          offer_tier?: Database["public"]["Enums"]["gallery_offer_tier"]
+          opening_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          region?: string
+          status?: Database["public"]["Enums"]["gallery_partner_status"]
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_partners_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_photos: {
+        Row: {
+          created_at: string
+          gallery_id: string
+          id: string
+          is_primary: boolean
+          position: number
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          gallery_id: string
+          id?: string
+          is_primary?: boolean
+          position?: number
+          url: string
+        }
+        Update: {
+          created_at?: string
+          gallery_id?: string
+          id?: string
+          is_primary?: boolean
+          position?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_photos_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_stats: {
+        Row: {
+          created_at: string
+          date: string
+          favorites_added: number
+          gallery_id: string
+          id: string
+          views: number
+          website_clicks: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          favorites_added?: number
+          gallery_id: string
+          id?: string
+          views?: number
+          website_clicks?: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          favorites_added?: number
+          gallery_id?: string
+          id?: string
+          views?: number
+          website_clicks?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_stats_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string
@@ -181,7 +443,24 @@ export type Database = {
       cleanup_rate_limits: { Args: never; Returns: undefined }
     }
     Enums: {
+      artist_specialty:
+        | "graffiti"
+        | "muralisme"
+        | "stencil"
+        | "collage"
+        | "mixed_media"
+        | "autre"
       event_type: "festival" | "vernissage" | "atelier" | "autre"
+      gallery_artist_status: "actif" | "ancien"
+      gallery_event_status: "brouillon" | "publie"
+      gallery_event_type:
+        | "expo_solo"
+        | "expo_collective"
+        | "vernissage"
+        | "atelier"
+        | "autre"
+      gallery_offer_tier: "starter" | "pro" | "vitrine"
+      gallery_partner_status: "en_attente" | "actif" | "suspendu"
       location_type: "gallery" | "association" | "festival" | "museum"
     }
     CompositeTypes: {
@@ -310,7 +589,26 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      artist_specialty: [
+        "graffiti",
+        "muralisme",
+        "stencil",
+        "collage",
+        "mixed_media",
+        "autre",
+      ],
       event_type: ["festival", "vernissage", "atelier", "autre"],
+      gallery_artist_status: ["actif", "ancien"],
+      gallery_event_status: ["brouillon", "publie"],
+      gallery_event_type: [
+        "expo_solo",
+        "expo_collective",
+        "vernissage",
+        "atelier",
+        "autre",
+      ],
+      gallery_offer_tier: ["starter", "pro", "vitrine"],
+      gallery_partner_status: ["en_attente", "actif", "suspendu"],
       location_type: ["gallery", "association", "festival", "museum"],
     },
   },
