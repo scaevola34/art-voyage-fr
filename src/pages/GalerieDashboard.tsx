@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryEvents, getGalleryPhotos } from '@/lib/gallery/queries';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 export default function GalerieDashboard() {
   const { gallery } = useGalleryAuth();
