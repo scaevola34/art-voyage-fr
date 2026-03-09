@@ -18,12 +18,20 @@ const About = lazy(() => import("./pages/About"));
 const SuggestLocation = lazy(() => import("./pages/SuggestLocation"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminQueue = lazy(() => import("./pages/AdminQueue"));
+const AdminGaleries = lazy(() => import("./pages/AdminGaleries"));
 const EventsCalendar = lazy(() => import("./pages/EventsCalendar"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const CGU = lazy(() => import("./pages/CGU"));
 const Partenaires = lazy(() => import("./pages/Partenaires"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const DevenirPartenaire = lazy(() => import("./pages/DevenirPartenaire"));
+const GalerieLogin = lazy(() => import("./pages/GalerieLogin"));
+const GalerieDashboard = lazy(() => import("./pages/GalerieDashboard"));
+const GalerieProfil = lazy(() => import("./pages/GalerieProfil"));
+const GalerieEvenements = lazy(() => import("./pages/GalerieEvenements"));
+const GalerieArtistes = lazy(() => import("./pages/GalerieArtistes"));
+const GalerieStats = lazy(() => import("./pages/GalerieStats"));
 
 const queryClient = new QueryClient();
 
