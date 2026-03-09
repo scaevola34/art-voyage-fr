@@ -71,6 +71,12 @@ export const pageSEO: Record<string, SEOConfig> = {
     path: '/partenaires',
     image: DEFAULT_OG_IMAGE,
   },
+  blog: {
+    title: 'Blog Street Art – Urbanomap',
+    description: 'Articles, guides et actualités sur le street art en France.',
+    path: '/blog',
+    image: DEFAULT_OG_IMAGE,
+  },
 };
 
 export const getPageSEO = (pageKey: string): SEOConfig => {

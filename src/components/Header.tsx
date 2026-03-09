@@ -18,6 +18,7 @@ export default function Header() {
     { path: '/carte', label: 'Carte' },
     { path: '/agenda', label: 'Agenda' },
     { path: '/partenaires', label: 'Partenaires' },
+    { path: '/blog', label: 'Blog' },
     { path: '/a-propos', label: 'À propos' },
     { path: '/suggerer-un-lieu', label: 'Suggérer un lieu' },
   ];
