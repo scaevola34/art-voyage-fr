@@ -59,6 +59,14 @@ function AppContent() {
             <Route path="/suggerer-un-lieu" element={<SuggestLocation />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/queue" element={<AdminQueue />} />
+            <Route path="/admin/galeries" element={<AdminGaleries />} />
+            <Route path="/devenir-partenaire" element={<DevenirPartenaire />} />
+            <Route path="/galerie/login" element={<GalerieLogin />} />
+            <Route path="/galerie/dashboard" element={<GalerieDashboard />} />
+            <Route path="/galerie/profil" element={<GalerieProfil />} />
+            <Route path="/galerie/evenements" element={<GalerieEvenements />} />
+            <Route path="/galerie/artistes" element={<GalerieArtistes />} />
+            <Route path="/galerie/stats" element={<GalerieStats />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/cgu" element={<CGU />} />
             <Route path="/partenaires" element={<Partenaires />} />
