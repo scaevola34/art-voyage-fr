@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryArtists, createGalleryArtist, updateGalleryArtist, deleteGalleryArtist, uploadGalleryPhoto, type GalleryArtist } from '@/lib/gallery/queries';
-import { SEO }EO } from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const specialties = [
   { value: 'graffiti', label: 'Graffiti' },
@@ -58,7 +58,7 @@ export default function GalerieArtistes() {
   const openNew = () => { setEditingId(null); setForm(emptyForm); setDialogOpen(true); };
   const openEdit = (a: GalleryArtist) => {
     setEditingId(a.id);
-    setForm({ name: a.name, specialty: a.specialty, bio: a.bio || '', photo_url: a.photo_url || '', website_url: a.website_url || '', status: a.status });
+    setForm({ name: a.name, specialty: a.specialty as any, bio: a.bio || '', photo_url: a.photo_url || '', website_url: a.website_url || '', status: a.status as any });
     setDialogOpen(true);
   };
 
@@ -69,7 +69,7 @@ export default function GalerieArtistes() {
       const url = await uploadGalleryPhoto(e.target.files[0], gallery.id);
       setForm(f => ({ ...f, photo_url: url }));
     } catch (error: any) {
-      toast({ title: '❌ Erreur', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erreur', description: error.message, variant: 'destructive' });
     } finally {
       setUploading(false);
     }
@@ -78,7 +78,7 @@ export default function GalerieArtistes() {
   const handleSave = async () => {
     if (!gallery || !form.name) return;
     if (!editingId && artists.length >= 20) {
-      toast({ title: '❌ Limite atteinte', description: 'Maximum 20 artistes.', variant: 'destructive' });
+      toast({ title: 'Limite atteinte', description: 'Maximum 20 artistes.', variant: 'destructive' });
       return;
     }
     setSaving(true);
@@ -86,15 +86,15 @@ export default function GalerieArtistes() {
       if (editingId) {
         const updated = await updateGalleryArtist(editingId, form as any);
         setArtists(prev => prev.map(a => a.id === editingId ? updated : a));
-        toast({ title: '✅ Artiste modifié' });
+        toast({ title: 'Artiste modifie' });
       } else {
         const created = await createGalleryArtist({ ...form, gallery_id: gallery.id } as any);
         setArtists(prev => [...prev, created]);
-        toast({ title: '✅ Artiste ajouté' });
+        toast({ title: 'Artiste ajoute' });
       }
       setDialogOpen(false);
     } catch (error: any) {
-      toast({ title: '❌ Erreur', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erreur', description: error.message, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -105,15 +105,15 @@ export default function GalerieArtistes() {
     try {
       await deleteGalleryArtist(id);
       setArtists(prev => prev.filter(a => a.id !== id));
-      toast({ title: '🗑️ Artiste supprimé' });
+      toast({ title: 'Artiste supprime' });
     } catch (error: any) {
-      toast({ title: '❌ Erreur', description: error.message, variant: 'destructive' });
+      toast({ title: 'Erreur', description: error.message, variant: 'destructive' });
     }
   };
 
   return (
     <GalleryLayout>
-      <config={{ title: 'Artistes — Espace Partenaire', description: 'Gérez vos artistes.', path: '/galerie/artistes' }}�s." />
+      <SEO config={{ title: 'Artistes', description: 'Artistes galerie', path: '/galerie/artistes' }} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Artistes ({artists.length}/20)</h1>
@@ -123,7 +123,7 @@ export default function GalerieArtistes() {
         {loading ? (
           <p className="text-muted-foreground">Chargement...</p>
         ) : artists.length === 0 ? (
-          <Card><CardContent className="p-8 text-center text-muted-foreground">Aucun artiste référencé.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-muted-foreground">Aucun artiste.</CardContent></Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {artists.map(artist => (
@@ -133,7 +133,7 @@ export default function GalerieArtistes() {
                     {artist.photo_url ? (
                       <img src={artist.photo_url} alt={artist.name} className="w-12 h-12 rounded-full object-cover" />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-lg">🎨</div>
+                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-lg">A</div>
                     )}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-foreground truncate">{artist.name}</h3>
@@ -156,11 +156,11 @@ export default function GalerieArtistes() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="max-w-lg">
-            <DialogHeader><DialogTitle>{editingId ? 'Modifier l\'artiste' : 'Nouvel artiste'}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editingId ? "Modifier l'artiste" : 'Nouvel artiste'}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div><Label>Nom / Pseudo *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
               <div>
-                <Label>Spécialité</Label>
+                <Label>Specialite</Label>
                 <Select value={form.specialty} onValueChange={v => setForm(f => ({ ...f, specialty: v as any }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>{specialties.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
