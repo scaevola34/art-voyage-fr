@@ -41,7 +41,7 @@ function getStatusColor(status: string) {
   }
 }
 
-const emptyForm = { title: '', type: 'expo_solo' as const, description: '', date_start: '', date_end: '', vernissage_time: '', price: '', website_url: '', status: 'brouillon' as const };
+const emptyForm: { title: string; type: string; description: string; date_start: string; date_end: string; vernissage_time: string; price: string; website_url: string; status: string } = { title: '', type: 'expo_solo', description: '', date_start: '', date_end: '', vernissage_time: '', price: '', website_url: '', status: 'brouillon' };
 
 export default function GalerieEvenements() {
   const { gallery } = useGalleryAuth();
