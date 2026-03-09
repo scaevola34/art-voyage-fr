@@ -7,7 +7,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryStats, type GalleryStat } from '@/lib/gallery/queries';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 export default function GalerieStats() {
   const { gallery } = useGalleryAuth();
@@ -53,7 +53,7 @@ export default function GalerieStats() {
 
   return (
     <GalleryLayout>
-      <SEO title="Statistiques — Espace Partenaire" description="Consultez vos statistiques de visibilité." />
+      <config={{ title: 'Statistiques — Espace Partenaire', description: 'Statistiques de visibilité.', path: '/galerie/stats' }}é." />
       <div className="space-y-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <h1 className="text-2xl font-bold text-foreground">Statistiques</h1>

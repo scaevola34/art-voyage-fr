@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryEvents, getGalleryPhotos } from '@/lib/gallery/queries';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 export default function GalerieDashboard() {
   const { gallery } = useGalleryAuth();
@@ -43,7 +43,7 @@ export default function GalerieDashboard() {
 
   return (
     <GalleryLayout>
-      <SEO title="Dashboard — Espace Partenaire" description="Gérez votre galerie partenaire sur Urbanomap." />
+      <config={{ title: 'Dashboard — Espace Partenaire', description: 'Gérez votre galerie partenaire.', path: '/galerie/dashboard' }}ap." />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Bonjour, {gallery?.name} 👋</h1>

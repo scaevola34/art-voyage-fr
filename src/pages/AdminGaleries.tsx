@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { toast } from '@/hooks/use-toast';
 import { getAllPartners, updatePartnerStatus, type GalleryPartner } from '@/lib/gallery/queries';
 import { supabase } from '@/integrations/supabase/client';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 const ADMIN_PASSWORD = 'streetart2025';
 const tierIcons: Record<string, any> = { starter: Star, pro: Zap, vitrine: Crown };
@@ -86,7 +86,7 @@ export default function AdminGaleries() {
 
   return (
     <>
-      <SEO title="Admin Galeries — Urbanomap" description="Gestion des galeries partenaires." />
+      <config={{ title: 'Admin Galeries — Urbanomap', description: 'Gestion des galeries partenaires.', path: '/admin/galeries' }}es." />
       <div className="min-h-screen pt-20 pb-16 bg-background">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl font-bold text-foreground mb-6">Gestion des galeries partenaires</h1>

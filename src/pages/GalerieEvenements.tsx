@@ -14,7 +14,7 @@ import { toast } from '@/hooks/use-toast';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryEvents, createGalleryEvent, updateGalleryEvent, deleteGalleryEvent, type GalleryEvent } from '@/lib/gallery/queries';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 const eventTypes = [
   { value: 'expo_solo', label: 'Exposition solo' },
@@ -109,7 +109,7 @@ export default function GalerieEvenements() {
 
   return (
     <GalleryLayout>
-      <SEO title="Événements — Espace Partenaire" description="Gérez vos événements et expositions." />
+      <config={{ title: 'Événements — Espace Partenaire', description: 'Gérez vos événements.', path: '/galerie/evenements' }}ns." />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Événements</h1>

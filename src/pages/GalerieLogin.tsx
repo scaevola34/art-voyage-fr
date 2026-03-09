@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 export default function GalerieLogin() {
   const [email, setEmail] = useState('');
@@ -46,7 +46,7 @@ export default function GalerieLogin() {
 
   return (
     <>
-      <SEO title="Connexion galerie — Urbanomap" description="Connectez-vous à votre espace partenaire Urbanomap." />
+      <config={{ title: 'Connexion galerie — Urbanomap', description: 'Connectez-vous à votre espace partenaire.', path: '/galerie/login' }}ap." />
       <div className="min-h-screen flex items-center justify-center pt-16 bg-background">
         <Card className="w-full max-w-md mx-4">
           <CardHeader className="text-center">

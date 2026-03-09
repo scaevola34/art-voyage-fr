@@ -109,7 +109,7 @@ export default function DevenirPartenaire() {
 
   return (
     <>
-      <SEO title="Devenir partenaire — Urbanomap" description="Inscrivez votre galerie sur Urbanomap et gagnez en visibilité auprès de milliers d'amateurs de street art." />
+      <SEO config={{ title: 'Devenir partenaire — Urbanomap', description: "Inscrivez votre galerie sur Urbanomap et gagnez en visibilité.", path: '/devenir-partenaire' }} />
       <div className="min-h-screen pt-20 pb-16 bg-background">
         {/* Hero */}
         <section className="container mx-auto px-4 text-center mb-12">

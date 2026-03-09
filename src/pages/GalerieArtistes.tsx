@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryArtists, createGalleryArtist, updateGalleryArtist, deleteGalleryArtist, uploadGalleryPhoto, type GalleryArtist } from '@/lib/gallery/queries';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 const specialties = [
   { value: 'graffiti', label: 'Graffiti' },
@@ -113,7 +113,7 @@ export default function GalerieArtistes() {
 
   return (
     <GalleryLayout>
-      <SEO title="Artistes — Espace Partenaire" description="Gérez vos artistes représentés." />
+      <config={{ title: 'Artistes — Espace Partenaire', description: 'Gérez vos artistes.', path: '/galerie/artistes' }}�s." />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Artistes ({artists.length}/20)</h1>

@@ -10,7 +10,7 @@ import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { updateGalleryProfile, getGalleryPhotos, addGalleryPhoto, deleteGalleryPhoto, uploadGalleryPhoto, type GalleryPhoto } from '@/lib/gallery/queries';
 import { Upload, X, GripVertical } from 'lucide-react';
-import { SEO } from '@/components/SEO';
+import { SEO }EO } from '@/components/SEO';
 
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
@@ -123,7 +123,7 @@ export default function GalerieProfil() {
 
   return (
     <GalleryLayout>
-      <SEO title="Mon profil — Espace Partenaire" description="Éditez le profil de votre galerie." />
+      <config={{ title: 'Mon profil — Espace Partenaire', description: 'Éditez le profil de votre galerie.', path: '/galerie/profil' }}ie." />
       <div className="space-y-6 max-w-3xl">
         <h1 className="text-2xl font-bold text-foreground">Mon profil</h1>
 
