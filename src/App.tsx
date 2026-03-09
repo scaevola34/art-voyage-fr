@@ -22,6 +22,8 @@ const EventsCalendar = lazy(() => import("./pages/EventsCalendar"));
 const MentionsLegales = lazy(() => import("./pages/MentionsLegales"));
 const CGU = lazy(() => import("./pages/CGU"));
 const Partenaires = lazy(() => import("./pages/Partenaires"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 const queryClient = new QueryClient();
 
