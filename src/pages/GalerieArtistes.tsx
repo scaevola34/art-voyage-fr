@@ -12,7 +12,7 @@ import { toast } from '@/hooks/use-toast';
 import GalleryLayout from '@/components/gallery/GalleryLayout';
 import { useGalleryAuth } from '@/hooks/useGalleryAuth';
 import { getGalleryArtists, createGalleryArtist, updateGalleryArtist, deleteGalleryArtist, uploadGalleryPhoto, type GalleryArtist } from '@/lib/gallery/queries';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const specialties = [
   { value: 'graffiti', label: 'Graffiti' },
