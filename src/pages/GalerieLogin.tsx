@@ -46,7 +46,7 @@ export default function GalerieLogin() {
 
   return (
     <>
-      <config={{ title: 'Connexion galerie — Urbanomap', description: 'Connectez-vous à votre espace partenaire.', path: '/galerie/login' }}ap." />
+      <SEO config={{ title: 'Connexion galerie', description: 'Espace partenaire Urbanomap', path: '/galerie/login' }} />
       <div className="min-h-screen flex items-center justify-center pt-16 bg-background">
         <Card className="w-full max-w-md mx-4">
           <CardHeader className="text-center">

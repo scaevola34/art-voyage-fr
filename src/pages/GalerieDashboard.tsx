@@ -43,7 +43,7 @@ export default function GalerieDashboard() {
 
   return (
     <GalleryLayout>
-      <config={{ title: 'Dashboard — Espace Partenaire', description: 'Gérez votre galerie partenaire.', path: '/galerie/dashboard' }}ap." />
+      <SEO config={{ title: 'Dashboard Partenaire', description: 'Espace galerie Urbanomap', path: '/galerie/dashboard' }} />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Bonjour, {gallery?.name} 👋</h1>
