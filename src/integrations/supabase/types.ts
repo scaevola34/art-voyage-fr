@@ -14,6 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_key_requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          plan: string
+          project_name: string
+          use_case: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          plan?: string
+          project_name: string
+          use_case?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          plan?: string
+          project_name?: string
+          use_case?: string
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          id: string
+          key: string
+          last_used_at: string | null
+          name: string
+          plan: string
+          requests_today: number
+          requests_total: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          key: string
+          last_used_at?: string | null
+          name: string
+          plan?: string
+          requests_today?: number
+          requests_total?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          key?: string
+          last_used_at?: string | null
+          name?: string
+          plan?: string
+          requests_today?: number
+          requests_total?: number
+        }
+        Relationships: []
+      }
+      api_webhooks: {
+        Row: {
+          active: boolean
+          api_key_id: string
+          created_at: string
+          id: string
+          secret: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          api_key_id: string
+          created_at?: string
+          id?: string
+          secret: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          api_key_id?: string
+          created_at?: string
+          id?: string
+          secret?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_webhooks_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           city: string
