@@ -26,7 +26,7 @@ export const SearchBar = memo(function SearchBar({
   autoFocus = false,
 }: SearchBarProps) {
   const [localValue, setLocalValue] = useState(value);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Sync external value changes

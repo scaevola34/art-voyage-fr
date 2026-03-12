@@ -60,6 +60,14 @@ export default function Footer() {
                   Partenaires
                 </Link>
               </li>
+              <li>
+                <Link 
+                  to="/developers" 
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  API Développeurs
+                </Link>
+              </li>
             </ul>
           </div>
 
