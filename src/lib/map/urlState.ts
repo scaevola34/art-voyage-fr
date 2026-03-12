@@ -138,7 +138,7 @@ export function updateURLState(state: Partial<MapURLState>, replace = true): voi
  * Debounced URL state update
  * Prevents excessive history updates during map movement
  */
-let updateTimeout: NodeJS.Timeout;
+let updateTimeout: ReturnType<typeof setTimeout>;
 export function debouncedUpdateURLState(state: Partial<MapURLState>, delay = 500): void {
   clearTimeout(updateTimeout);
   updateTimeout = setTimeout(() => {
