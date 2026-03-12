@@ -74,6 +74,8 @@ function AppContent() {
             <Route path="/partenaires" element={<Partenaires />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/developers" element={<Developers />} />
+            <Route path="/admin/api-keys" element={<AdminApiKeys />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

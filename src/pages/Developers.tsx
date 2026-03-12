@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import SEO from '@/components/SEO';
+import { SEO } from '@/components/SEO';
 
 const DEMO_KEY = 'umk_demo_a3f9b2c1d4e5f6789012345678abcdef';
 
