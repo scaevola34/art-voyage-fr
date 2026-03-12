@@ -32,6 +32,8 @@ const GalerieProfil = lazy(() => import("./pages/GalerieProfil"));
 const GalerieEvenements = lazy(() => import("./pages/GalerieEvenements"));
 const GalerieArtistes = lazy(() => import("./pages/GalerieArtistes"));
 const GalerieStats = lazy(() => import("./pages/GalerieStats"));
+const Developers = lazy(() => import("./pages/Developers"));
+const AdminApiKeys = lazy(() => import("./pages/AdminApiKeys"));
 
 const queryClient = new QueryClient();
 
