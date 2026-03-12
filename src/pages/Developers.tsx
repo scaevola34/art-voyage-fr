@@ -197,7 +197,7 @@ export default function Developers() {
 
   return (
     <>
-      <SEO title="API Développeurs — Urbanomap" description="Accédez aux données street art en France via une API REST documentée." />
+      <SEO config={{ title: 'API Développeurs — Urbanomap', description: 'Accédez aux données street art en France via une API REST documentée.', path: '/developers' }} />
 
       {/* Hero */}
       <section className="relative py-24 px-4" style={{ background: 'linear-gradient(180deg, hsl(240 20% 6%), hsl(var(--background)))' }}>
