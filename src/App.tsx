@@ -65,6 +65,7 @@ function AppContent() {
             <Route path="/admin/galeries" element={<AdminGaleries />} />
             <Route path="/devenir-partenaire" element={<DevenirPartenaire />} />
             <Route path="/galerie/login" element={<GalerieLogin />} />
+            <Route path="/galerie/attente" element={<GalerieAttente />} />
             <Route path="/galerie/dashboard" element={<GalerieDashboard />} />
             <Route path="/galerie/profil" element={<GalerieProfil />} />
             <Route path="/galerie/evenements" element={<GalerieEvenements />} />
