@@ -34,6 +34,7 @@ const GalerieArtistes = lazy(() => import("./pages/GalerieArtistes"));
 const GalerieStats = lazy(() => import("./pages/GalerieStats"));
 const Developers = lazy(() => import("./pages/Developers"));
 const AdminApiKeys = lazy(() => import("./pages/AdminApiKeys"));
+const GalerieAttente = lazy(() => import("./pages/GalerieAttente"));
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ function AppContent() {
             <Route path="/admin/galeries" element={<AdminGaleries />} />
             <Route path="/devenir-partenaire" element={<DevenirPartenaire />} />
             <Route path="/galerie/login" element={<GalerieLogin />} />
+            <Route path="/galerie/attente" element={<GalerieAttente />} />
             <Route path="/galerie/dashboard" element={<GalerieDashboard />} />
             <Route path="/galerie/profil" element={<GalerieProfil />} />
             <Route path="/galerie/evenements" element={<GalerieEvenements />} />

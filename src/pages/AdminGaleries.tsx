@@ -47,11 +47,9 @@ export default function AdminGaleries() {
 
   const handleActivate = async (partner: GalleryPartner) => {
     try {
-      // Create Supabase auth user via edge function or directly
-      // For now, update status - admin would create user separately
       const updated = await updatePartnerStatus(partner.id, 'actif');
       setPartners(prev => prev.map(p => p.id === partner.id ? updated : p));
-      toast({ title: '✅ Galerie activée', description: `${partner.name} peut maintenant se connecter.` });
+      toast({ title: '✅ Galerie activée', description: `${partner.name} peut maintenant se connecter sur /galerie/login avec son email ${partner.email}.` });
     } catch (error: any) {
       toast({ title: '❌ Erreur', description: error.message, variant: 'destructive' });
     }
