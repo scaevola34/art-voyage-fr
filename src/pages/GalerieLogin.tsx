@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,15 +14,26 @@ export default function GalerieLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const navigate = useNavigate();
-  const { signIn, resetPassword } = useGalleryAuth();
+  const { user, gallery, loading, signIn, resetPassword } = useGalleryAuth();
+
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (loading) return;
+    if (user && gallery) {
+      if (gallery.status === 'actif') {
+        navigate('/galerie/dashboard');
+      } else {
+        navigate('/galerie/attente');
+      }
+    }
+  }, [user, gallery, loading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await signIn(email, password);
-      toast({ title: '✅ Connecté', description: 'Bienvenue dans votre espace partenaire' });
-      navigate('/galerie/dashboard');
+      // Navigation handled by useEffect above after state updates
     } catch (error: any) {
       toast({ title: '❌ Erreur', description: error.message || 'Identifiants incorrects', variant: 'destructive' });
     } finally {
@@ -85,6 +96,12 @@ export default function GalerieLogin() {
                 <button type="button" className="w-full text-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => setShowReset(true)}>
                   Mot de passe oublié ?
                 </button>
+                <div className="text-center pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
+                    Pas encore de compte ?{' '}
+                    <a href="/devenir-partenaire" className="text-primary hover:underline">Inscrire ma galerie</a>
+                  </p>
+                </div>
               </form>
             )}
           </CardContent>

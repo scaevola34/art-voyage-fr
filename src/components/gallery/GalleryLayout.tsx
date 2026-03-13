@@ -26,7 +26,11 @@ export default function GalleryLayout({ children }: { children: ReactNode }) {
     if (!loading && !user) {
       navigate('/galerie/login');
     }
-  }, [loading, user, navigate]);
+    // Redirect to waiting page if gallery is pending
+    if (!loading && user && gallery && gallery.status !== 'actif') {
+      navigate('/galerie/attente');
+    }
+  }, [loading, user, gallery, navigate]);
 
   if (loading) {
     return (
@@ -36,7 +40,7 @@ export default function GalleryLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!user || !gallery) return null;
+  if (!user || !gallery || gallery.status !== 'actif') return null;
 
   const TierIcon = tierIcons[gallery.offer_tier];
 
